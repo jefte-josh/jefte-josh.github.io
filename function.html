@@ -115,8 +115,8 @@ var norefinc = 0;
 	else{
 	numInput.value=p;
     	sliderval.innerHTML = this.value;
-	income = ((36500/(p-50))+100);
-	profit = income*0.2;
+	income = ((36500 + (100*p)/(p-50)));
+	profit = ((36500/(p-50))+100)*0.2	;
 	ticketcost = income + profit;
 	totalprof = profit*(p-50);
 	totalinc = income*(p-50) + totalprof;
@@ -149,11 +149,11 @@ var norefinc = 0;
 	else{
     	numInput.value=p;
     	sliderval.innerHTML = this.value;
-	income = ((36500/(p-50))+100);
-	profit = income*0.2	;
+	income = ((36500 + (100*p)/(p-50)));
+	profit = ((36500/(p-50))+100)*0.2	;
 	ticketcost = income + profit;
 	totalprof = profit*(p-50);
-	totalinc = income*(p-50) + totalprof;
+	totalinc = (income*(p-50)) + totalprof;
 	ticketdcost.innerHTML = "₱" + ticketcost;
 	profd.innerHTML = "₱" + profit;
 	incd.innerHTML = "₱" + income;
@@ -165,7 +165,7 @@ var norefinc = 0;
 	console.log("norefinc" + norefinc);
 	console.log((income*(p-50)));
 	console.log(refph+norefinc);
-	totmonraised.innerHTML = "₱" + (refph+norefinc);
+	totmonraised.innerHTML = "₱" + (totalprof);
 	}
 	}
 
