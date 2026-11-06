@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, Curt! 🎮 8-Bit Edition</title>
+  
+  <!-- Google Fonts: Press Start 2P for authentic 8-bit pixel typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    /* Global Pixel Art & Theme Styles */
+    :root {
+      --bg-color: #0d081d;
+      --pink-neon: #ff2a85;
+      --cyan-neon: #00f0ff;
+      --yellow-pixel: #ffea00;
+      --blue-grade: #1e90ff;
+    }
+    
+    * {
+      box-sizing: border-box;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      font-family: 'Press Start 2P', monospace;
+      color: #ffffff;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* Pixel Text Glow Effects */
+    .pixel-text-pink {
+      color: var(--pink-neon);
+      text-shadow: 4px 4px 0px #800040, -2px -2px 0px #ff99ca;
+    }
+
+    .pixel-text-cyan {
+      color: var(--cyan-neon);
+      text-shadow: 4px 4px 0px #005580, -2px -2px 0px #99f5ff;
+    }
+
+    .pixel-text-yellow {
+      color: var(--yellow-pixel);
+      text-shadow: 3px 3px 0px #807300;
+    }
+
+    /* Retro CRT Scanline overlay effect */
+    .scanline {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      );
+      background-size: 100% 4px;
+      z-index: 90;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* Bouncing Title Animation */
+    @keyframes pixelBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .bounce-title {
+      animation: pixelBounce 1.5s infinite cubic-bezier(0.5, 0, 0.5, 1);
+    }
+
+    /* Candle Flame Flicker Animation */
+    @keyframes flameFlicker {
+      0%, 100% { opacity: 1; transform: scale(1) translateY(0); }
+      25% { opacity: 0.8; transform: scale(1.1, 0.9) translateY(-1px); }
+      50% { opacity: 1; transform: scale(0.9, 1.1) translateY(-2px); }
+      75% { opacity: 0.75; transform: scale(1.05, 0.95) translateY(0); }
+    }
+    .pixel-flame {
+      animation: flameFlicker 0.3s infinite alternate steps(2);
+      transform-origin: bottom center;
+    }
+
+    /* Present Box Lid Popping Animation */
+    .present-box {
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .present-box:hover {
+      transform: scale(1.05);
+    }
+
+    .present-lid {
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-origin: bottom left;
+    }
+
+    .present-box.opened .present-lid {
+      transform: translateY(-80px) rotate(-25deg);
+    }
+
+    /* Vibration Animation for Rose Toy */
+    @keyframes vibe {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-2px, 2px) rotate(-2deg); }
+      40% { transform: translate(-2px, -2px) rotate(2deg); }
+      60% { transform: translate(2px, 2px) rotate(1deg); }
+      80% { transform: translate(2px, -2px) rotate(-1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    .vibrating {
+      animation: vibe 0.12s infinite linear;
+    }
+
+    /* Sparkle float up animation */
+    @keyframes floatSparkle {
+      0% { transform: translateY(0) scale(0.5); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-30px) scale(1.2); opacity: 0; }
+    }
+    .pixel-sparkle-item {
+      position: absolute;
+      animation: floatSparkle 1.2s infinite ease-out;
+    }
+
+    /* Floating stars in background */
+    @keyframes starTwinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    .bg-star {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: #fff;
+      animation: starTwinkle 2s infinite ease-in-out;
+    }
+
+    /* Pixel Borders & Buttons */
+    .pixel-btn {
+      position: relative;
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #2b1055;
+      color: #fff;
+      font-size: 11px;
+      text-transform: uppercase;
+      border: 4px solid #ffffff;
+      box-shadow: 4px 4px 0px #000;
+      transition: all 0.1s ease;
+    }
+    .pixel-btn:hover {
+      background-color: var(--pink-neon);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #000;
+    }
+    .pixel-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .pixel-card {
+      background-color: #160c33;
+      border: 4px solid #fff;
+      box-shadow: 8px 8px 0px #000;
+    }
+    
+    .blue-grade-card {
+      background: linear-gradient(135deg, #0b2545, #134074);
+      border: 4px solid var(--cyan-neon);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4), 6px 6px 0px #000;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-between min-h-screen p-4 md:p-8 relative">
+
+  <!-- Scanline effect overlay -->
+  <div class="scanline"></div>
+
+  <!-- Twinkling Pixel Stars Background Container -->
+  <div id="stars-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+  <!-- Audio control floating button -->
+  <div class="fixed top-4 right-4 z-50 flex gap-2">
+    <button id="sound-toggle" class="pixel-btn text-xs py-2 px-3 flex items-center gap-2">
+      <span id="sound-icon">🔊</span> <span id="sound-text">SOUND ON</span>
+    </button>
+  </div>
+
+  <!-- Main Arcade Container -->
+  <div class="w-full max-w-4xl z-10 flex flex-col items-center gap-8 my-auto">
+    
+    <!-- 1. HEADER / TITLE SECTION -->
+    <header class="text-center space-y-4">
+      <div class="inline-block px-4 py-1 bg-purple-900 border-2 border-pink-500 rounded text-xs text-pink-300 mb-2">
+        LEVEL UP! +1 YEAR 🎮
+      </div>
+      
+      <h1 class="bounce-title text-2xl sm:text-4xl md:text-5xl font-bold tracking-wider leading-tight pixel-text-pink">
+        HAPPY BIRTHDAY,<br>
+        <span class="pixel-text-cyan">CURT!</span>
+      </h1>
+      
+      <p class="text-xs sm:text-sm text-yellow-300 tracking-wide mt-2">
+        PRESS <span class="underline">PRESENT</span> TO UNWRAP YOUR SURPRISE!
+      </p>
+    </header>
+
+    <!-- 2. PIXEL ART CAKE SECTION -->
+    <section class="flex flex-col items-center justify-center space-y-3">
+      <!-- Pixel Cake SVG -->
+      <div class="relative cursor-pointer group" id="cake-container" title="Click candles to light/blow them!">
+        <svg width="200" height="180" viewBox="0 0 64 58" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-48 h-44 sm:w-56 sm:h-52">
+          
+          <!-- Candles Layer -->
+          <g id="candles">
+            <!-- Candle 1 (Left) -->
+            <rect x="18" y="10" width="3" height="12" fill="#FFFFFF"/>
+            <rect x="18" y="10" width="3" height="12" fill="#FF5555" stroke="#FF5555" stroke-dasharray="2 2"/>
+            <!-- Candle 1 Flame -->
+            <g class="candle-flame pixel-flame" transform-origin="19.5 8">
+              <rect x="18" y="6" width="3" height="4" fill="#FFCC00"/>
+              <rect x="19" y="4" width="1" height="2" fill="#FF3300"/>
+            </g>
+
+            <!-- Candle 2 (Center) -->
+            <rect x="30" y="6" width="4" height="16" fill="#FFFFFF"/>
+            <rect x="30" y="6" width="4" height="16" fill="#00E5FF" stroke="#00E5FF" stroke-dasharray="3 3"/>
+            <!-- Candle 2 Flame -->
+            <g class="candle-flame pixel-flame" transform-origin="32 4">
+              <rect x="30" y="2" width="4" height="4" fill="#FFCC00"/>
+              <rect x="31.5" y="0" width="1" height="2" fill="#FF3300"/>
+            </g>
+
+            <!-- Candle 3 (Right) -->
+            <rect x="43" y="10" width="3" height="12" fill="#FFFFFF"/>
+            <rect x="43" y="10" width="3" height="12" fill="#FF5555" stroke="#FF5555" stroke-dasharray="2 2"/>
+            <!-- Candle 3 Flame -->
+            <g class="candle-flame pixel-flame" transform-origin="44.5 8">
+              <rect x="43" y="6" width="3" height="4" fill="#FFCC00"/>
+              <rect x="44" y="4" width="1" height="2" fill="#FF3300"/>
+            </g>
+          </g>
+
+          <!-- Top Tier Cake Frosting -->
+          <rect x="12" y="22" width="40" height="6" fill="#FF80AB"/>
+          <rect x="10" y="28" width="44" height="10" fill="#FFF0F5"/>
+          <!-- Frosting drips -->
+          <rect x="14" y="38" width="4" height="4" fill="#FFF0F5"/>
+          <rect x="24" y="38" width="6" height="3" fill="#FFF0F5"/>
+          <rect x="36" y="38" width="4" height="5" fill="#FFF0F5"/>
+          <rect x="46" y="38" width="4" height="3" fill="#FFF0F5"/>
+
+          <!-- Bottom Tier Cake -->
+          <rect x="6" y="38" width="52" height="6" fill="#FF4081"/>
+          <rect x="4" y="44" width="56" height="10" fill="#6A1B9A"/>
+          <!-- Sprinkles on cake -->
+          <rect x="10" y="46" width="2" height="2" fill="#00E5FF"/>
+          <rect x="20" y="48" width="2" height="2" fill="#FFCC00"/>
+          <rect x="32" y="46" width="3" height="2" fill="#76FF03"/>
+          <rect x="44" y="49" width="2" height="2" fill="#00E5FF"/>
+
+          <!-- Plate -->
+          <rect x="0" y="54" width="64" height="4" fill="#E0E0E0"/>
+          <rect x="4" y="56" width="56" height="2" fill="#B0BEC5"/>
+        </svg>
+      </div>
+      <p class="text-[10px] text-gray-400 uppercase tracking-widest">[ Click cake to blow/relight candles ]</p>
+    </section>
+
+    <!-- 3. INTERACTIVE PRESENT GIFT BOX -->
+    <section class="w-full flex flex-col items-center justify-center mt-4">
+      
+      <!-- Gift Container -->
+      <div id="gift-wrapper" class="flex flex-col items-center">
+        
+        <!-- Interactive Gift Box Canvas / SVG -->
+        <div id="present-box" class="present-box relative w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center">
+          
+          <svg width="100%" height="100%" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="overflow-visible">
+            
+            <!-- Shadow under gift -->
+            <rect x="8" y="58" width="48" height="4" fill="#05030a" opacity="0.6"/>
+
+            <!-- GIFT BODY (Base Box) -->
+            <g id="box-base">
+              <!-- Dark magenta box base -->
+              <rect x="10" y="26" width="44" height="32" fill="#D81B60"/>
+              <!-- Box shadow/depth -->
+              <rect x="46" y="26" width="8" height="32" fill="#880E4F"/>
+              <!-- Vertical Gold Ribbon -->
+              <rect x="28" y="26" width="8" height="32" fill="#FFD700"/>
+              <rect x="34" y="26" width="2" height="32" fill="#FFA000"/>
+            </g>
+
+            <!-- GIFT LID (Animates upward when clicked) -->
+            <g id="box-lid" class="present-lid">
+              <!-- Lid Top Bow -->
+              <!-- Left Loop -->
+              <rect x="18" y="10" width="10" height="8" fill="#FFD700"/>
+              <rect x="20" y="12" width="6" height="4" fill="#D81B60"/>
+              <!-- Right Loop -->
+              <rect x="36" y="10" width="10" height="8" fill="#FFD700"/>
+              <rect x="38" y="12" width="6" height="4" fill="#D81B60"/>
+              <!-- Center Knot -->
+              <rect x="27" y="13" width="10" height="6" fill="#FFA000"/>
+
+              <!-- Main Lid -->
+              <rect x="6" y="18" width="52" height="10" fill="#F06292"/>
+              <rect x="48" y="18" width="10" height="10" fill="#AD1457"/>
+              <!-- Ribbon on Lid -->
+              <rect x="28" y="18" width="8" height="10" fill="#FFD700"/>
+              <rect x="34" y="18" width="2" height="10" fill="#FFA000"/>
+            </g>
+          </svg>
+
+        </div>
+
+        <!-- Prompt Label -->
+        <button id="open-gift-btn" class="pixel-btn mt-4 text-center">
+          🎁 CLICK TO OPEN GIFT! 🎁
+        </button>
+      </div>
+
+      <!-- 4. REVEALED GIFTS CONTAINER (Initially Hidden) -->
+      <div id="unwrapped-content" class="hidden w-full max-w-2xl flex-col items-center gap-6 mt-6">
+        
+        <div class="text-center space-y-2">
+          <span class="pixel-text-yellow text-sm sm:text-base animate-pulse">🎉 SURPRISE UNLOCKED! 🎉</span>
+          <p class="text-xs text-purple-200">Curt received 2 Legendary Birthday Items!</p>
+        </div>
+
+        <!-- Grid of 2 Revealed Items -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+
+          <!-- ITEM 1: ROSE TOY VIBRATOR -->
+          <div class="pixel-card p-5 flex flex-col items-center justify-between text-center relative overflow-hidden group">
+            
+            <!-- Sparkles emit anchor -->
+            <div id="rose-sparkles" class="absolute inset-0 pointer-events-none"></div>
+
+            <div class="inline-block px-2 py-1 bg-pink-900 border border-pink-400 text-[9px] text-pink-200 mb-2">
+              ITEM #1 • ADULT Arcade Toy
+            </div>
+            
+            <h3 class="text-xs text-pink-400 font-bold mb-3">THE ROSE TOY 🌹✨</h3>
+
+            <!-- Animated Pixel Rose Toy SVG -->
+            <div class="relative my-2 p-3 bg-purple-950/60 rounded-lg border border-pink-500/30">
+              <svg id="rose-toy-svg" width="96" height="96" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="vibrating w-24 h-24">
+                <!-- Base / Handle (Ergonomic curve) -->
+                <rect x="20" y="26" width="8" height="16" fill="#FF4081" rx="2"/>
+                <rect x="22" y="28" width="4" height="12" fill="#F50057"/>
+                <rect x="23" y="38" width="2" height="2" fill="#FF80AB"/>
+                <!-- Gold Accent Ring -->
+                <rect x="19" y="24" width="10" height="3" fill="#FFD700"/>
+
+                <!-- Rose Head Petals (Sculpted Silicone) -->
+                <!-- Outer Petals -->
+                <rect x="14" y="8" width="20" height="16" fill="#E91E63"/>
+                <rect x="12" y="10" width="24" height="12" fill="#EC407A"/>
+                
+                <!-- Inner Rose Suction Mouth / Suction Cup Detail -->
+                <rect x="18" y="12" width="12" height="8" fill="#C2185B"/>
+                <rect x="20" y="14" width="8" height="4" fill="#880E4F"/>
+                <!-- Soft Glow Hole Center -->
+                <rect x="22" y="15" width="4" height="2" fill="#FF80AB"/>
+
+                <!-- Top Scalloped Petal Edges -->
+                <rect x="14" y="6" width="6" height="4" fill="#FF80AB"/>
+                <rect x="28" y="6" width="6" height="4" fill="#FF80AB"/>
+                <rect x="21" y="4" width="6" height="4" fill="#FF80AB"/>
+              </svg>
+            </div>
+
+            <!-- Description -->
+            <div class="mt-2 space-y-1">
+              <p class="text-[10px] text-pink-200 leading-relaxed">
+                Max Frequency Vibration! 100% Satisfaction Guaranteed. 😉
+              </p>
+              <div class="text-[9px] text-yellow-400 font-bold tracking-wider pt-2">
+                STATS: +100 HAPPINESS | 10 SPEEDS
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ITEM 2: 1.0 GRADES IN BLUE -->
+          <div class="blue-grade-card p-5 flex flex-col items-center justify-between text-center relative overflow-hidden group">
+            
+            <div class="inline-block px-2 py-1 bg-cyan-950 border border-cyan-400 text-[9px] text-cyan-200 mb-2">
+              ITEM #2 • ACADEMIC FLEX
+            </div>
+            
+            <h3 class="text-xs text-cyan-300 font-bold mb-3">FLAWLESS 1.0 GRADES 🎓💙</h3>
+
+            <!-- 1.0 Badge Graphic -->
+            <div class="my-2 p-4 bg-blue-950/80 border-2 border-cyan-400 rounded-lg flex flex-col items-center justify-center relative shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+              <!-- Pixel Star icon -->
+              <span class="text-xs text-cyan-300 mb-1">✨ PRESIDENT'S LIST ✨</span>
+              <div class="text-4xl font-extrabold text-cyan-400 pixel-text-cyan my-1">
+                1.00
+              </div>
+              <span class="text-[10px] text-blue-200 tracking-widest uppercase">STRAIGHT UNOs!</span>
+            </div>
+
+            <!-- Description -->
+            <div class="mt-2 space-y-1">
+              <p class="text-[10px] text-cyan-100 leading-relaxed">
+                Flat 1.0 in all subjects! Zero retakes, pure academic supremacy. 📘
+              </p>
+              <div class="text-[9px] text-cyan-300 font-bold tracking-wider pt-2">
+                STATS: GWA 1.00 | +1000 BRAIN POWER
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Action Buttons after opening -->
+        <div class="flex flex-wrap gap-4 justify-center mt-4">
+          <button id="repack-btn" class="pixel-btn text-xs">
+            🔄 RE-WRAP PRESENT
+          </button>
+          <button id="confetti-btn" class="pixel-btn text-xs bg-pink-700">
+            🎉 MORE CONFETTI!
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full text-center py-4 z-10 text-[10px] text-gray-500 tracking-widest mt-8">
+    BUILT WITH 💙 FOR CURT • 8-BIT EDITION 2026
+  </footer>
+
+  <!-- CANVAS FOR PIXEL CONFETTI PARTICLES -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-40"></canvas>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // --- 1. WEB AUDIO API CHIPTUNE SYNTHESIZER ---
+    class RetroAudio {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playNote(freq, type = 'square', duration = 0.1, delay = 0) {
+        if (this.muted) return;
+        try {
+          this.init();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + delay);
+          
+          gain.gain.setValueAtTime(0.15, this.ctx.currentTime + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + delay + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(this.ctx.currentTime + delay);
+          osc.stop(this.ctx.currentTime + delay + duration);
+        } catch(e) {}
+      }
+
+      // Sound Effect: Candle blow / click
+      playBlow() {
+        if (this.muted) return;
+        this.init();
+        this.playNote(400, 'triangle', 0.1);
+        this.playNote(200, 'sine', 0.15, 0.05);
+      }
+
+      // Sound Effect: Present Lid Pop
+      playPop() {
+        if (this.muted) return;
+        this.init();
+        this.playNote(150, 'square', 0.08);
+        this.playNote(300, 'square', 0.1, 0.06);
+        this.playNote(600, 'triangle', 0.15, 0.12);
+      }
+
+      // Sound Effect: Victory Fanfare when opened
+      playFanfare() {
+        if (this.muted) return;
+        this.init();
+        const notes = [
+          { f: 523.25, d: 0.1, t: 0 },     // C5
+          { f: 659.25, d: 0.1, t: 0.1 },   // E5
+          { f: 783.99, d: 0.1, t: 0.2 },   // G5
+          { f: 1046.50, d: 0.3, t: 0.3 },  // C6
+          { f: 880.00, d: 0.1, t: 0.5 },   // A5
+          { f: 1046.50, d: 0.4, t: 0.65 }  // C6 hold
+        ];
+        notes.forEach(n => this.playNote(n.f, 'square', n.d, n.t));
+      }
+    }
+
+    const audio = new RetroAudio();
+
+    // Sound toggle button
+    const soundBtn = document.getElementById('sound-toggle');
+    soundBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      document.getElementById('sound-icon').textContent = audio.muted ? '🔇' : '🔊';
+      document.getElementById('sound-text').textContent = audio.muted ? 'MUTED' : 'SOUND ON';
+      if (!audio.muted) audio.playNote(440, 'square', 0.1);
+    });
+
+    // --- 2. BACKGROUND STARS GENERATOR ---
+    const starsContainer = document.getElementById('stars-container');
+    const starCount = 40;
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'bg-star';
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 2}s`;
+      star.style.width = `${Math.random() > 0.5 ? 4 : 8}px`;
+      star.style.height = star.style.width;
+      starsContainer.appendChild(star);
+    }
+
+    // --- 3. PIXEL CONFETTI SYSTEM ---
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class PixelParticle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.floor(Math.random() * 6) + 6; // 8-bit chunky size
+        this.vx = (Math.random() - 0.5) * 12;
+        this.vy = (Math.random() - 0.8) * 14;
+        this.gravity = 0.3;
+        // Bright 8-bit palette colors
+        const colors = ['#ff2a85', '#00f0ff', '#ffea00', '#76ff03', '#ffffff', '#e91e63'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.rotation = Math.random() * Math.PI * 2;
+        this.vRot = (Math.random() - 0.5) * 0.2;
+        this.life = 1;
+        this.decay = Math.random() * 0.015 + 0.008;
+      }
+
+      update() {
+        this.vx *= 0.98;
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rotation += this.vRot;
+        this.life -= this.decay;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = Math.max(0, this.life);
+        // Draw crisp 8-bit pixel square particle
+        ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+        ctx.restore();
+      }
+    }
+
+    function spawnConfetti(originX, originY, count = 70) {
+      for (let i = 0; i < count; i++) {
+        particles.push(new PixelParticle(originX, originY));
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles = particles.filter(p => p.life > 0);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // --- 4. PRESENT BOX UNWRAPPING INTERACTION ---
+    const giftBox = document.getElementById('present-box');
+    const openBtn = document.getElementById('open-gift-btn');
+    const giftWrapper = document.getElementById('gift-wrapper');
+    const unwrappedContent = document.getElementById('unwrapped-content');
+    const repackBtn = document.getElementById('repack-btn');
+    const confettiBtn = document.getElementById('confetti-btn');
+    let isOpened = false;
+
+    function openGift() {
+      if (isOpened) return;
+      isOpened = true;
+
+      // Sound effect
+      audio.playPop();
+      setTimeout(() => audio.playFanfare(), 250);
+
+      // Animate Lid
+      giftBox.classList.add('opened');
+      openBtn.classList.add('hidden');
+
+      // Confetti burst from box position
+      const rect = giftBox.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      spawnConfetti(centerX, centerY, 100);
+
+      // Reveal gifts after short lid lift delay
+      setTimeout(() => {
+        unwrappedContent.classList.remove('hidden');
+        unwrappedContent.classList.add('flex');
+        // Scroll smoothly down to gifts if on small screens
+        unwrappedContent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 400);
+    }
+
+    function repackGift() {
+      isOpened = false;
+      giftBox.classList.remove('opened');
+      openBtn.classList.remove('hidden');
+      unwrappedContent.classList.add('hidden');
+      unwrappedContent.classList.remove('flex');
+      audio.playBlow();
+    }
+
+    giftBox.addEventListener('click', openGift);
+    openBtn.addEventListener('click', openGift);
+    repackBtn.addEventListener('click', repackGift);
+    confettiBtn.addEventListener('click', (e) => {
+      audio.playPop();
+      spawnConfetti(window.innerWidth / 2, window.innerHeight / 2, 80);
+    });
+
+    // --- 5. CANDLE FLAME TOGGLE INTERACTION ---
+    const cakeContainer = document.getElementById('cake-container');
+    const flames = document.querySelectorAll('.candle-flame');
+    let flamesLit = true;
+
+    cakeContainer.addEventListener('click', () => {
+      audio.playBlow();
+      flamesLit = !flamesLit;
+      flames.forEach(flame => {
+        flame.style.display = flamesLit ? 'block' : 'none';
+      });
+      
+      if (!flamesLit) {
+        // Puff of smoke particle effect when blown out
+        const rect = cakeContainer.getBoundingClientRect();
+        spawnConfetti(rect.left + rect.width / 2, rect.top + 30, 20);
+      }
+    });
+
+    // --- 6. FLOATING SPARKLES FOR ROSE TOY ---
+    const roseContainer = document.getElementById('rose-sparkles');
+    function createRoseSparkle() {
+      if (unwrappedContent.classList.contains('hidden')) return;
+      const sparkle = document.createElement('div');
+      sparkle.className = 'pixel-sparkle-item text-[10px] text-pink-300';
+      sparkle.textContent = Math.random() > 0.5 ? '✨' : '💖';
+      sparkle.style.left = `${20 + Math.random() * 60}%`;
+      sparkle.style.top = `${60 + Math.random() * 20}%`;
+      roseContainer.appendChild(sparkle);
+
+      setTimeout(() => sparkle.remove(), 1200);
+    }
+    setInterval(createRoseSparkle, 500);
+
+  </script>
+</body>
+</html>
