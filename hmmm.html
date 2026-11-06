@@ -213,15 +213,20 @@
         <span class="pixel-text-cyan">CURT!</span>
       </h1>
       
-      <p class="text-xs sm:text-sm text-yellow-300 tracking-wide mt-2">
-        PRESS <span class="underline">PRESENT</span> TO UNWRAP YOUR SURPRISE!
+      <p id="main-instruction" class="text-xs sm:text-sm text-yellow-300 tracking-wide mt-2">
+        💨 BLOW THE CANDLES FIRST TO REVEAL YOUR GIFT! 🎂
       </p>
     </header>
 
     <!-- 2. PIXEL ART CAKE SECTION -->
     <section class="flex flex-col items-center justify-center space-y-3">
+      <!-- Action Banner -->
+      <div id="cake-prompt" class="pixel-text-yellow text-xs sm:text-sm animate-pulse bg-purple-950/80 px-3 py-1.5 border border-yellow-400 rounded shadow-md text-center">
+        💨 CLICK CAKE TO BLOW CANDLES!
+      </div>
+
       <!-- Pixel Cake SVG -->
-      <div class="relative cursor-pointer group" id="cake-container" title="Click candles to light/blow them!">
+      <div class="relative cursor-pointer group" id="cake-container" title="Click candles to blow them out!">
         <svg width="200" height="180" viewBox="0 0 64 58" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-48 h-44 sm:w-56 sm:h-52">
           
           <!-- Candles Layer -->
@@ -277,15 +282,20 @@
           <rect x="4" y="56" width="56" height="2" fill="#B0BEC5"/>
         </svg>
       </div>
-      <p class="text-[10px] text-gray-400 uppercase tracking-widest">[ Click cake to blow/relight candles ]</p>
+      <p class="text-[10px] text-gray-400 uppercase tracking-widest">[ Tap cake to blow out flames ]</p>
     </section>
 
-    <!-- 3. INTERACTIVE PRESENT GIFT BOX -->
+    <!-- 3. INTERACTIVE PRESENT GIFT BOX (Hidden until candles are blown) -->
     <section class="w-full flex flex-col items-center justify-center mt-4">
       
-      <!-- Gift Container -->
-      <div id="gift-wrapper" class="flex flex-col items-center">
+      <!-- Gift Container (Initially Hidden) -->
+      <div id="gift-wrapper" class="hidden flex-col items-center transition-all duration-500">
         
+        <!-- PROMPT STRICTLY ABOVE THE PRESENT BOX -->
+        <div id="press-present-text" class="pixel-text-yellow text-xs sm:text-sm animate-bounce mb-3 text-center font-bold">
+          👇 PRESS PRESENT! 👇
+        </div>
+
         <!-- Interactive Gift Box Canvas / SVG -->
         <div id="present-box" class="present-box relative w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center">
           
@@ -328,9 +338,9 @@
 
         </div>
 
-        <!-- Prompt Label -->
+        <!-- Secondary Button below gift -->
         <button id="open-gift-btn" class="pixel-btn mt-4 text-center">
-          🎁 CLICK TO OPEN GIFT! 🎁
+          🎁 UNWRAP PRESENT 🎁
         </button>
       </div>
 
@@ -675,6 +685,8 @@
     // --- 5. CANDLE FLAME TOGGLE INTERACTION ---
     const cakeContainer = document.getElementById('cake-container');
     const flames = document.querySelectorAll('.candle-flame');
+    const cakePrompt = document.getElementById('cake-prompt');
+    const mainInstruction = document.getElementById('main-instruction');
     let flamesLit = true;
 
     cakeContainer.addEventListener('click', () => {
@@ -685,9 +697,29 @@
       });
       
       if (!flamesLit) {
-        // Puff of smoke particle effect when blown out
+        // Candles blown out!
+        cakePrompt.textContent = '✨ CANDLES BLOWN OUT! ✨';
+        cakePrompt.classList.remove('animate-pulse');
+        cakePrompt.classList.add('text-green-400');
+        mainInstruction.textContent = '🎁 PRESENT UNLOCKED BELOW!';
+
+        // Smoke / sparkle puff
         const rect = cakeContainer.getBoundingClientRect();
-        spawnConfetti(rect.left + rect.width / 2, rect.top + 30, 20);
+        spawnConfetti(rect.left + rect.width / 2, rect.top + 30, 30);
+
+        // Reveal present box with smooth appearance
+        if (giftWrapper.classList.contains('hidden')) {
+          giftWrapper.classList.remove('hidden');
+          giftWrapper.classList.add('flex');
+          setTimeout(() => {
+            giftWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 200);
+        }
+      } else {
+        // Relit candles
+        cakePrompt.textContent = '💨 CLICK CAKE TO BLOW CANDLES!';
+        cakePrompt.classList.add('animate-pulse');
+        cakePrompt.classList.remove('text-green-400');
       }
     });
 
