@@ -41,7 +41,19 @@ h3{margin:0 0 6px;font:600 13px var(--mono);letter-spacing:.4px;display:flex;jus
 .gr{display:flex;gap:6px;align-items:center;margin-top:6px;font-size:11px;color:var(--mut)}.gr select{width:auto;flex:1;margin:0}
 .lbl.rt{background:var(--amb);color:var(--am)}.card.retake{outline:1.5px dashed var(--am);outline-offset:-1px}
 .col.mid{border-top:4px dashed #e0a100}.b.nu{background:var(--bd);color:var(--mut)}.b.bad{background:var(--amb);color:var(--rd);outline:1px solid var(--rd)}
-.hero .pg.on{background:#fff;color:#00406a;border-color:#fff;font-weight:600}
+.hero .pg.on,.hero #ca.on{background:#fff;color:#00406a;border-color:#fff;font-weight:600}
+.mnu{display:none}.hero .menu{margin-top:2px}
+#pv{padding:2px 9px;font-size:14px}
+/* mobile: hamburger header, trimmed progress panel, condensed cards */
+@media(max-width:700px){
+.hero{padding:14px 12px 52px}.hero h1{font-size:22px}.hero p,.wave{display:none}
+.mnu{display:inline-flex;align-items:center;gap:6px;margin-top:10px}.hero .menu{display:none;margin-top:10px}.hero.open .menu{display:block}
+.panel{padding:0 10px}.card0{padding:12px}
+.stats{grid-template-columns:1fr 1fr}.stat.tk,.stat.cd,.stat.gw,.lgd,.ph{display:none}
+.ctl{gap:8px}.ctl>.tabs{width:100%}.ctl>.tabs+.tabs{justify-content:space-between}
+main{padding:0 10px 24px}.board{grid-template-columns:minmax(0,1fr)}
+h3{font-size:12px}.bulk button{padding:4px 10px}
+}
 .gr select[data-g]{flex:0 0 76px}.gr select[data-m]{min-width:0}.hb{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.tabs button[data-add]{border-style:dashed}.tabs button[data-add]:disabled{opacity:.5;cursor:not-allowed;transform:none}
 /* add-subject button, search list */
 button.addb{padding:2px 10px;font:600 12px system-ui;line-height:1.4;border-style:dashed;white-space:nowrap}
@@ -92,19 +104,20 @@ button.vb{padding:2px 9px;border-style:solid;font-size:14px}button.vb.on{backgro
 <div class="bx"><div>&gt; powering up circuits…</div><div>&gt; loading curriculum…</div><div>&gt; checking prerequisites…</div><div>&gt; ready ✓</div></div></div></div>
 <div class="hero"><div class="wrap">
 <svg class="wave" viewBox="0 0 400 60" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M0 30h30q15-28 30 0t30 0q15 28 30 0t30 0h20v-22h25v44h25v-44h25v44h25v-22h40"/></svg><h1>planuhinmoeeemo<span class="us">_</span><span class="nm" id="nm" role="button" tabindex="0" title="Edit name / program"></span>!</h1><p>Plan your semesters, log your grades, and let failed or dropped subjects roll over to the next sem.</p>
-<div class="tools" id="progs" style="margin-bottom:8px"></div>
+<button id="mnu" class="mnu" type="button" aria-expanded="false" aria-controls="menu">☰ Menu</button>
+<div class="menu" id="menu"><div class="tools" id="progs" style="margin-bottom:8px"></div>
 <div class="tools">
 <button id="imp">⬆ Import plan</button><input id="file" type="file" accept=".json" hidden>
 <button id="exp">Export</button><button id="rst">Reset</button>
-<select id="start" aria-label="Shiftee or transferee: credit everything before"></select><select id="mid" aria-label="Midyear term"><option value="off">Midyear: hide</option><option value="opt">Midyear: optional</option><option value="req">Midyear: required</option></select>
+<button id="ca" type="button" aria-pressed="false" title="Condense every year / semester container into the simple list view (you can still toggle each one)">☰ Condense all</button><select id="mid" aria-label="Midyear term"><option value="off">Midyear: hide</option><option value="opt">Midyear: optional</option><option value="req">Midyear: required</option></select>
 <label><input type="checkbox" id="cnt"> Count taken in unit load</label>
-</div></div></div>
+</div></div></div></div>
 <div class="panel"><div class="card0">
 <div id="pt"></div><div class="prog"><i id="pc" style="background:var(--cr)"></i><i id="pk" style="background:var(--ok)"></i></div>
 <div class="ctl"><div class="tabs" id="tabs"></div><div class="tabs"><span class="b nu" id="gs" title="Based on units taken or credited vs. total curriculum units"></span><button id="fa">▸ Collapse all</button><button id="ea">▾ Expand all</button></div></div>
 <details class="lgd"><summary>Legend &amp; tips</summary><div class="leg"><span><i style="background:#0086d1"></i>EEE</span><span><i style="background:#c0502f"></i><span id="lgp">CoE</span></span><span><i style="background:#d99a1f"></i>Math/Physics/ES</span><span><i style="background:#2e9b72"></i>GE</span><span><i style="background:#8a7fa8"></i>Other</span><span><i style="background:#9a948a"></i>Locked (prereq not done)</span><span><i style="background:#0e9f9c"></i>Coreq</span><span><i style="background:#c47a00"></i>Retake</span><span>Grade 5.0 / INC / DRP → retake next sem</span><span><i style="background:#e0a100"></i>☀ Midyear: 6 units, max 8</span></div><div class="sub" style="margin-top:6px">click a title to fold it · folded semesters still accept drops</div></details>
 <div id="warn"></div></div></div>
-<main><div class="board" id="board"></div><aside class="col side"><h3><span>Unassigned-s</span><span class="sub">Bin for shiftees/undecided</span></h3><div class="drop" data-loc="-1" id="pool"></div></aside></main>
+<main><div class="board" id="board"></div><aside class="col side"><h3><span>Unassigned-s</span><span class="hb"><button type="button" class="addb vb" id="pv" data-view="-1" aria-pressed="false" title="Switch to simple list view" aria-label="Toggle simple list view">☰</button><span class="sub">drag into any semester</span></span></h3><div class="drop" data-loc="-1" id="pool"></div></aside></main>
 <footer class="ft">#jipiti @2026</footer>
 <div class="modal" id="wm" hidden role="dialog" aria-modal="true" aria-labelledby="mt"><div class="mbox">
 <h2 id="mt">Welcome</h2><p>Tell us who you are and which program you're planning.</p>
@@ -148,7 +161,7 @@ const nm=s=>{s=s.trim();let m;if(!s||/^none$/i.test(s))return'';
  if(m=s.match(/^(EEE|ECE|EE|CoE|Math|ES|PI)\s*(\d+)$/i))return m[1]+' '+m[2];return s};
 const list=s=>(s||'').split(/[,;]/).map(nm).filter(Boolean);
 let uid=0;
-// st = plan | taken | credited (credited = already earned elsewhere: shiftee/transferee)
+// st = plan | taken | credited (credited = already earned elsewhere)
 const mk=(code,pre,co,u,loc,note,title,alt)=>{u=String(u||'0');const star=/\*/.test(code);
  return{id:'c'+(++uid)+Date.now().toString(36),code:code.replace(/\*/g,'').trim(),title:title||TITLES[code.replace(/\*/g,'').trim()]||'',units:parseInt(u.replace(/\D/g,''))||0,
  credit:!/\(/.test(u),pre:list(pre),co:list(co),loc:loc,st:'plan',alt:alt||'',note:star?(note||'Stipulation: see curriculum footnote.'):''}};
@@ -165,6 +178,9 @@ function save(){try{localStorage.setItem(KEY+P,JSON.stringify(S));localStorage.s
 function switchProg(p){if(!PROGS[p]||p===P)return;save();P=p;S=load(p)||seed(p);render()} // each curriculum keeps its own plan
 let S=load(P)||seed(P);
 
+const MOB=matchMedia('(max-width:700px)');
+const cmp=l=>S.compact&&l in S.compact?!!S.compact[l]:MOB.matches; // explicit choice wins; otherwise condensed on phones
+const allLocs=()=>{const a=[];for(let y=0;y<S.years;y++)a.push(2*y,2*y+1,100+y);return a},allCm=()=>allLocs().every(cmp);
 const isMid=l=>l>=100,ord=l=>isMid(l)?(l-100)*2+1.5:l;
 const semName=l=>l<0?'Unassigned':isMid(l)?`Year ${l-99} · Midyear`:`Year ${(l>>1)+1} · ${l%2?'2nd':'1st'} Sem`;
 const fd=l=>S.fold&&S.fold[l]?' folded':'',caret=l=>S.fold&&S.fold[l]?'▸':'▾'; // collapsible semester containers (state saved in S.fold)
@@ -206,14 +222,14 @@ function cardH(c,cm){const w=warns(c),tip=[c.pre.length?'Prereq: '+c.pre.join(',
 <div class="t">${esc(c.title)}${isPh(c)?` <a data-r="${c.id}" role="button" tabindex="0">${c.title?'edit':'✎ set course'}</a>`:''}</div>
 ${rel(c)}<div class="seg">${SEG.map(([k,n])=>`<button data-s="${k}" data-id="${c.id}" class="${c.st===k?'on':''}">${n}</button>`).join('')}</div>
 ${gradeH(c)}</div>`}
-const midH=l=>{const cs=S.cards.filter(c=>c.loc===l),u=units(l),req=S.mid==='req',cm=!!(S.compact&&S.compact[l]);
+const midH=l=>{const cs=S.cards.filter(c=>c.loc===l),u=units(l),req=S.mid==='req',cm=cmp(l);
  const t=u>8?`${u}/8 · over the 8-unit limit`:u>6?`${u}/6 · needs approval (max 8)`:u?`${u}/6 units`:req?'Required · 0 units':'Optional · 0/6';
  return`<section class="col mid${fd(l)}" data-loc="${l}"><h3 data-fold="${l}" role="button" tabindex="0" aria-expanded="${!(S.fold&&S.fold[l])}"><span>${caret(l)} ☀ ${semName(l)}</span><span class="hb"><button type="button" class="addb vb${cm?' on':''}" data-view="${l}" aria-pressed="${cm}" title="${cm?'Switch to detailed cards':'Switch to simple list view'}" aria-label="Toggle simple list view">☰</button><button type="button" class="addb" data-sub="${l}" title="Add a subject to ${semName(l)}" aria-label="Add a subject to ${semName(l)}">+ Add Sub</button><span class="b nu" title="Semester GWA (excludes PE and NSTP)">Sem GWA ${gw(l)}</span><span class="b${u>8?' bad':u>6||(req&&!u)?'':u?' ok':' nu'}">${t}</span></span></h3>
 <div class="bulk"><button data-bulk="${l}:taken">✓ All taken</button><button data-bulk="${l}:credited">★ All credited</button><button data-bulk="${l}:plan">Clear</button></div>
 <div class="drop${cm?' mini':''}" data-loc="${l}">${cs.map(c=>cardH(c,cm)).join('')||'<i class="sub">Drop lab or lecture subjects here (6 units, up to 8 with approval)</i>'}</div><div class="fsum sub">${cs.length} subject${cs.length==1?'':'s'} · drop a card here</div></section>`};
 const semH=l=>{if(isMid(l))return midH(l);const cs=S.cards.filter(c=>c.loc===l),cr=cs.filter(c=>c.credit),u=units(l),pr=S.printed[l]||18,all=cr.length&&cr.every(c=>c.st==='credited');
  // no underload warning for 4th year onward, or when fewer than 15 unfinished units remain in the whole plan
- const rem=u+S.cards.filter(c=>c.loc!==l&&c.credit&&c.st==='plan').reduce((a,c)=>a+c.units,0),calm=(l>>1)>=3||rem<15,cm=!!(S.compact&&S.compact[l]);
+ const rem=u+S.cards.filter(c=>c.loc!==l&&c.credit&&c.st==='plan').reduce((a,c)=>a+c.units,0),calm=(l>>1)>=3||rem<15,cm=cmp(l);
  const t=all?'★ Credited':u<15?(calm?`${u} units`:`${u}/15 · needs ${15-u} more`):`${u}/15 ✓`+(u>pr?` · overload >${pr}`:'');
  return`<section class="col${fd(l)}" data-loc="${l}"><h3 data-fold="${l}" role="button" tabindex="0" aria-expanded="${!(S.fold&&S.fold[l])}"><span>${caret(l)} ${semName(l)}</span><span class="hb"><button type="button" class="addb vb${cm?' on':''}" data-view="${l}" aria-pressed="${cm}" title="${cm?'Switch to detailed cards':'Switch to simple list view'}" aria-label="Toggle simple list view">☰</button><button type="button" class="addb" data-sub="${l}" title="Add a subject to ${semName(l)}" aria-label="Add a subject to ${semName(l)}">+ Add Sub</button><span class="b nu" title="Semester GWA (excludes PE and NSTP)">Sem GWA ${gw(l)}</span><span class="b${all?' cr':u>=15?' ok':calm?' nu':''}">${t}</span></span></h3>
 <div class="bulk"><button data-bulk="${l}:taken">✓ All taken</button><button data-bulk="${l}:credited">★ All credited</button><button data-bulk="${l}:plan">Clear</button></div>
@@ -224,9 +240,11 @@ function render(){
  $('#lgp').textContent=P==='coe'?'CoE':P.toUpperCase();
  $('#tabs').innerHTML=[...Array(S.years+1).keys()].map(n=>`<button data-y="${n}" class="${n===y?'on':''}">${n?'Year '+n:'All years'}</button>`).join('')+`<button data-add="1"${S.years>=MAXY?' disabled':''} title="${S.years>=MAXY?'Maximum of '+MAXY+' years':'Add another year with empty semesters'}">+ Add Year</button>`;
  $('#board').innerHTML=(y?[y-1]:[...Array(S.years).keys()]).flatMap(k=>[2*k,2*k+1,...(showMid(k)?[100+k]:[])]).map(semH).join('');
- $('#pool').innerHTML=S.cards.filter(c=>c.loc<0).map(c=>cardH(c)).join('')||'<i class="sub">Empty</i>';
+ const pcm=cmp(-1);$('#pool').classList.toggle('mini',pcm);$('#pool').innerHTML=S.cards.filter(c=>c.loc<0).map(c=>cardH(c,pcm)).join('')||'<i class="sub">Empty</i>';
+ $('#pv').classList.toggle('on',pcm);$('#pv').setAttribute('aria-pressed',pcm);$('#pv').title=pcm?'Switch to detailed cards':'Switch to simple list view';
+ const ac=allCm();$('#ca').classList.toggle('on',ac);$('#ca').setAttribute('aria-pressed',ac);$('#ca').textContent=ac?'☰ Condensed (tap to expand all)':'☰ Condense all';
  const cr=S.cards.filter(c=>c.credit),tot=cr.reduce((a,c)=>a+c.units,0),sm=s=>cr.filter(c=>c.st===s).reduce((a,c)=>a+c.units,0),tk=sm('taken'),cd=sm('credited');
- $('#pt').innerHTML=`<div class="ph">${esc(PROGS[P].name)}</div><div class="stats"><div class="stat main"><span class="k">Progress</span><b>${pct(tk+cd,tot)}%</b><small>${tk+cd} / ${tot} units done</small></div><div class="stat tk"><span class="k">Taken</span><b>${tk}</b><small>units · ${pct(tk,tot)}%</small></div><div class="stat cd"><span class="k">Credited</span><b>${cd}</b><small>units · ${pct(cd,tot)}%</small></div><div class="stat"><span class="k">To go</span><b>${tot-tk-cd}</b><small>units left</small></div><div class="stat gw" title="Overall GWA (excludes PE and NSTP)"><span class="k">Overall GWA</span><b>${fmtG(gEnt())}</b><small>excl. PE &amp; NSTP</small></div></div>`;
+ $('#pt').innerHTML=`<div class="ph">${esc(PROGS[P].name)}</div><div class="stats"><div class="stat main"><span class="k">Progress</span><b>${pct(tk+cd,tot)}%</b><small>${tk+cd} / ${tot} units done</small></div><div class="stat tk"><span class="k">Taken</span><b>${tk}</b><small>units · ${pct(tk,tot)}%</small></div><div class="stat cd"><span class="k">Credited</span><b>${cd}</b><small>units · ${pct(cd,tot)}%</small></div><div class="stat togo"><span class="k">To go</span><b>${tot-tk-cd}</b><small>units left</small></div><div class="stat gw" title="Overall GWA (excludes PE and NSTP)"><span class="k">Overall GWA</span><b>${fmtG(gEnt())}</b><small>excl. PE &amp; NSTP</small></div></div>`;
  const dp=pct(tk+cd,tot);$('#gs').textContent='Standing: '+(dp>=75?'4th':dp>=50?'3rd':dp>=25?'2nd':'1st')+' Year';
  $('#pc').style.width=(tot?cd/tot*100:0)+'%';$('#pk').style.width=(tot?tk/tot*100:0)+'%';
  $('#cnt').checked=S.cnt;$('#mid').value=S.mid||'opt';$('#warn').innerHTML=(S.warns||[]).length?`<div class="banner">⚠ ${S.warns.map(esc).join('<br>')}</div>`:'';
@@ -268,7 +286,7 @@ document.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.f
 document.addEventListener('change',e=>{const t=e.target;
  if(t.dataset.m)move(t.dataset.m,t.value);else if(t.dataset.g)setGrade(t.dataset.g,t.value);else if(t.id==='cnt'){S.cnt=t.checked;render()}});
 document.addEventListener('click',e=>{const t=e.target,f=t.closest&&t.closest('[data-fold]'),ad=t.closest&&t.closest('[data-sub]'),vw=t.closest&&t.closest('[data-view]'),pk=t.closest&&t.closest('[data-pick]');
- if(vw){S.compact=S.compact||{};S.compact[vw.dataset.view]=!S.compact[vw.dataset.view];render()}
+ if(vw){const k=vw.dataset.view;S.compact=S.compact||{};S.compact[k]=!cmp(+k);render()}
  else if(ad)openSub(+ad.dataset.sub);
  else if(pk){if(move(pk.dataset.pick,subLoc))closeSub()}
  else if(t.id==='sm')closeSub();
@@ -282,16 +300,13 @@ document.addEventListener('click',e=>{const t=e.target,f=t.closest&&t.closest('[
  else if(t.dataset.r){const c=S.cards.find(c=>c.id===t.dataset.r),v=prompt(`Course for "${c.code}" slot:`,c.title);if(v!==null){c.title=v.trim();render()}}});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.fold!==undefined){e.preventDefault();e.target.click()}});
 $('#fa').onclick=()=>{S.fold=allFold(S.years);render()};$('#ea').onclick=()=>{S.fold={};render()};
+$('#ca').onclick=()=>{const v=!allCm();S.compact=S.compact||{};allLocs().forEach(l=>S.compact[l]=v);render()};
+$('#mnu').onclick=()=>{const o=document.querySelector('.hero').classList.toggle('open');$('#mnu').setAttribute('aria-expanded',o)};
+MOB.addEventListener('change',()=>render());
 $('#mid').onchange=e=>{S.mid=e.target.value;render()};
 const dl=(name,text,type)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
 $('#exp').onclick=()=>dl(`degree-planner-${P}.json`,JSON.stringify(S,null,1),'application/json');
 $('#rst').onclick=()=>{if(confirm(`Reset ${PROGS[P].name} to its default curriculum? Statuses and changes will be lost.`)){S=seed(P);render()}};
-// Shiftee / transferee bypass: credit every subject placed before the chosen semester and jump to that year
-$('#start').innerHTML='<option value="-1">Shiftee/transferee: start from…</option>'+[...Array(8).keys()].map(l=>`<option value="${l}">${l?'Credit everything before ':'Clear all credits · '}${semName(l)}</option>`).join('');
-$('#start').onchange=e=>{const l=+e.target.value;e.target.value=-1;if(l<0)return;
- if(!confirm(l?`Mark all subjects before ${semName(l)} as credited?`:'Clear all credited marks?'))return;
- S.cards.forEach(c=>{if(c.loc>=0){if(ord(c.loc)<l){c.st='credited'}else if(c.st==='credited'){c.st='plan';c.grade=''}}});S.year=Math.min(4,(l>>1)+1);render()};
-
 // Import a plan saved with Export
 async function ingest(f){try{const j=JSON.parse(await f.text());if(!j.cards)throw Error('not a saved plan');
  if(confirm(`Import this saved plan into ${PROGS[P].name}? It replaces the current plan.`)){mig(j);S=Object.assign(seed(P),j);if(!S.fold)S.fold=allFold();render()}}
