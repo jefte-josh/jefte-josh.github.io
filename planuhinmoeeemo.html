@@ -3,7 +3,7 @@
 <style>
 :root{--mono:ui-monospace,'Cascadia Code','JetBrains Mono',Consolas,monospace;--bg:#edf2f7;--sf:#ffffff;--fg:#0f2233;--mut:#5d7388;--bd:#d3dde8;--mar:#00629b;--mar2:#0086d1;--ok:#1f7a4d;--okb:#ddf3e6;--am:#8a5200;--amb:#fff0cf;--cr:#6a45b8;--crb:#ebe4fb;--rd:#c0392b;--lk:#e1e7ee;--cob:#d6f0ee;--co:#0b6f6c;--sh:0 1px 2px rgba(0,40,80,.08),0 4px 14px rgba(0,40,80,.07)}
 @media(prefers-color-scheme:dark){:root{--bg:#08131c;--sf:#0f2230;--fg:#e6f0f8;--mut:#8fa6ba;--bd:#1f3a4f;--mar:#004a75;--mar2:#1b9be0;--ok:#8fe0b2;--okb:#16382a;--am:#ffc766;--amb:#3d2e0f;--cr:#c4adff;--crb:#2c2447;--rd:#ff8a80;--lk:#16293a;--cob:#0f3533;--co:#7fe0db;--sh:0 1px 2px #0006}}
-*{box-sizing:border-box}body{margin:0;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg)}
 .hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#00406a,var(--mar) 55%,var(--mar2));color:#fff;padding:22px 16px 60px}.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(#ffffff14 1px,transparent 1px) 0 0/28px 28px,linear-gradient(90deg,#ffffff14 1px,transparent 1px) 0 0/28px 28px;pointer-events:none}.hero .wrap{position:relative}.wave{position:absolute;right:16px;top:10px;width:min(420px,45%);opacity:.35}
 .wrap{max-width:1240px;margin:auto}.hero h1{margin:0;font:700 30px/1.1 var(--mono);letter-spacing:-.5px}.hero h1 .us{animation:bl 1s steps(2) infinite}.hero h1 .nm{cursor:pointer;text-underline-offset:6px;overflow-wrap:anywhere}.hero h1 .nm:hover,.hero h1 .nm:focus-visible{text-decoration:underline dashed;outline:0}@keyframes bl{50%{opacity:0}}.hero p{margin:4px 0 14px;opacity:.85}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -11,13 +11,13 @@ button,select{font:inherit;color:inherit;border:1px solid var(--bd);background:v
 .hero button,.hero select{background:#ffffff1f;border-color:#ffffff40;color:#fff}.hero select option{color:#222}
 button:hover{transform:translateY(-1px);border-color:var(--mar2)}.hero button:hover{background:#ffffff38}
 .hero label{display:flex;gap:6px;align-items:center;font-size:13px}
-.panel{position:relative;z-index:1;max-width:1240px;margin:-38px auto 14px;padding:0 16px}
+.panel{width:100%;position:relative;z-index:1;max-width:1240px;margin:-38px auto 14px;padding:0 16px}
 .card0{background:var(--sf);border-radius:14px;box-shadow:var(--sh);padding:14px 16px}
 .prog{height:12px;background:var(--bd);border-radius:6px;overflow:hidden;display:flex;margin:8px 0 12px}.prog i{display:block;height:100%}
 #pt{font-weight:600}.sub{color:var(--mut);font-size:12px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button.on{background:var(--mar);color:#fff;border-color:var(--mar)}
 .banner{background:var(--amb);color:var(--am);padding:8px 12px;border-radius:10px;margin-top:10px;font-size:13px}
-main{max-width:1240px;margin:auto;padding:0 16px 32px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:14px;align-items:start}.side{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto}@media(max-width:900px){main{grid-template-columns:1fr}.side{position:static;max-height:none}}
+main{flex:1 0 auto;width:100%;max-width:1240px;margin:0 auto;padding:0 16px 24px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:14px;align-items:start}.side{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto}@media(max-width:900px){main{grid-template-columns:1fr}.side{position:static;max-height:none}}
 .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:14px}
 .col{background:var(--sf);border-radius:14px;box-shadow:var(--sh);padding:12px;border-top:4px solid var(--mar)}
 h3{margin:0 0 6px;font:600 13px var(--mono);letter-spacing:.4px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
@@ -43,7 +43,8 @@ h3{margin:0 0 6px;font:600 13px var(--mono);letter-spacing:.4px;display:flex;jus
 .col.mid{border-top:4px dashed #e0a100}.b.nu{background:var(--bd);color:var(--mut)}.b.bad{background:var(--amb);color:var(--rd);outline:1px solid var(--rd)}
 .hero .pg.on,.hero #ca.on{background:#fff;color:#00406a;border-color:#fff;font-weight:600}
 .mnu{display:none}.hero .menu{margin-top:2px}
-#pv{padding:2px 9px;font-size:14px}
+#pv,#cv{padding:2px 9px;font-size:14px}
+.col.cs{border-top-color:var(--cr)}.side .col+.col{margin-top:14px}.card.ins-b{box-shadow:0 -3px 0 var(--mar2)}.card.ins-a{box-shadow:0 3px 0 var(--mar2)}
 /* mobile: hamburger header, trimmed progress panel, condensed cards */
 @media(max-width:700px){
 .hero{padding:14px 12px 52px}.hero h1{font-size:22px}.hero p,.wave{display:none}
@@ -74,7 +75,7 @@ button.vb{padding:2px 9px;border-style:solid;font-size:14px}button.vb.on{backgro
 .ctl{display:flex;justify-content:space-between;align-items:center;gap:8px 16px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--bd)}
 .lgd{margin-top:10px;font-size:12px;color:var(--mut)}.lgd summary{cursor:pointer;user-select:none;width:max-content}.lgd summary:hover{color:var(--mar2)}
 /* footer */
-.ft{text-align:center;padding:16px 16px 28px;font:12px var(--mono);letter-spacing:.6px;color:var(--mut);opacity:.85}
+.ft{text-align:center;padding:8px 16px 6px;margin:0 0 6px;font:12px var(--mono);letter-spacing:.6px;color:var(--mut);opacity:.85}
 /* name / program modal */
 .modal{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;padding:16px;background:#031019b8;backdrop-filter:blur(4px)}.modal[hidden]{display:none}
 .mbox{width:min(420px,100%);background:var(--sf);border-radius:16px;box-shadow:0 10px 40px #0007;padding:20px;border-top:4px solid var(--mar2);animation:pop .25s ease-out}
@@ -115,9 +116,9 @@ button.vb{padding:2px 9px;border-style:solid;font-size:14px}button.vb.on{backgro
 <div class="panel"><div class="card0">
 <div id="pt"></div><div class="prog"><i id="pc" style="background:var(--cr)"></i><i id="pk" style="background:var(--ok)"></i></div>
 <div class="ctl"><div class="tabs" id="tabs"></div><div class="tabs"><span class="b nu" id="gs" title="Based on units taken or credited vs. total curriculum units"></span><button id="fa">▸ Collapse all</button><button id="ea">▾ Expand all</button></div></div>
-<details class="lgd"><summary>Legend &amp; tips</summary><div class="leg"><span><i style="background:#0086d1"></i>EEE</span><span><i style="background:#c0502f"></i><span id="lgp">CoE</span></span><span><i style="background:#d99a1f"></i>Math/Physics/ES</span><span><i style="background:#2e9b72"></i>GE</span><span><i style="background:#8a7fa8"></i>Other</span><span><i style="background:#9a948a"></i>Locked (prereq not done)</span><span><i style="background:#0e9f9c"></i>Coreq</span><span><i style="background:#c47a00"></i>Retake</span><span>Grade 5.0 / INC / DRP → retake next sem</span><span><i style="background:#e0a100"></i>☀ Midyear: 6 units, max 8</span></div><div class="sub" style="margin-top:6px">click a title to fold it · folded semesters still accept drops</div></details>
+<details class="lgd"><summary>Legend &amp; tips</summary><div class="leg"><span><i style="background:#0086d1"></i>EEE</span><span><i style="background:#c0502f"></i><span id="lgp">CoE</span></span><span><i style="background:#d99a1f"></i>Math/Physics/ES</span><span><i style="background:#2e9b72"></i>GE</span><span><i style="background:#8a7fa8"></i>Other</span><span><i style="background:#9a948a"></i>Locked (prereq not done)</span><span><i style="background:#0e9f9c"></i>Coreq</span><span><i style="background:#c47a00"></i>Retake</span><span>Grade 5.0 / INC / DRP → retake next sem</span><span><i style="background:#e0a100"></i>☀ Midyear: 6 units, max 8</span></div><div class="sub" style="margin-top:6px">click a title to fold it · folded semesters still accept drops · drag a card within a semester to rearrange it</div></details>
 <div id="warn"></div></div></div>
-<main><div class="board" id="board"></div><aside class="col side"><h3><span>Unassigned-s</span><span class="hb"><button type="button" class="addb vb" id="pv" data-view="-1" aria-pressed="false" title="Switch to simple list view" aria-label="Toggle simple list view">☰</button><span class="sub">drag into any semester</span></span></h3><div class="drop" data-loc="-1" id="pool"></div></aside></main>
+<main><div class="board" id="board"></div><div class="side"><aside class="col"><h3><span>Unassigned-s</span><span class="hb"><button type="button" class="addb vb" id="pv" data-view="-1" aria-pressed="false" title="Switch to simple list view" aria-label="Toggle simple list view">☰</button><span class="sub">drag into any semester</span></span></h3><div class="drop" data-loc="-1" id="pool"></div></aside><aside class="col cs"><h3><span>Credited-s</span><span class="hb"><button type="button" class="addb vb" id="cv" data-view="-2" aria-pressed="false" title="Switch to simple list view" aria-label="Toggle simple list view">☰</button><span class="sub">already earned (transfer / shift)</span></span></h3><div class="drop" data-loc="-2" id="cpool"></div></aside></div></main>
 <footer class="ft">#jipiti @2026</footer>
 <div class="modal" id="wm" hidden role="dialog" aria-modal="true" aria-labelledby="mt"><div class="mbox">
 <h2 id="mt">Welcome</h2><p>Tell us who you are and which program you're planning.</p>
@@ -182,7 +183,7 @@ const MOB=matchMedia('(max-width:700px)');
 const cmp=l=>S.compact&&l in S.compact?!!S.compact[l]:MOB.matches; // explicit choice wins; otherwise condensed on phones
 const allLocs=()=>{const a=[];for(let y=0;y<S.years;y++)a.push(2*y,2*y+1,100+y);return a},allCm=()=>allLocs().every(cmp);
 const isMid=l=>l>=100,ord=l=>isMid(l)?(l-100)*2+1.5:l;
-const semName=l=>l<0?'Unassigned':isMid(l)?`Year ${l-99} · Midyear`:`Year ${(l>>1)+1} · ${l%2?'2nd':'1st'} Sem`;
+const semName=l=>l===-2?'Credited-s':l<0?'Unassigned':isMid(l)?`Year ${l-99} · Midyear`:`Year ${(l>>1)+1} · ${l%2?'2nd':'1st'} Sem`;
 const fd=l=>S.fold&&S.fold[l]?' folded':'',caret=l=>S.fold&&S.fold[l]?'▸':'▾'; // collapsible semester containers (state saved in S.fold)
 const nextSem=l=>l<0?-1:isMid(l)?(l-100<S.years-1?2*(l-100)+2:-1):l<2*S.years-1?l+1:-1; // retakes go to the next regular semester
 const showMid=y=>(S.mid||'opt')!=='off'||S.cards.some(c=>c.loc===100+y);
@@ -197,16 +198,18 @@ const byCode=code=>S.cards.find(c=>c.code===code);
 function warns(c){if(c.loc<0||c.st==='credited')return'';const w=[];
  c.pre.forEach(p=>{const x=byCode(p);if(x&&x.st==='plan'&&x.loc>=0&&ord(x.loc)>=ord(c.loc))w.push(`Prereq ${p} is not in an earlier semester`)});
  c.co.forEach(p=>{const x=byCode(p);if(x&&x.st==='plan'&&x.loc>=0&&ord(x.loc)>ord(c.loc))w.push(`Coreq ${p} is in a later semester`)});return w.join('; ')}
-const opts=c=>`<option value="-1">Move to… Unassigned</option>`+locs().map(l=>`<option value="${l}"${l===c.loc?' selected':''}>${semName(l)}</option>`).join('');
+const opts=c=>`<option value="-1">Move to… Unassigned</option>`+`<option value="-2"${c.loc===-2?' selected':''}>Credited-s</option>`+locs().map(l=>`<option value="${l}"${l===c.loc?' selected':''}>${semName(l)}</option>`).join('');
 const isPh=c=>/elective|^GE \(/i.test(c.code);
 const cat=c=>/^EEE/.test(c.code)?'eee':/^(CoE|ECE|EE) /.test(c.code)?'coe':/^(Math|Physics|ES)/.test(c.code)?'sci':/^GE/.test(c.code)?'ge':'oth';
 const SEG=[['plan','Planned'],['taken','✓ Taken'],['credited','★ Credited']];
 const GRADES=['','1.0','1.25','1.5','1.75','2.0','2.25','2.5','2.75','3.0','4.0','5.0','INC','DRP'],FAIL=g=>g==='5.0'||g==='INC'||g==='DRP';
 const gradeH=c=>`<div class="gr"><span>Grade</span><select data-g="${c.id}" aria-label="Grade for ${esc(c.code)}">${GRADES.map(g=>`<option value="${g}"${(c.grade||'')===g?' selected':''}>${g||'—'}</option>`).join('')}</select><select data-m="${c.id}" aria-label="Move ${esc(c.code)} to">${opts(c)}</select></div>`;
 // Passing grade -> Taken. 5.0 / INC / DRP -> back to Planned and moved to the next semester (pool if none left); attempt kept in c.hist
+// Status change. Going to Planned parks the grade (c.pg); going to Taken/Credited restores it, so a grade is never lost by switching status
+const setSt=(c,st)=>{if(st==='plan'){if(c.grade)c.pg=c.grade;c.grade=''}else if(!c.grade&&c.pg){c.grade=c.pg;c.pg=''}c.st=st};
 function setGrade(id,g){const c=S.cards.find(c=>c.id===id);if(!c)return;
- if(FAIL(g)){(c.hist=c.hist||[]).push(`${g} (${semName(c.loc)})`);if(g==='5.0')(c.fails=c.fails||[]).push({l:c.loc});c.grade='';c.st='plan';c.loc=nextSem(c.loc)}
- else{const had=c.grade;c.grade=g;if(g){if(c.st!=='credited')c.st='taken'}else if(had&&c.st==='taken')c.st='plan'}
+ if(FAIL(g)){(c.hist=c.hist||[]).push(`${g} (${semName(c.loc)})`);if(g==='5.0')(c.fails=c.fails||[]).push({l:c.loc});c.grade='';c.pg='';c.st='plan';c.loc=nextSem(c.loc)}
+ else{const had=c.grade;c.grade=g;c.pg='';if(g){if(c.st!=='credited')c.st='taken'}else if(had&&c.st==='taken')c.st='plan'}
  render()}
 const unmet=c=>c.st!=='plan'?[]:c.pre.filter(p=>{const x=byCode(p);return x&&x.st==='plan'});
 const coOf=c=>S.cards.filter(x=>x.co.includes(c.code)).map(x=>x.code);
@@ -240,8 +243,10 @@ function render(){
  $('#lgp').textContent=P==='coe'?'CoE':P.toUpperCase();
  $('#tabs').innerHTML=[...Array(S.years+1).keys()].map(n=>`<button data-y="${n}" class="${n===y?'on':''}">${n?'Year '+n:'All years'}</button>`).join('')+`<button data-add="1"${S.years>=MAXY?' disabled':''} title="${S.years>=MAXY?'Maximum of '+MAXY+' years':'Add another year with empty semesters'}">+ Add Year</button>`;
  $('#board').innerHTML=(y?[y-1]:[...Array(S.years).keys()]).flatMap(k=>[2*k,2*k+1,...(showMid(k)?[100+k]:[])]).map(semH).join('');
- const pcm=cmp(-1);$('#pool').classList.toggle('mini',pcm);$('#pool').innerHTML=S.cards.filter(c=>c.loc<0).map(c=>cardH(c,pcm)).join('')||'<i class="sub">Empty</i>';
+ const pcm=cmp(-1);$('#pool').classList.toggle('mini',pcm);$('#pool').innerHTML=S.cards.filter(c=>c.loc===-1).map(c=>cardH(c,pcm)).join('')||'<i class="sub">Empty</i>';
  $('#pv').classList.toggle('on',pcm);$('#pv').setAttribute('aria-pressed',pcm);$('#pv').title=pcm?'Switch to detailed cards':'Switch to simple list view';
+ const ccm=cmp(-2);$('#cpool').classList.toggle('mini',ccm);$('#cpool').innerHTML=S.cards.filter(c=>c.loc===-2).map(c=>cardH(c,ccm)).join('')||'<i class="sub">Empty</i>';
+ $('#cv').classList.toggle('on',ccm);$('#cv').setAttribute('aria-pressed',ccm);$('#cv').title=ccm?'Switch to detailed cards':'Switch to simple list view';
  const ac=allCm();$('#ca').classList.toggle('on',ac);$('#ca').setAttribute('aria-pressed',ac);$('#ca').textContent=ac?'☰ Condensed (tap to expand all)':'☰ Condense all';
  const cr=S.cards.filter(c=>c.credit),tot=cr.reduce((a,c)=>a+c.units,0),sm=s=>cr.filter(c=>c.st===s).reduce((a,c)=>a+c.units,0),tk=sm('taken'),cd=sm('credited');
  $('#pt').innerHTML=`<div class="ph">${esc(PROGS[P].name)}</div><div class="stats"><div class="stat main"><span class="k">Progress</span><b>${pct(tk+cd,tot)}%</b><small>${tk+cd} / ${tot} units done</small></div><div class="stat tk"><span class="k">Taken</span><b>${tk}</b><small>units · ${pct(tk,tot)}%</small></div><div class="stat cd"><span class="k">Credited</span><b>${cd}</b><small>units · ${pct(cd,tot)}%</small></div><div class="stat togo"><span class="k">To go</span><b>${tot-tk-cd}</b><small>units left</small></div><div class="stat gw" title="Overall GWA (excludes PE and NSTP)"><span class="k">Overall GWA</span><b>${fmtG(gEnt())}</b><small>excl. PE &amp; NSTP</small></div></div>`;
@@ -254,11 +259,11 @@ const contrib=c=>c.credit&&c.st!=='credited'&&(S.cnt||c.st!=='taken')?c.units:0;
 function pop(t,m){$('#amt').textContent=t;$('#amp').textContent=m;$('#am').hidden=false;setTimeout(()=>$('#amok').focus(),30)}
 // every user-initiated move goes through here; returns true only if the card actually moved
 function move(id,l){const c=S.cards.find(c=>c.id===id);if(!c)return false;l=+l;if(c.loc===l)return true;
- const u=unmet(c);
+ const u=l===-2?[]:unmet(c); // moving a subject into Credited-s clears its lock (it is already earned)
  if(u.length){pop('Subject locked',`${c.code} can't be moved yet. Its prerequisite${u.length>1?'s are':' is'} not met: ${u.join(', ')}. Mark ${u.length>1?'them':'it'} as Taken or Credited first.`);render();return false}
  if(l>=0&&!isMid(l)){const cur=units(l),add=contrib(c);
   if(cur>=MAXU||cur+add>MAXU){pop('Overload limit reached',`${semName(l)} is capped at ${MAXU} units (lec + lab). It already has ${cur} units, so ${add?`${c.code} (${add} unit${add>1?'s':''}) can't be added`:'no more subjects can be added'}.`);render();return false}}
- c.loc=l;render();return true}
+ c.loc=l;if(l===-2)setSt(c,'credited');render();return true}
 // "+" on a semester: search every subject and pick one to bring into it
 let subLoc=null;
 function subList(){const q=$('#sq').value.trim().toLowerCase(),r=S.cards.filter(c=>c.loc!==subLoc&&(!q||(c.code+' '+c.title).toLowerCase().includes(q))).sort((a,b)=>ord(a.loc)-ord(b.loc)||a.code.localeCompare(b.code));
@@ -270,19 +275,21 @@ $('#sq').oninput=subList;$('#smc').onclick=closeSub;$('#amok').onclick=()=>{$('#
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#am').hidden)$('#am').hidden=true;else if(!$('#sm').hidden)closeSub()}});
 
 // Events (delegated)
-let dragId=null;
+let dragId=null;const clrIns=()=>document.querySelectorAll('.ins-b,.ins-a').forEach(x=>x.classList.remove('ins-b','ins-a'));
+// Arrange: put card id right before (or after) card ref. render() lists cards in array order, so this sets the order inside a container; untouched plans keep the curriculum order
+function place(id,ref,after){const i=S.cards.findIndex(c=>c.id===id);if(i<0)return;const[c]=S.cards.splice(i,1),j=S.cards.findIndex(x=>x.id===ref);if(j<0)S.cards.splice(i,0,c);else S.cards.splice(after?j+1:j,0,c)}
 document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('.card');if(c){dragId=c.dataset.id;e.dataTransfer.setData('text/plain',dragId)}});
 let hov=null; // hovering a dragged card over a year tab switches to that year
 // auto-scroll the page while a card is dragged near the top/bottom edge, so you can carry a subject from year 1 to year 4
 let ptrY=-1,scr=null;const stopScr=()=>{clearInterval(scr);scr=null};
 function autoScroll(){if(!dragId||ptrY<0)return stopScr();const h=innerHeight,z=90;let d=0;if(ptrY<z)d=-Math.ceil((z-ptrY)/4);else if(ptrY>h-z)d=Math.ceil((ptrY-(h-z))/4);if(d)scrollBy(0,d)}
-document.addEventListener('dragend',()=>{dragId=null;stopScr();document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
+document.addEventListener('dragend',()=>{dragId=null;stopScr();clrIns();document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
 const pct=(n,t)=>t?+(n/t*100).toFixed(1):0;
-document.addEventListener('dragover',e=>{e.preventDefault();ptrY=e.clientY;if(dragId&&!scr)scr=setInterval(autoScroll,16);document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'));const d=e.target.closest&&e.target.closest('[data-loc]');if(d&&dragId)d.classList.add('over');
+document.addEventListener('dragover',e=>{e.preventDefault();ptrY=e.clientY;if(dragId&&!scr)scr=setInterval(autoScroll,16);document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'));const d=e.target.closest&&e.target.closest('[data-loc]');if(d&&dragId)d.classList.add('over');clrIns();const ct=e.target.closest&&e.target.closest('.card[data-id]');if(ct&&dragId&&ct.dataset.id!==dragId){const r=ct.getBoundingClientRect();ct.classList.add(e.clientY>r.top+r.height/2?'ins-a':'ins-b')}
  const tb=e.target.closest&&e.target.closest('[data-y]');
  if(tb&&dragId&&+tb.dataset.y!==S.year){if(!hov)hov=setTimeout(()=>{hov=null;S.year=+tb.dataset.y;render()},450)}else if(!tb&&hov){clearTimeout(hov);hov=null}});
 document.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)return ingest(f);
- const d=e.target.closest&&e.target.closest('[data-loc]');if(d&&dragId)move(dragId,d.dataset.loc);dragId=null;document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
+ const d=e.target.closest&&e.target.closest('[data-loc]');if(d&&dragId){const rf=e.target.closest('.card[data-id]'),rr=rf&&rf.getBoundingClientRect(),aft=!!rr&&e.clientY>rr.top+rr.height/2,rid=rf&&rf.dataset.id;if(move(dragId,d.dataset.loc)&&rid&&rid!==dragId){place(dragId,rid,aft);render()}}dragId=null;clrIns();document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
 document.addEventListener('change',e=>{const t=e.target;
  if(t.dataset.m)move(t.dataset.m,t.value);else if(t.dataset.g)setGrade(t.dataset.g,t.value);else if(t.id==='cnt'){S.cnt=t.checked;render()}});
 document.addEventListener('click',e=>{const t=e.target,f=t.closest&&t.closest('[data-fold]'),ad=t.closest&&t.closest('[data-sub]'),vw=t.closest&&t.closest('[data-view]'),pk=t.closest&&t.closest('[data-pick]');
@@ -295,8 +302,8 @@ document.addEventListener('click',e=>{const t=e.target,f=t.closest&&t.closest('[
  else if(t.dataset.p)switchProg(t.dataset.p);
  else if(t.dataset.add){if(S.years<MAXY){S.years++;S.year=S.years;render()}}
  else if(t.dataset.y!==undefined){S.year=+t.dataset.y;render()}
- else if(t.dataset.s){const c=S.cards.find(c=>c.id===t.dataset.id);c.st=t.dataset.s;if(c.st==='plan')c.grade='';render()}
- else if(t.dataset.bulk){const[l,s]=t.dataset.bulk.split(':');S.cards.forEach(c=>{if(c.loc===+l){c.st=s;if(s==='plan')c.grade=''}});render()}
+ else if(t.dataset.s){const c=S.cards.find(c=>c.id===t.dataset.id);setSt(c,t.dataset.s);render()}
+ else if(t.dataset.bulk){const[l,s]=t.dataset.bulk.split(':');S.cards.forEach(c=>{if(c.loc===+l){setSt(c,s)}});render()}
  else if(t.dataset.r){const c=S.cards.find(c=>c.id===t.dataset.r),v=prompt(`Course for "${c.code}" slot:`,c.title);if(v!==null){c.title=v.trim();render()}}});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.fold!==undefined){e.preventDefault();e.target.click()}});
 $('#fa').onclick=()=>{S.fold=allFold(S.years);render()};$('#ea').onclick=()=>{S.fold={};render()};
