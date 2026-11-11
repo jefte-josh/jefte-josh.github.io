@@ -172,12 +172,21 @@ const mig=s=>{if(s.ver!==3){s.cards.forEach(c=>{if(c.loc>=10&&c.loc<100)c.loc+=9
  let n=Math.max(4,s.years||4);s.cards.forEach(c=>{if(c.loc>=100)n=Math.max(n,c.loc-99);else if(c.loc>=0)n=Math.max(n,(c.loc>>1)+1)});s.years=Math.min(MAXY,n);return s};
 let P=(()=>{try{const p=localStorage.getItem(CURK);return PROGS[p]?p:'coe'}catch(e){return'coe'}})();
 function seed(p){p=p||P;const c=[];PROGS[p].seed.forEach((s,l)=>s.split('|').forEach(r=>{const[a,b,d,u,x]=r.split(';');c.push(mk(a,b,d,u,l,'Student must be endorsed by a capstone project adviser.','',x))}));
- return{cards:c,printed:PRINTED,year:1,cnt:true,warns:[],fold:allFold(),ver:3,years:4}}
+ ensureSk({cards:c});return{cards:c,printed:PRINTED,year:1,cnt:true,warns:[],fold:allFold(),ver:3,years:4}}
 function load(p){try{let r=localStorage.getItem(KEY+p);if(!r&&p==='coe')r=localStorage.getItem(LS);const s=JSON.parse(r);if(!s||!s.cards)return null;
- s.cards.forEach(c=>{if(!c.st){c.st=c.taken?'taken':'plan';delete c.taken}if(!c.title&&TITLES[c.code])c.title=TITLES[c.code]});mig(s);if(!s.fold)s.fold=allFold(s.years);return s}catch(e){return null}}
-function save(){try{localStorage.setItem(KEY+P,JSON.stringify(S));localStorage.setItem(CURK,P)}catch(e){}}
-function switchProg(p){if(!PROGS[p]||p===P)return;save();P=p;S=load(p)||seed(p);render()} // each curriculum keeps its own plan
-let S=load(P)||seed(P);
+ s.cards.forEach(c=>{if(!c.st){c.st=c.taken?'taken':'plan';delete c.taken}if(!c.title&&TITLES[c.code])c.title=TITLES[c.code]});mig(s);ensureSk(s);if(!s.fold)s.fold=allFold(s.years);return s}catch(e){return null}}
+// Shared records: the same subject (matched by code, plus occurrence # for repeated placeholders like PE / GE Elective) keeps one record
+// (location incl. Unassigned / Credited-s, status, grade, retake history, title) across Computer / Electrical / Electronics Eng.
+const SHK='degplan.shared';
+const SHF=['loc','st','grade','pg','hist','fails','title'];
+function ensureSk(s){const n={};s.cards.forEach(c=>{const k=c.code,i=n[k]||0;n[k]=i+1;if(!c.sk)c.sk=k+'#'+i})}
+function getShared(){try{return JSON.parse(localStorage.getItem(SHK))||{}}catch(e){return{}}}
+function applyShared(s){const sh=getShared();s.cards.forEach(c=>{const r=sh[c.sk];if(!r)return;SHF.forEach(f=>{if(f in r)c[f]=JSON.parse(JSON.stringify(r[f]))})});
+ let n=Math.max(4,s.years||4);s.cards.forEach(c=>{if(c.loc>=100)n=Math.max(n,c.loc-99);else if(c.loc>=0)n=Math.max(n,(c.loc>>1)+1)});s.years=Math.min(MAXY,n);return s}
+function saveShared(){const sh=getShared();S.cards.forEach(c=>{const r={};SHF.forEach(f=>{r[f]=c[f]===undefined?(f==='hist'||f==='fails'?[]:''):c[f]});sh[c.sk]=r});localStorage.setItem(SHK,JSON.stringify(sh))}
+function save(){try{localStorage.setItem(KEY+P,JSON.stringify(S));localStorage.setItem(CURK,P);saveShared()}catch(e){}}
+function switchProg(p){if(!PROGS[p]||p===P)return;save();P=p;S=applyShared(load(p)||seed(p));render()} // each curriculum keeps its own plan
+let S=applyShared(load(P)||seed(P));
 
 const MOB=matchMedia('(max-width:700px)');
 const cmp=l=>S.compact&&l in S.compact?!!S.compact[l]:MOB.matches; // explicit choice wins; otherwise condensed on phones
@@ -316,7 +325,7 @@ $('#exp').onclick=()=>dl(`degree-planner-${P}.json`,JSON.stringify(S,null,1),'ap
 $('#rst').onclick=()=>{if(confirm(`Reset ${PROGS[P].name} to its default curriculum? Statuses and changes will be lost.`)){S=seed(P);render()}};
 // Import a plan saved with Export
 async function ingest(f){try{const j=JSON.parse(await f.text());if(!j.cards)throw Error('not a saved plan');
- if(confirm(`Import this saved plan into ${PROGS[P].name}? It replaces the current plan.`)){mig(j);S=Object.assign(seed(P),j);if(!S.fold)S.fold=allFold();render()}}
+ if(confirm(`Import this saved plan into ${PROGS[P].name}? It replaces the current plan.`)){mig(j);S=Object.assign(seed(P),j);ensureSk(S);if(!S.fold)S.fold=allFold();render()}}
  catch(e){alert('Could not import: '+e.message+'\nOnly .json plans saved with Export work.')}}
 $('#imp').onclick=()=>$('#file').click();$('#file').onchange=e=>{if(e.target.files[0])ingest(e.target.files[0]);e.target.value=''};
 // Profile (name + program), asked on first visit; click the name in the title to edit
