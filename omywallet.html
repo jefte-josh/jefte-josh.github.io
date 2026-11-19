@@ -374,6 +374,22 @@
         </span>
       </div>
 
+      <!-- Record Log Search -->
+      <div class="relative flex items-center">
+        <svg class="absolute left-4 w-4 h-4 text-taupe pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          id="log-search-input"
+          type="search"
+          autocomplete="off"
+          placeholder="Search detail, account, amount, month…"
+          class="w-full pl-10 pr-10 py-3 rounded-full bg-white border border-sand focus:border-sage focus:outline-none text-sm font-body text-charcoal placeholder:text-taupe/70 shadow-pill transition-colors"
+        />
+        <button id="log-search-clear" type="button" title="Clear search" class="hidden absolute right-3 w-6 h-6 rounded-full text-taupe hover:bg-sand items-center justify-center text-sm cursor-pointer">✕</button>
+      </div>
+
       <div id="record-log-container" class="space-y-5">
         <!-- Grouped Month/Year cards rendered dynamically -->
       </div>
@@ -1291,12 +1307,44 @@
       const countBadge = document.getElementById('log-total-count');
       if (!container) return;
 
-      const txs = [...state.transactions].sort((a, b) => {
+      let txs = [...state.transactions].sort((a, b) => {
         if (b.date !== a.date) return b.date.localeCompare(a.date);
         return (b.createdAt || 0) - (a.createdAt || 0);
       });
 
-      countBadge.textContent = `${txs.length} ${txs.length === 1 ? 'entry' : 'entries'}`;
+      const searchTerms = (document.getElementById('log-search-input')?.value || '')
+        .toLowerCase().split(/\s+/).filter(Boolean);
+      const allCount = txs.length;
+      const matches = (tx) => {
+        const [y, m, d] = (tx.date || '').split('-').map(Number);
+        const dt = new Date(y, (m || 1) - 1, d || 1);
+        const hay = [
+          tx.detail, tx.type, tx.account, tx.fromAccount, tx.toAccount,
+          tx.date,
+          dt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          dt.toLocaleDateString('en-US', { month: 'short' }),
+          String(tx.amount),
+          Number(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        ].filter(v => v !== undefined && v !== null).join(' ').toLowerCase();
+        return searchTerms.every(t => hay.includes(t));
+      };
+      const filtered = searchTerms.length ? txs.filter(matches) : txs;
+      txs = filtered;
+
+      countBadge.textContent = searchTerms.length
+        ? `${txs.length} of ${allCount}`
+        : `${txs.length} ${txs.length === 1 ? 'entry' : 'entries'}`;
+
+      if (allCount > 0 && txs.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-[28px] p-8 text-center shadow-float border border-sand/80">
+            <div class="text-3xl mb-2">🔍</div>
+            <h3 class="text-base font-bold text-charcoal">No matching records</h3>
+            <p class="text-xs text-taupe font-body mt-1">Try a different keyword, account, amount, or month.</p>
+          </div>
+        `;
+        return;
+      }
 
       if (txs.length === 0) {
         container.innerHTML = `
@@ -2019,6 +2067,19 @@
 
       showToast(allPassed ? `All ${passedCount} self-tests passed!` : 'Self-test finished with warnings', allPassed ? '✅' : '⚠️');
     }
+
+    (function initLogSearch() {
+      const input = document.getElementById('log-search-input');
+      const clearBtn = document.getElementById('log-search-clear');
+      const sync = () => {
+        const has = input.value.length > 0;
+        clearBtn.classList.toggle('hidden', !has);
+        clearBtn.classList.toggle('flex', has);
+        renderRecordLog();
+      };
+      input.addEventListener('input', sync);
+      clearBtn.addEventListener('click', () => { input.value = ''; sync(); input.focus(); });
+    })();
 
     document.getElementById('btn-run-selftest').addEventListener('click', runSelfTests);
     document.getElementById('btn-close-selftest').addEventListener('click', () => {
