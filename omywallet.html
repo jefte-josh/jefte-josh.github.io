@@ -71,6 +71,41 @@
 </head>
 <body class="bg-cream text-charcoal min-h-screen antialiased selection:bg-sage-light selection:text-sage-dark pb-20 flex flex-col">
 
+  <!-- Preloader -->
+  <div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-cream transition-opacity duration-500">
+    <style>
+      @keyframes ow-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+      @keyframes ow-bar { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+    </style>
+    <div class="w-16 h-16 rounded-3xl bg-sage-light text-sage-dark flex items-center justify-center shadow-float" style="animation: ow-pulse 1.4s ease-in-out infinite;">
+      <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+        <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+      </svg>
+    </div>
+    <p class="mt-4 text-lg font-extrabold tracking-tight text-charcoal">omywallet</p>
+    <div class="mt-4 w-28 h-1 rounded-full bg-sand overflow-hidden">
+      <div class="h-full w-1/3 rounded-full bg-sage" style="animation: ow-bar 1.1s ease-in-out infinite;"></div>
+    </div>
+  </div>
+
+  <!-- First-time Welcome / Name Popup -->
+  <div id="welcome-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-charcoal/25 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-[28px] max-w-sm w-full p-6 shadow-float border border-sand">
+      <div class="text-3xl mb-2">👋</div>
+      <h3 class="text-lg font-bold text-charcoal mb-1">Welcome to omywallet</h3>
+      <p class="text-sm text-taupe font-body mb-4">What should we call you?</p>
+      <form id="welcome-form" class="space-y-4">
+        <input id="welcome-name" type="text" maxlength="30" required autocomplete="given-name" placeholder="Your name"
+          class="w-full px-4 py-3 rounded-2xl bg-cream border border-sand focus:border-sage focus:bg-white focus:outline-none text-base font-semibold text-charcoal transition-colors" />
+        <div class="flex justify-end">
+          <button type="submit" class="px-5 py-2.5 rounded-full text-sm font-bold bg-charcoal text-cream hover:bg-charcoal/90 transition-opacity cursor-pointer">Continue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
   <!-- Subtle Floating Toast Notification -->
   <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-2">
     <div id="toast-inner" class="px-5 py-2.5 rounded-full bg-charcoal text-cream text-sm font-medium shadow-lg flex items-center gap-2">
@@ -147,7 +182,7 @@
           </svg>
         </div>
         <div>
-          <h1 class="text-xl font-extrabold tracking-tight text-charcoal leading-none">omywallet</h1>
+          <h1 id="brand-title" class="text-xl font-extrabold tracking-tight text-charcoal leading-none">omywallet</h1>
           <p class="text-[11px] font-medium text-taupe mt-0.5">mindful pocket tracker</p>
         </div>
       </div>
@@ -1997,6 +2032,52 @@
       renderFloatingBalances();
       switchView('home');
     });
+  </script>
+
+  <script>
+    (function () {
+      const NAME_KEY = 'omywallet_username';
+      const getName = () => { try { return (localStorage.getItem(NAME_KEY) || '').trim(); } catch (e) { return ''; } };
+      const applyName = (name) => {
+        const t = name ? 'omywallet, ' + name : 'omywallet';
+        document.title = t;
+        const h = document.getElementById('brand-title');
+        if (h) h.textContent = t;
+      };
+      applyName(getName());
+
+      function showWelcome() {
+        const m = document.getElementById('welcome-modal');
+        m.classList.remove('hidden'); m.classList.add('flex');
+        setTimeout(() => document.getElementById('welcome-name').focus(), 50);
+      }
+
+      document.getElementById('welcome-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('welcome-name').value.trim();
+        if (!name) return;
+        try { localStorage.setItem(NAME_KEY, name); } catch (err) {}
+        applyName(name);
+        const m = document.getElementById('welcome-modal');
+        m.classList.add('hidden'); m.classList.remove('flex');
+      });
+
+      function hidePreloader() {
+        const p = document.getElementById('preloader');
+        if (!p || p.dataset.done) return;
+        p.dataset.done = '1';
+        p.style.opacity = '0';
+        p.style.pointerEvents = 'none';
+        setTimeout(() => { p.remove(); if (!getName()) showWelcome(); }, 500);
+      }
+      // Show for at least ~900ms, hide once everything has loaded (with a safety timeout)
+      const minDelay = new Promise(r => setTimeout(r, 900));
+      const loaded = new Promise(r => {
+        if (document.readyState === 'complete') r(); else window.addEventListener('load', r);
+      });
+      Promise.all([minDelay, loaded]).then(hidePreloader);
+      setTimeout(hidePreloader, 5000);
+    })();
   </script>
 </body>
 </html>
