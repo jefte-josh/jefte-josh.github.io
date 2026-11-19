@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 1. Updated Tab Title -->
+  <title>omywallet</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for Summary Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- SheetJS (XLSX) for Excel Import/Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            cream: '#FAF8F5',
+            sand: '#F3EFEA',
+            charcoal: '#262522',
+            taupe: '#7A756E',
+            sage: {
+              light: '#EAF3EC',
+              DEFAULT: '#8FB996',
+              dark: '#4A7C59',
+            },
+            blush: {
+              light: '#FBECEB',
+              DEFAULT: '#E5989B',
+              dark: '#B55D61',
+            },
+            lavender: {
+              light: '#EFEBF8',
+              DEFAULT: '#A99CE2',
+              dark: '#6353A8',
+            },
+            sky: {
+              light: '#E8F3FA',
+              DEFAULT: '#8ECAE6',
+              dark: '#3D7EA6',
+            },
+            peach: {
+              light: '#FDF0E6',
+              DEFAULT: '#F4A261',
+              dark: '#C86D2D',
+            },
+            maya: {
+              light: '#E7F6F2',
+              DEFAULT: '#56CFE1',
+              dark: '#238A78',
+            }
+          },
+          boxShadow: {
+            'float': '0 14px 40px -10px rgba(38, 37, 34, 0.06), 0 4px 14px -4px rgba(38, 37, 34, 0.03)',
+            'pill': '0 4px 12px -2px rgba(38, 37, 34, 0.05)',
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-cream text-charcoal min-h-screen antialiased selection:bg-sage-light selection:text-sage-dark pb-20 flex flex-col">
+
+  <!-- Subtle Floating Toast Notification -->
+  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-2">
+    <div id="toast-inner" class="px-5 py-2.5 rounded-full bg-charcoal text-cream text-sm font-medium shadow-lg flex items-center gap-2">
+      <span id="toast-icon">✨</span>
+      <span id="toast-msg">Saved to omywallet</span>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal (Replaces native confirm/alert) -->
+  <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-charcoal/25 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-[28px] max-w-sm w-full p-6 shadow-float border border-sand">
+      <h3 id="modal-title" class="text-lg font-bold text-charcoal mb-1.5">Confirm Action</h3>
+      <p id="modal-desc" class="text-sm text-taupe font-body mb-6">Are you sure you want to proceed?</p>
+      <div class="flex items-center justify-end gap-2.5">
+        <button id="modal-cancel" type="button" class="px-4 py-2.5 rounded-full text-sm font-semibold text-taupe hover:bg-sand transition-colors cursor-pointer">
+          Cancel
+        </button>
+        <button id="modal-confirm" type="button" class="px-5 py-2.5 rounded-full text-sm font-semibold bg-blush-dark text-white hover:opacity-90 transition-opacity cursor-pointer">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Direct Account Balance Edit Modal -->
+  <div id="edit-balance-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-charcoal/25 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-[28px] max-w-sm w-full p-6 shadow-float border border-sand">
+      <div class="flex items-center gap-2.5 mb-2">
+        <span id="edit-bal-icon" class="text-2xl">💵</span>
+        <div>
+          <h3 id="edit-bal-title" class="text-lg font-bold text-charcoal leading-tight">Edit Cash Balance</h3>
+          <p class="text-xs text-taupe font-body">Set or update this account's current balance</p>
+        </div>
+      </div>
+
+      <form id="edit-balance-form" class="mt-4 space-y-4">
+        <div>
+          <label for="edit-bal-input" class="block text-xs font-semibold text-taupe mb-1.5 ml-1">Current Balance (PHP)</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-4 text-lg font-bold text-taupe pointer-events-none">₱</span>
+            <input
+              id="edit-bal-input"
+              type="number"
+              step="0.01"
+              inputmode="decimal"
+              required
+              class="w-full pl-9 pr-4 py-3 rounded-2xl bg-cream border border-sand focus:border-sage focus:bg-white focus:outline-none text-lg font-bold text-charcoal transition-colors"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-1">
+          <button id="edit-bal-cancel" type="button" class="px-4 py-2.5 rounded-full text-sm font-semibold text-taupe hover:bg-sand transition-colors cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-full text-sm font-bold bg-charcoal text-cream hover:bg-charcoal/90 transition-opacity cursor-pointer">
+            Update Balance
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main App Shell (Flex container) -->
+  <div class="max-w-xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 flex-grow w-full">
+
+    <!-- Minimalist Brand Header -->
+    <header class="flex items-center justify-between mb-6 px-1">
+      <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('home')">
+        <div class="w-9 h-9 rounded-2xl bg-sage-light border border-sage/30 flex items-center justify-center text-sage-dark shadow-xs">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-tight text-charcoal leading-none">omywallet</h1>
+          <p class="text-[11px] font-medium text-taupe mt-0.5">mindful pocket tracker</p>
+        </div>
+      </div>
+
+      <!-- Utility Quick Menu -->
+      <div class="flex items-center gap-1.5">
+        <button id="btn-recalc-balances" type="button" title="Recalculate balances from transaction log" class="hidden px-3 py-1.5 rounded-full text-xs font-semibold bg-peach-light hover:bg-peach/25 text-peach-dark border border-peach/30 shadow-xs transition-all cursor-pointer">
+          Sync from Log
+        </button>
+        <!-- HIDDEN: btn-seed-demo -->
+        <button id="btn-seed-demo" type="button" title="Load sample data to preview charts" class="hidden px-3 py-1.5 rounded-full text-xs font-semibold bg-white/80 hover:bg-white text-taupe hover:text-charcoal border border-sand shadow-xs transition-all cursor-pointer">
+          + Sample
+        </button>
+        <button id="btn-reset-all" type="button" title="Clear all local data" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/80 hover:bg-blush-light text-taupe hover:text-blush-dark border border-sand shadow-xs transition-all cursor-pointer">
+          Reset
+        </button>
+      </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- 1. FLOATING BALANCES CARD (Visible on Home & Record Log; Hidden on Summary) -->
+    <!-- ===================================================================== -->
+    <section id="floating-balances-card" class="bg-white rounded-[28px] p-5 sm:p-6 shadow-float border border-sand/80 mb-5 transition-all duration-300">
+      <div class="relative flex flex-col items-center text-center pb-5 border-b border-sand/80">
+        <span class="text-xs font-semibold uppercase tracking-widest text-taupe mb-1">Total Balance</span>
+        <div id="home-total-balance" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-charcoal">
+          ₱0.00
+        </div>
+        <span class="text-[11px] text-taupe/80 mt-1.5 font-body">Tap any account tile below to edit its balance</span>
+      </div>
+
+      <!-- 2. Account Pastel Pills - Layout Adjusted to Flex fill -->
+      <div id="home-account-pills" class="flex flex-wrap gap-2.5 pt-4">
+        <!-- Populated dynamically by JS with flex-grow classes -->
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 2. HOME VIEW: FLOATING TRANSACTION CARD ("Log a purchase from today") -->
+    <!-- ===================================================================== -->
+    <main id="view-home" class="space-y-5">
+      <section class="bg-white rounded-[28px] p-5 sm:p-6 shadow-float border border-sand/80">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-charcoal">Log a purchase from today</h2>
+            <p class="text-xs text-taupe font-body">Record income, expenses, or account transfers</p>
+          </div>
+          <!-- Type Selector Pills (+, -, &) -->
+          <div class="inline-flex items-center bg-cream p-1 rounded-full border border-sand" role="group" aria-label="Transaction Type">
+            <button type="button" data-tx-type="income" class="tx-type-btn w-9 h-9 rounded-full text-base font-extrabold flex items-center justify-center transition-all text-taupe hover:text-charcoal cursor-pointer" title="Income (+)">
+              +
+            </button>
+            <button type="button" data-tx-type="expense" class="tx-type-btn w-9 h-9 rounded-full text-base font-extrabold flex items-center justify-center transition-all bg-blush-light text-blush-dark shadow-xs cursor-pointer" title="Expense (-)">
+              −
+            </button>
+            <button type="button" data-tx-type="transfer" class="tx-type-btn w-9 h-9 rounded-full text-sm font-extrabold flex items-center justify-center transition-all text-taupe hover:text-charcoal cursor-pointer" title="Transfer (&)">
+              &amp;
+            </button>
+          </div>
+        </div>
+
+        <form id="transaction-form" class="space-y-4" novalidate>
+          <!-- Amount & Date Row -->
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+            <!-- Amount Input -->
+            <div class="sm:col-span-3">
+              <label for="tx-amount" class="block text-xs font-semibold text-taupe mb-1.5 ml-1">Amount</label>
+              <div class="relative flex items-center">
+                <span class="absolute left-4 text-lg font-bold text-taupe pointer-events-none">₱</span>
+                <input
+                  id="tx-amount"
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  inputmode="decimal"
+                  placeholder="0.00"
+                  required
+                  class="w-full pl-9 pr-4 py-3 rounded-2xl bg-cream border border-sand focus:border-sage focus:bg-white focus:outline-none text-lg font-bold text-charcoal placeholder:text-taupe/40 transition-colors"
+                />
+              </div>
+            </div>
+
+            <!-- Date Selector -->
+            <div class="sm:col-span-2">
+              <label for="tx-date" class="block text-xs font-semibold text-taupe mb-1.5 ml-1">Date</label>
+              <input
+                id="tx-date"
+                type="date"
+                required
+                class="w-full px-3.5 py-3 rounded-2xl bg-cream border border-sand focus:border-sage focus:bg-white focus:outline-none text-sm font-semibold text-charcoal transition-colors"
+              />
+            </div>
+          </div>
+
+          <!-- Account Selector Area (Dynamic: Single Account vs Transfer Source -> Destination) -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5 ml-1">
+              <label id="account-field-label" class="text-xs font-semibold text-taupe">Account</label>
+              <span id="tx-type-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blush-light text-blush-dark">
+                Expense (−)
+              </span>
+            </div>
+
+            <!-- Single Account Selector (+ or -) -->
+            <div id="single-account-wrapper">
+              <select id="tx-account" class="w-full px-4 py-3 rounded-2xl bg-cream border border-sand focus:border-sage focus:bg-white focus:outline-none text-sm font-semibold text-charcoal transition-colors cursor-pointer">
+                <option value="Cash">💵 Cash</option>
+                <option value="GCash">💙 GCash</option>
+                <option value="UnionBank">🧡 UnionBank</option>
+                <option value="MariBank">💛 MariBank</option>
+                <option value="Maya">💚 Maya</option>
+              </select>
+            </div>
+
+            <!-- Dual Account Selector (& Transfer) -->
+            <div id="transfer-account-wrapper" class="hidden grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-2">
+              <div>
+                <span class="block text-[10px] font-semibold uppercase tracking-wider text-taupe mb-1 ml-1">From</span>
+                <select id="tx-from-account" class="w-full px-3.5 py-3 rounded-2xl bg-cream border border-sand focus:border-lavender focus:bg-white focus:outline-none text-sm font-semibold text-charcoal transition-colors cursor-pointer">
+                  <option value="Cash">💵 Cash</option>
+                  <option value="GCash" selected>💙 GCash</option>
+                  <option value="UnionBank">🧡 UnionBank</option>
+                  <option value="MariBank">💛 MariBank</option>
+                  <option value="Maya">💚 Maya</option>
+                </select>
+              </div>
+
+              <!-- Interactive -> Direction / Swap Button -->
+              <div class="flex justify-center pt-3 sm:pt-4">
+                <button
+                  id="btn-swap-accounts"
+                  type="button"
+                  title="Swap source and destination accounts"
+                  class="px-3.5 py-2 rounded-full bg-lavender-light hover:bg-lavender/30 text-lavender-dark font-extrabold text-sm border border-lavender/40 shadow-xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <span>-&gt;</span>
+                </button>
+              </div>
+
+              <div>
+                <span class="block text-[10px] font-semibold uppercase tracking-wider text-taupe mb-1 ml-1">To</span>
+                <select id="tx-to-account" class="w-full px-3.5 py-3 rounded-2xl bg-cream border border-sand focus:border-lavender focus:bg-white focus:outline-none text-sm font-semibold text-charcoal transition-colors cursor-pointer">
+                  <option value="Cash" selected>💵 Cash</option>
+                  <option value="GCash">💙 GCash</option>
+                  <option value="UnionBank">🧡 UnionBank</option>
+                  <option value="MariBank">💛 MariBank</option>
+                  <option value="Maya">💚 Maya</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detail of Transaction Input -->
+          <div>
+            <label for="tx-detail" class="block text-xs font-semibold text-taupe mb-1.5 ml-1">Detail of Transaction</label>
+            <input
+              id="tx-detail"
+              type="text"
+              maxlength="80"
+              placeholder="e.g., Iced oat latte, Groceries, Freelance payout..."
+              class="w-full px-4 py-3 rounded-2xl bg-cream border border-sand focus:border-sage focus:bg-white focus:outline-none text-sm font-medium text-charcoal placeholder:text-taupe/50 transition-colors"
+            />
+          </div>
+
+          <!-- Save Button -->
+          <button
+            type="submit"
+            class="w-full py-3.5 px-6 rounded-full bg-charcoal hover:bg-charcoal/90 active:scale-[0.99] text-cream font-bold text-sm tracking-wide shadow-pill transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>Save Transaction</span>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+        </form>
+      </section>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- 3. RECORD LOG VIEW (Grouped by Month & Year)                          -->
+    <!-- ===================================================================== -->
+    <section id="view-record-log" class="hidden space-y-4">
+      <div class="flex items-center justify-between px-1">
+        <div>
+          <h2 class="text-lg font-bold text-charcoal">Record Log</h2>
+          <p class="text-xs text-taupe font-body">Transaction history organized by month &amp; year</p>
+        </div>
+        <span id="log-total-count" class="text-xs font-semibold px-3 py-1 rounded-full bg-white border border-sand text-taupe">
+          0 entries
+        </span>
+      </div>
+
+      <div id="record-log-container" class="space-y-5">
+        <!-- Grouped Month/Year cards rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 4. SUMMARY VIEW (Hides top floating balances; shows Hero + 4 Charts)  -->
+    <!-- ===================================================================== -->
+    <section id="view-summary" class="hidden space-y-5">
+      <!-- Stylized Hero Balance & Account Breakdown Card -->
+      <div class="bg-gradient-to-br from-white via-white to-sage-light/50 rounded-[30px] p-6 sm:p-7 shadow-float border border-sand relative overflow-hidden">
+        <div class="pointer-events-none absolute -top-12 -right-12 w-40 h-40 rounded-full bg-sage-light/70 blur-2xl"></div>
+        <div class="pointer-events-none absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-lavender-light/70 blur-2xl"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-2">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-sage-dark bg-sage-light px-3 py-1 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-sage-dark"></span>
+              Portfolio Overview
+            </span>
+            <span id="summary-year-label" class="text-xs font-semibold text-taupe">2026</span>
+          </div>
+
+          <div class="mt-3 mb-5">
+            <p class="text-xs font-medium text-taupe">Combined Net Balance</p>
+            <h2 id="summary-total-balance" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-charcoal mt-0.5">
+              ₱0.00
+            </h2>
+          </div>
+
+          <!-- Stacked Proportion Bar -->
+          <div class="mb-5">
+            <div id="summary-proportion-bar" class="w-full h-3 rounded-full bg-sand overflow-hidden flex gap-0.5 p-0.5">
+              <!-- Proportion segments injected dynamically -->
+            </div>
+          </div>
+
+          <!-- Detailed 5-Account Breakdown - Layout Adjusted to Flex fill -->
+          <div id="summary-account-breakdown" class="flex flex-wrap gap-2.5">
+            <!-- Detailed pastel account cards injected dynamically with flex-grow classes -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Visual Charts Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Chart 1: Net Income -->
+        <div class="bg-white rounded-[26px] p-5 shadow-float border border-sand/80">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-sage-dark">Chart 01</span>
+              <h3 class="text-base font-bold text-charcoal">Net Income</h3>
+            </div>
+            <span id="stat-net-income" class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-sage-light text-sage-dark">
+              ₱0.00
+            </span>
+          </div>
+          <div class="relative h-48 w-full">
+            <canvas id="chart-net-income"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Net Expenses -->
+        <div class="bg-white rounded-[26px] p-5 shadow-float border border-sand/80">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-blush-dark">Chart 02</span>
+              <h3 class="text-base font-bold text-charcoal">Net Expenses</h3>
+            </div>
+            <span id="stat-net-expenses" class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-blush-light text-blush-dark">
+              ₱0.00
+            </span>
+          </div>
+          <div class
