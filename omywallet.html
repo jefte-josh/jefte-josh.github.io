@@ -157,8 +157,7 @@
         <button id="btn-recalc-balances" type="button" title="Recalculate balances from transaction log" class="hidden px-3 py-1.5 rounded-full text-xs font-semibold bg-peach-light hover:bg-peach/25 text-peach-dark border border-peach/30 shadow-xs transition-all cursor-pointer">
           Sync from Log
         </button>
-        <!-- HIDDEN: btn-seed-demo -->
-        <button id="btn-seed-demo" type="button" title="Load sample data to preview charts" class="hidden px-3 py-1.5 rounded-full text-xs font-semibold bg-white/80 hover:bg-white text-taupe hover:text-charcoal border border-sand shadow-xs transition-all cursor-pointer">
+        <button id="btn-seed-demo" type="button" title="Load sample data to preview charts" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/80 hover:bg-white text-taupe hover:text-charcoal border border-sand shadow-xs transition-all cursor-pointer">
           + Sample
         </button>
         <button id="btn-reset-all" type="button" title="Clear all local data" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/80 hover:bg-blush-light text-taupe hover:text-blush-dark border border-sand shadow-xs transition-all cursor-pointer">
@@ -413,4 +412,1591 @@
               ₱0.00
             </span>
           </div>
-          <div class
+          <div class="relative h-48 w-full">
+            <canvas id="chart-net-expenses"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: This Year -->
+        <div class="bg-white rounded-[26px] p-5 shadow-float border border-sand/80 sm:col-span-2">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-lavender-dark">Chart 03</span>
+              <h3 id="title-this-year" class="text-base font-bold text-charcoal">This Year</h3>
+            </div>
+            <span id="stat-this-year" class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-lavender-light text-lavender-dark">
+              Net ₱0.00
+            </span>
+          </div>
+          <div class="relative h-52 w-full">
+            <canvas id="chart-this-year"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: This Month -->
+        <div class="bg-white rounded-[26px] p-5 shadow-float border border-sand/80 sm:col-span-2">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-peach-dark">Chart 04</span>
+              <h3 id="title-this-month" class="text-base font-bold text-charcoal">This Month</h3>
+            </div>
+            <span id="stat-this-month" class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-peach-light text-peach-dark">
+              Net ₱0.00
+            </span>
+          </div>
+          <div class="relative h-52 w-full">
+            <canvas id="chart-this-month"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 5. NAVIGATION BUTTONS UNDERNEATH ("Log", "Record Log", "Summary")     -->
+    <!-- ===================================================================== -->
+    <nav aria-label="Primary Views" class="mt-6 flex items-center justify-center gap-2.5">
+      <button
+        id="nav-home"
+        type="button"
+        onclick="switchView('home')"
+        class="nav-pill px-5 py-3 rounded-full text-sm font-bold bg-charcoal text-cream shadow-pill transition-all cursor-pointer"
+      >
+        + Log
+      </button>
+      <button
+        id="nav-record-log"
+        type="button"
+        onclick="switchView('record-log')"
+        class="nav-pill px-5 py-3 rounded-full text-sm font-bold bg-white text-charcoal hover:bg-sand/70 border border-sand shadow-pill transition-all cursor-pointer"
+      >
+        Record Log
+      </button>
+      <button
+        id="nav-summary"
+        type="button"
+        onclick="switchView('summary')"
+        class="nav-pill px-5 py-3 rounded-full text-sm font-bold bg-white text-charcoal hover:bg-sand/70 border border-sand shadow-pill transition-all cursor-pointer"
+      >
+        Summary
+      </button>
+    </nav>
+
+    <!-- ===================================================================== -->
+    <!-- 6. DATA BACKUP & SYNC CARD (Export & Import JSON / XLSX + Self-Test)  -->
+    <!-- ===================================================================== -->
+    <section aria-label="Data Backup and Sync" class="mt-6 bg-white/90 rounded-[26px] p-4 sm:p-5 shadow-float border border-sand/80">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-2xl bg-sky-light border border-sky/30 text-sky-dark flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-xs font-extrabold text-charcoal uppercase tracking-wider">Data Backup &amp; Sync</h3>
+            <p class="text-[11px] text-taupe font-body">Export or restore your wallet in JSON or Excel (.xlsx)</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Export JSON -->
+          <button
+            id="btn-export-json"
+            type="button"
+            class="px-3.5 py-2 rounded-full text-xs font-bold bg-sage-light hover:bg-sage/25 text-sage-dark border border-sage/30 transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Export JSON</span>
+          </button>
+
+          <!-- Export XLSX -->
+          <button
+            id="btn-export-xlsx"
+            type="button"
+            class="px-3.5 py-2 rounded-full text-xs font-bold bg-sky-light hover:bg-sky/25 text-sky-dark border border-sky/30 transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Export XLSX</span>
+          </button>
+
+          <!-- Import JSON / XLSX -->
+          <button
+            id="btn-import-trigger"
+            type="button"
+            class="px-3.5 py-2 rounded-full text-xs font-bold bg-lavender-light hover:bg-lavender/25 text-lavender-dark border border-lavender/30 transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Import File</span>
+          </button>
+          <input
+            id="file-import-input"
+            type="file"
+            accept=".json,.xlsx,.xls,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+            class="hidden"
+          />
+
+          <!-- Run Self-Test Diagnostics -->
+          <!-- <button
+            id="btn-run-selftest"
+            type="button"
+            class="px-3.5 py-2 rounded-full text-xs font-bold bg-peach-light hover:bg-peach/25 text-peach-dark border border-peach/30 transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Run Self-Test</span>
+          </button> -->
+        </div>
+      </div>
+
+      <!-- Self-Test Diagnostic Report Drawer (Hidden until Run Self-Test is clicked) -->
+      <div id="selftest-report" class="hidden mt-4 pt-3.5 border-t border-sand">
+        <div class="flex items-center justify-between mb-2.5">
+          <div class="flex items-center gap-2">
+            <span id="selftest-overall-badge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-sage-light text-sage-dark">
+              Running...
+            </span>
+            <span id="selftest-summary-text" class="text-xs font-semibold text-charcoal">
+              Verifying core features
+            </span>
+          </div>
+          <button
+            id="btn-close-selftest"
+            type="button"
+            class="text-xs font-semibold text-taupe hover:text-charcoal px-2 py-0.5 rounded-full hover:bg-sand/60 transition-colors cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+        <ul id="selftest-results-list" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs font-body">
+          <!-- Populated dynamically by runSelfTests() -->
+        </ul>
+      </div>
+    </section>
+
+  </div> <!-- End Main App Shell -->
+
+  <!-- 3. Fixed Footer -->
+  <footer class="w-full text-center py-4 bg-sand/50 mt-auto border-t border-sand/70">
+    <p class="text-[11px] text-taupe font-medium tracking-wide">#jipiti2026</p>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    // =========================================================================
+    // CONSTANTS & ACCOUNT METADATA
+    // =========================================================================
+    const STORAGE_KEY = 'omywallet_v1';
+    const LEGACY_STORAGE_KEYS = [
+      'omywallet_data',
+      'omywallet_state',
+      'omywallet',
+      'omywallet_v0',
+      'omywallet_balances'
+    ];
+
+    const ACCOUNTS = [
+      {
+        id: 'Cash',
+        label: 'Cash',
+        icon: '💵',
+        bgClass: 'bg-sage-light/70',
+        borderClass: 'border-sage/30',
+        textClass: 'text-sage-dark',
+        barColor: '#8FB996',
+        chartColor: 'rgba(143, 185, 150, 0.85)'
+      },
+      {
+        id: 'GCash',
+        label: 'GCash',
+        icon: '💙',
+        bgClass: 'bg-sky-light/80',
+        borderClass: 'border-sky/30',
+        textClass: 'text-sky-dark',
+        barColor: '#8ECAE6',
+        chartColor: 'rgba(142, 202, 230, 0.85)'
+      },
+      {
+        id: 'UnionBank',
+        label: 'UnionBank',
+        icon: '🧡',
+        bgClass: 'bg-peach-light/80',
+        borderClass: 'border-peach/30',
+        textClass: 'text-peach-dark',
+        barColor: '#F4A261',
+        chartColor: 'rgba(244, 162, 97, 0.85)'
+      },
+      {
+        id: 'MariBank',
+        label: 'MariBank',
+        icon: '💛',
+        bgClass: 'bg-lavender-light/80',
+        borderClass: 'border-lavender/30',
+        textClass: 'text-lavender-dark',
+        barColor: '#A99CE2',
+        chartColor: 'rgba(169, 156, 226, 0.85)'
+      },
+      {
+        id: 'Maya',
+        label: 'Maya',
+        icon: '💚',
+        bgClass: 'bg-maya-light/80',
+        borderClass: 'border-maya/30',
+        textClass: 'text-maya-dark',
+        barColor: '#56CFE1',
+        chartColor: 'rgba(86, 207, 225, 0.85)'
+      }
+    ];
+
+    // =========================================================================
+    // APPLICATION STATE
+    // =========================================================================
+    let state = {
+      balances: {
+        Cash: 0,
+        GCash: 0,
+        UnionBank: 0,
+        MariBank: 0,
+        Maya: 0
+      },
+      transactions: []
+    };
+
+    let currentView = 'home'; // 'home' | 'record-log' | 'summary'
+    let currentTxType = 'expense'; // 'income' | 'expense' | 'transfer'
+    let editingAccountId = null;
+    let chartInstances = {};
+    let toastTimer = null;
+
+    // =========================================================================
+    // UTILITIES: FORMATTING, ESCAPING, DATES, TOAST, MODAL
+    // =========================================================================
+    function formatPHP(amount) {
+      const num = Number(amount) || 0;
+      const sign = num < 0 ? '-' : '';
+      return `${sign}₱${Math.abs(num).toLocaleString('en-PH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`;
+    }
+
+    function escapeHTML(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getTodayISO() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function normalizeDateString(rawDate) {
+      if (!rawDate) return getTodayISO();
+      if (typeof rawDate === 'number') {
+        // Excel serial date number
+        const utcDays = Math.floor(rawDate - 25569);
+        const utcValue = utcDays * 86400;
+        const d = new Date(utcValue * 1000);
+        if (!isNaN(d.getTime())) {
+          return d.toISOString().slice(0, 10);
+        }
+      }
+      const str = String(rawDate).trim();
+      if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+        return str.slice(0, 10);
+      }
+      const parsed = new Date(str);
+      if (!isNaN(parsed.getTime())) {
+        const y = parsed.getFullYear();
+        const m = String(parsed.getMonth() + 1).padStart(2, '0');
+        const d = String(parsed.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+      return getTodayISO();
+    }
+
+    function normalizeAccountName(rawName) {
+      if (!rawName) return null;
+      const clean = String(rawName).trim().toLowerCase();
+      const match = ACCOUNTS.find(
+        acc => acc.id.toLowerCase() === clean || acc.label.toLowerCase() === clean
+      );
+      return match ? match.id : null;
+    }
+
+    function getAccountMeta(accountId) {
+      return ACCOUNTS.find(a => a.id === accountId) || ACCOUNTS[0];
+    }
+
+    function getTotalBalance(balancesObj = state.balances) {
+      return ACCOUNTS.reduce((sum, acc) => sum + (Number(balancesObj[acc.id]) || 0), 0);
+    }
+
+    function showToast(message, icon = '✨') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      const toastIcon = document.getElementById('toast-icon');
+      toastMsg.textContent = message;
+      toastIcon.textContent = icon;
+
+      toast.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+      }, 2800);
+    }
+
+    function openConfirmModal(title, description, onConfirm) {
+      const modal = document.getElementById('confirm-modal');
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-desc').textContent = description;
+
+      const confirmBtn = document.getElementById('modal-confirm');
+      const cancelBtn = document.getElementById('modal-cancel');
+
+      const closeModal = () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      };
+
+      confirmBtn.onclick = () => {
+        closeModal();
+        onConfirm();
+      };
+      cancelBtn.onclick = closeModal;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    // =========================================================================
+    // PERSISTENCE, LEGACY RECOVERY & SANITIZATION
+    // =========================================================================
+    function computeBalancesFromTransactions(transactions) {
+      const computed = { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 };
+      for (const tx of transactions) {
+        const amt = Number(tx.amount) || 0;
+        if (tx.type === 'income' && computed[tx.account] !== undefined) {
+          computed[tx.account] = Math.round((computed[tx.account] + amt) * 100) / 100;
+        } else if (tx.type === 'expense' && computed[tx.account] !== undefined) {
+          computed[tx.account] = Math.round((computed[tx.account] - amt) * 100) / 100;
+        } else if (tx.type === 'transfer') {
+          if (computed[tx.fromAccount] !== undefined) {
+            computed[tx.fromAccount] = Math.round((computed[tx.fromAccount] - amt) * 100) / 100;
+          }
+          if (computed[tx.toAccount] !== undefined) {
+            computed[tx.toAccount] = Math.round((computed[tx.toAccount] + amt) * 100) / 100;
+          }
+        }
+      }
+      return computed;
+    }
+
+    function sanitizeImportedData(rawBalances, rawTransactions) {
+      const cleanTransactions = [];
+      if (Array.isArray(rawTransactions)) {
+        rawTransactions.forEach((item, idx) => {
+          if (!item || typeof item !== 'object') return;
+          const rawType = String(item.type || item.Type || '').trim().toLowerCase();
+          let type = 'expense';
+          if (rawType === 'income' || rawType === '+') type = 'income';
+          else if (rawType === 'transfer' || rawType === '&') type = 'transfer';
+          else if (rawType === 'expense' || rawType === '-' || rawType === '−') type = 'expense';
+
+          const amount = Math.abs(parseFloat(item.amount ?? item.Amount ?? 0));
+          if (!amount || isNaN(amount) || amount <= 0) return;
+
+          const date = normalizeDateString(item.date || item.Date);
+          const detail = String(item.detail || item.Detail || item.description || '').trim();
+          const id = String(item.id || item.ID || `tx_${Date.now()}_${idx}`);
+          const createdAt = Number(item.createdAt) || Date.now() - idx;
+
+          if (type === 'transfer') {
+            const fromAccount = normalizeAccountName(item.fromAccount || item.FromAccount || item.from || item.From) || 'GCash';
+            const toAccount = normalizeAccountName(item.toAccount || item.ToAccount || item.to || item.To) || 'Cash';
+            cleanTransactions.push({
+              id,
+              date,
+              type: 'transfer',
+              fromAccount,
+              toAccount,
+              amount: Math.round(amount * 100) / 100,
+              detail: detail || `${fromAccount} -> ${toAccount}`,
+              createdAt
+            });
+          } else {
+            const account = normalizeAccountName(item.account || item.Account) || 'Cash';
+            cleanTransactions.push({
+              id,
+              date,
+              type,
+              account,
+              amount: Math.round(amount * 100) / 100,
+              detail: detail || (type === 'income' ? 'Income' : 'Expense'),
+              createdAt
+            });
+          }
+        });
+      }
+
+      const cleanBalances = { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 };
+      let hasExplicitBalances = false;
+
+      if (Array.isArray(rawBalances)) {
+        rawBalances.forEach(row => {
+          const accName = normalizeAccountName(row.Account || row.account || row.id);
+          const balVal = parseFloat(row.Balance ?? row.balance);
+          if (accName && !isNaN(balVal)) {
+            cleanBalances[accName] = Math.round(balVal * 100) / 100;
+            hasExplicitBalances = true;
+          }
+        });
+      } else if (rawBalances && typeof rawBalances === 'object') {
+        ACCOUNTS.forEach(acc => {
+          if (rawBalances[acc.id] !== undefined && !isNaN(parseFloat(rawBalances[acc.id]))) {
+            cleanBalances[acc.id] = Math.round(parseFloat(rawBalances[acc.id]) * 100) / 100;
+            hasExplicitBalances = true;
+          }
+        });
+      }
+
+      const allZero = ACCOUNTS.every(a => cleanBalances[a.id] === 0);
+      if ((!hasExplicitBalances || allZero) && cleanTransactions.length > 0) {
+        return {
+          balances: computeBalancesFromTransactions(cleanTransactions),
+          transactions: cleanTransactions
+        };
+      }
+
+      return {
+        balances: cleanBalances,
+        transactions: cleanTransactions
+      };
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        updateSyncFromLogButtonVisibility();
+      } catch (err) {
+        console.error('Failed to save to localStorage:', err);
+        showToast('Storage full or blocked in browser', '⚠️');
+      }
+    }
+
+    function loadState() {
+      try {
+        let raw = localStorage.getItem(STORAGE_KEY);
+
+        if (!raw) {
+          for (const legacyKey of LEGACY_STORAGE_KEYS) {
+            const candidate = localStorage.getItem(legacyKey);
+            if (candidate) {
+              raw = candidate;
+              break;
+            }
+          }
+        }
+
+        if (!raw) {
+          const separateTx = localStorage.getItem('omywallet_transactions');
+          const separateBal = localStorage.getItem('omywallet_balances');
+          if (separateTx || separateBal) {
+            const recovered = sanitizeImportedData(
+              separateBal ? JSON.parse(separateBal) : null,
+              separateTx ? JSON.parse(separateTx) : []
+            );
+            state = recovered;
+            saveState();
+            return;
+          }
+        }
+
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const sanitized = sanitizeImportedData(
+            parsed.balances || parsed,
+            parsed.transactions || []
+          );
+          state = sanitized;
+          saveState();
+        }
+      } catch (err) {
+        console.error('Failed to load state from localStorage:', err);
+      }
+      updateSyncFromLogButtonVisibility();
+    }
+
+    function updateSyncFromLogButtonVisibility() {
+      const btn = document.getElementById('btn-recalc-balances');
+      if (!btn) return;
+      const allZero = ACCOUNTS.every(a => (Number(state.balances[a.id]) || 0) === 0);
+      if (allZero && state.transactions.length > 0) {
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
+    }
+
+    // =========================================================================
+    // DIRECT ACCOUNT BALANCE EDITING MODAL
+    // =========================================================================
+    function openEditBalanceModal(accountId) {
+      const meta = getAccountMeta(accountId);
+      editingAccountId = accountId;
+
+      document.getElementById('edit-bal-icon').textContent = meta.icon;
+      document.getElementById('edit-bal-title').textContent = `Edit ${meta.label} Balance`;
+      const inputEl = document.getElementById('edit-bal-input');
+      inputEl.value = (Number(state.balances[accountId]) || 0).toFixed(2);
+
+      const modal = document.getElementById('edit-balance-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        inputEl.focus();
+        inputEl.select();
+      }, 40);
+    }
+
+    function closeEditBalanceModal() {
+      const modal = document.getElementById('edit-balance-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      editingAccountId = null;
+    }
+
+    document.getElementById('edit-bal-cancel').addEventListener('click', closeEditBalanceModal);
+
+    document.getElementById('edit-balance-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!editingAccountId) return;
+      const rawVal = parseFloat(document.getElementById('edit-bal-input').value);
+      if (isNaN(rawVal)) {
+        showToast('Please enter a valid number', '⚠️');
+        return;
+      }
+
+      state.balances[editingAccountId] = Math.round(rawVal * 100) / 100;
+      saveState();
+      renderFloatingBalances();
+      if (currentView === 'summary') renderSummaryView();
+      showToast(`${editingAccountId} updated to ${formatPHP(state.balances[editingAccountId])}`, '💳');
+      closeEditBalanceModal();
+    });
+
+    // =========================================================================
+    // RENDERING: TOP FLOATING BALANCES CARD
+    // =========================================================================
+    function renderFloatingBalances() {
+      const totalEl = document.getElementById('home-total-balance');
+      const pillsContainer = document.getElementById('home-account-pills');
+      if (!totalEl || !pillsContainer) return;
+
+      totalEl.textContent = formatPHP(getTotalBalance());
+
+      pillsContainer.innerHTML = ACCOUNTS.map(acc => {
+        const bal = Number(state.balances[acc.id]) || 0;
+        return `
+          <button
+            type="button"
+            onclick="openEditBalanceModal('${acc.id}')"
+            title="Click to edit ${acc.label} balance"
+            /* 4. Added flex-grow to fill container */
+            class="group text-left rounded-2xl p-3 ${acc.bgClass} border ${acc.borderClass} hover:brightness-95 active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between flex-grow basis-[calc(33.333%-0.666rem)]"
+          >
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <span class="text-xs font-bold ${acc.textClass} flex items-center gap-1.5">
+                <span>${acc.icon}</span>
+                <span>${acc.label}</span>
+              </span>
+              <span class="text-[10px] font-semibold ${acc.textClass} opacity-60 group-hover:opacity-100 transition-opacity">
+                ✎
+              </span>
+            </div>
+            <div class="text-sm sm:text-base font-extrabold text-charcoal tracking-tight truncate">
+              ${formatPHP(bal)}
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // TRANSACTION FORM LOGIC (+, -, &)
+    // =========================================================================
+    function setTransactionType(type) {
+      currentTxType = type;
+
+      document.querySelectorAll('.tx-type-btn').forEach(btn => {
+        const btnType = btn.getAttribute('data-tx-type');
+        btn.className = 'tx-type-btn w-9 h-9 rounded-full text-sm font-extrabold flex items-center justify-center transition-all cursor-pointer ';
+        if (btnType === type) {
+          if (type === 'income') {
+            btn.className += 'bg-sage-light text-sage-dark shadow-xs text-base';
+          } else if (type === 'expense') {
+            btn.className += 'bg-blush-light text-blush-dark shadow-xs text-base';
+          } else {
+            btn.className += 'bg-lavender-light text-lavender-dark shadow-xs';
+          }
+        } else {
+          btn.className += 'text-taupe hover:text-charcoal ' + (btnType !== 'transfer' ? 'text-base' : '');
+        }
+      });
+
+      const badge = document.getElementById('tx-type-badge');
+      const label = document.getElementById('account-field-label');
+      const singleWrap = document.getElementById('single-account-wrapper');
+      const transferWrap = document.getElementById('transfer-account-wrapper');
+
+      if (type === 'income') {
+        badge.textContent = 'Income (+)';
+        badge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sage-light text-sage-dark';
+        label.textContent = 'Deposit Into Account';
+        singleWrap.classList.remove('hidden');
+        transferWrap.classList.add('hidden');
+        transferWrap.classList.remove('grid');
+      } else if (type === 'expense') {
+        badge.textContent = 'Expense (−)';
+        badge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blush-light text-blush-dark';
+        label.textContent = 'Pay From Account';
+        singleWrap.classList.remove('hidden');
+        transferWrap.classList.add('hidden');
+        transferWrap.classList.remove('grid');
+      } else {
+        badge.textContent = 'Transfer (&)';
+        badge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-lavender-light text-lavender-dark';
+        label.textContent = 'Transfer Route';
+        singleWrap.classList.add('hidden');
+        transferWrap.classList.remove('hidden');
+        transferWrap.classList.add('grid');
+      }
+    }
+
+    document.querySelectorAll('.tx-type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setTransactionType(btn.getAttribute('data-tx-type'));
+      });
+    });
+
+    document.getElementById('btn-swap-accounts').addEventListener('click', () => {
+      const fromEl = document.getElementById('tx-from-account');
+      const toEl = document.getElementById('tx-to-account');
+      const temp = fromEl.value;
+      fromEl.value = toEl.value;
+      toEl.value = temp;
+    });
+
+    document.getElementById('transaction-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const amountInput = document.getElementById('tx-amount');
+      const dateInput = document.getElementById('tx-date');
+      const detailInput = document.getElementById('tx-detail');
+
+      const amount = Math.round((parseFloat(amountInput.value) || 0) * 100) / 100;
+      if (amount <= 0) {
+        showToast('Please enter an amount greater than ₱0.00', '⚠️');
+        amountInput.focus();
+        return;
+      }
+
+      const date = dateInput.value || getTodayISO();
+      const rawDetail = detailInput.value.trim();
+
+      if (currentTxType === 'transfer') {
+        const fromAccount = document.getElementById('tx-from-account').value;
+        const toAccount = document.getElementById('tx-to-account').value;
+
+        if (fromAccount === toAccount) {
+          showToast('Choose two different accounts to transfer', '⚠️');
+          return;
+        }
+
+        state.balances[fromAccount] = Math.round(((Number(state.balances[fromAccount]) || 0) - amount) * 100) / 100;
+        state.balances[toAccount] = Math.round(((Number(state.balances[toAccount]) || 0) + amount) * 100) / 100;
+
+        state.transactions.push({
+          id: `tx_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          date,
+          type: 'transfer',
+          fromAccount,
+          toAccount,
+          amount,
+          detail: rawDetail || `${fromAccount} -> ${toAccount}`,
+          createdAt: Date.now()
+        });
+
+        showToast(`Transferred ${formatPHP(amount)} (${fromAccount} -> ${toAccount})`, '🔁');
+      } else {
+        const account = document.getElementById('tx-account').value;
+        if (currentTxType === 'income') {
+          state.balances[account] = Math.round(((Number(state.balances[account]) || 0) + amount) * 100) / 100;
+        } else {
+          state.balances[account] = Math.round(((Number(state.balances[account]) || 0) - amount) * 100) / 100;
+        }
+
+        state.transactions.push({
+          id: `tx_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          date,
+          type: currentTxType,
+          account,
+          amount,
+          detail: rawDetail || (currentTxType === 'income' ? 'Income' : 'Purchase'),
+          createdAt: Date.now()
+        });
+
+        showToast(
+          currentTxType === 'income'
+            ? `Added +${formatPHP(amount)} to ${account}`
+            : `Logged −${formatPHP(amount)} from ${account}`,
+          currentTxType === 'income' ? '🌿' : '🧾'
+        );
+      }
+
+      saveState();
+      renderFloatingBalances();
+
+      amountInput.value = '';
+      detailInput.value = '';
+    });
+
+    // =========================================================================
+    // VIEW SWITCHING ("home" | "record-log" | "summary")
+    // =========================================================================
+    function switchView(viewName) {
+      currentView = viewName;
+
+      const floatingBalancesCard = document.getElementById('floating-balances-card');
+      const viewHome = document.getElementById('view-home');
+      const viewLog = document.getElementById('view-record-log');
+      const viewSummary = document.getElementById('view-summary');
+
+      if (viewName === 'summary') {
+        floatingBalancesCard.classList.add('hidden');
+      } else {
+        floatingBalancesCard.classList.remove('hidden');
+      }
+
+      viewHome.classList.toggle('hidden', viewName !== 'home');
+      viewLog.classList.toggle('hidden', viewName !== 'record-log');
+      viewSummary.classList.toggle('hidden', viewName !== 'summary');
+
+      const navMap = {
+        'home': document.getElementById('nav-home'),
+        'record-log': document.getElementById('nav-record-log'),
+        'summary': document.getElementById('nav-summary')
+      };
+
+      Object.entries(navMap).forEach(([key, btn]) => {
+        if (!btn) return;
+        if (key === viewName) {
+          btn.className = 'nav-pill px-5 py-3 rounded-full text-sm font-bold bg-charcoal text-cream shadow-pill transition-all cursor-pointer';
+        } else {
+          btn.className = 'nav-pill px-5 py-3 rounded-full text-sm font-bold bg-white text-charcoal hover:bg-sand/70 border border-sand shadow-pill transition-all cursor-pointer';
+        }
+      });
+
+      if (viewName === 'record-log') {
+        renderRecordLog();
+      } else if (viewName === 'summary') {
+        renderSummaryView();
+      } else {
+        renderFloatingBalances();
+      }
+    }
+
+    // =========================================================================
+    // RECORD LOG VIEW (GROUPED BY MONTH & YEAR)
+    // =========================================================================
+    function deleteTransaction(txId) {
+      const idx = state.transactions.findIndex(t => t.id === txId);
+      if (idx === -1) return;
+      const tx = state.transactions[idx];
+
+      openConfirmModal(
+        'Delete Transaction?',
+        `Remove "${tx.detail}" (${formatPHP(tx.amount)}) and revert its effect on your account balance?`,
+        () => {
+          if (tx.type === 'income' && state.balances[tx.account] !== undefined) {
+            state.balances[tx.account] = Math.round((state.balances[tx.account] - tx.amount) * 100) / 100;
+          } else if (tx.type === 'expense' && state.balances[tx.account] !== undefined) {
+            state.balances[tx.account] = Math.round((state.balances[tx.account] + tx.amount) * 100) / 100;
+          } else if (tx.type === 'transfer') {
+            if (state.balances[tx.fromAccount] !== undefined) {
+              state.balances[tx.fromAccount] = Math.round((state.balances[tx.fromAccount] + tx.amount) * 100) / 100;
+            }
+            if (state.balances[tx.toAccount] !== undefined) {
+              state.balances[tx.toAccount] = Math.round((state.balances[tx.toAccount] - tx.amount) * 100) / 100;
+            }
+          }
+
+          state.transactions.splice(idx, 1);
+          saveState();
+          renderFloatingBalances();
+          renderRecordLog();
+          showToast('Transaction deleted & balance reverted', '🗑️');
+        }
+      );
+    }
+
+    function renderRecordLog() {
+      const container = document.getElementById('record-log-container');
+      const countBadge = document.getElementById('log-total-count');
+      if (!container) return;
+
+      const txs = [...state.transactions].sort((a, b) => {
+        if (b.date !== a.date) return b.date.localeCompare(a.date);
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+
+      countBadge.textContent = `${txs.length} ${txs.length === 1 ? 'entry' : 'entries'}`;
+
+      if (txs.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-[28px] p-8 text-center shadow-float border border-sand/80">
+            <div class="text-3xl mb-2">🌱</div>
+            <h3 class="text-base font-bold text-charcoal">No transactions logged yet</h3>
+            <p class="text-xs text-taupe font-body mt-1 mb-4">Your recorded income, expenses, and transfers will appear here grouped by month and year.</p>
+            <button type="button" onclick="switchView('home')" class="px-5 py-2.5 rounded-full bg-charcoal text-cream text-xs font-bold cursor-pointer">
+              Log First Transaction
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const groups = new Map();
+      txs.forEach(tx => {
+        const [y, m] = (tx.date || getTodayISO()).split('-');
+        const key = `${y}-${m}`;
+        if (!groups.has(key)) {
+          const labelDate = new Date(Number(y), Number(m) - 1, 1);
+          const monthYearLabel = labelDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+          groups.set(key, {
+            label: monthYearLabel,
+            items: [],
+            incomeTotal: 0,
+            expenseTotal: 0
+          });
+        }
+        const g = groups.get(key);
+        g.items.push(tx);
+        if (tx.type === 'income') g.incomeTotal += Number(tx.amount) || 0;
+        if (tx.type === 'expense') g.expenseTotal += Number(tx.amount) || 0;
+      });
+
+      container.innerHTML = Array.from(groups.values()).map(group => {
+        const rowsHTML = group.items.map(tx => {
+          const [y, m, d] = tx.date.split('-').map(Number);
+          const shortDate = new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+          let badgeHTML = '';
+          let amountHTML = '';
+          let iconEmoji = '🧾';
+
+          if (tx.type === 'income') {
+            const meta = getAccountMeta(tx.account);
+            iconEmoji = meta.icon;
+            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${meta.bgClass} ${meta.textClass}">${escapeHTML(tx.account)}</span>`;
+            amountHTML = `<span class="text-sm font-extrabold text-sage-dark">+${formatPHP(tx.amount)}</span>`;
+          } else if (tx.type === 'expense') {
+            const meta = getAccountMeta(tx.account);
+            iconEmoji = meta.icon;
+            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${meta.bgClass} ${meta.textClass}">${escapeHTML(tx.account)}</span>`;
+            amountHTML = `<span class="text-sm font-extrabold text-blush-dark">−${formatPHP(tx.amount)}</span>`;
+          } else {
+            iconEmoji = '🔁';
+            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-lavender-light text-lavender-dark">${escapeHTML(tx.fromAccount)} -&gt; ${escapeHTML(tx.toAccount)}</span>`;
+            amountHTML = `<span class="text-sm font-extrabold text-lavender-dark">${formatPHP(tx.amount)}</span>`;
+          }
+
+          return `
+            <div class="flex items-center justify-between gap-3 py-3 border-b border-sand/70 last:border-b-0">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-2xl bg-cream border border-sand flex items-center justify-center text-base shrink-0">
+                  ${iconEmoji}
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-bold text-charcoal truncate">${escapeHTML(tx.detail)}</p>
+                  <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                    <span class="text-[11px] font-medium text-taupe">${shortDate}</span>
+                    <span class="text-taupe/40 text-xs">•</span>
+                    ${badgeHTML}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 shrink-0">
+                ${amountHTML}
+                <button
+                  type="button"
+                  onclick="deleteTransaction('${escapeHTML(tx.id)}')"
+                  title="Delete entry"
+                  class="w-7 h-7 rounded-full text-taupe/60 hover:text-blush-dark hover:bg-blush-light/70 flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="bg-white rounded-[28px] p-5 shadow-float border border-sand/80">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-1 border-b border-sand">
+              <h3 class="text-base font-extrabold text-charcoal">${escapeHTML(group.label)}</h3>
+              <div class="flex items-center gap-2 text-[11px] font-bold">
+                <span class="px-2.5 py-0.5 rounded-full bg-sage-light text-sage-dark">+${formatPHP(group.incomeTotal)}</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-blush-light text-blush-dark">−${formatPHP(group.expenseTotal)}</span>
+              </div>
+            </div>
+            <div>${rowsHTML}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // SUMMARY VIEW & 4 CHART.JS VISUALIZATIONS
+    // =========================================================================
+    function destroyChartIfExists(canvasId) {
+      if (chartInstances[canvasId]) {
+        chartInstances[canvasId].destroy();
+        delete chartInstances[canvasId];
+      }
+    }
+
+    function renderSummaryView() {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth(); // 0-11
+      const currentYearStr = String(currentYear);
+      const currentMonthPrefix = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+
+      document.getElementById('summary-year-label').textContent = currentYearStr;
+      const totalBal = getTotalBalance();
+      document.getElementById('summary-total-balance').textContent = formatPHP(totalBal);
+
+      const positiveTotal = ACCOUNTS.reduce((sum, acc) => sum + Math.max(0, Number(state.balances[acc.id]) || 0), 0);
+      const barContainer = document.getElementById('summary-proportion-bar');
+      const breakdownContainer = document.getElementById('summary-account-breakdown');
+
+      if (positiveTotal > 0) {
+        barContainer.innerHTML = ACCOUNTS.map(acc => {
+          const val = Math.max(0, Number(state.balances[acc.id]) || 0);
+          const pct = (val / positiveTotal) * 100;
+          if (pct <= 0) return '';
+          return `<div style="width: ${pct}%; background-color: ${acc.barColor};" class="h-full rounded-full transition-all duration-500" title="${acc.label}: ${pct.toFixed(1)}%"></div>`;
+        }).join('');
+      } else {
+        barContainer.innerHTML = `<div class="w-full h-full rounded-full bg-taupe/20"></div>`;
+      }
+
+      breakdownContainer.innerHTML = ACCOUNTS.map(acc => {
+        const val = Number(state.balances[acc.id]) || 0;
+        const pct = positiveTotal > 0 && val > 0 ? ((val / positiveTotal) * 100).toFixed(1) : '0.0';
+        return `
+          <button
+            type="button"
+            onclick="openEditBalanceModal('${acc.id}')"
+            /* 4. Added flex-grow to fill container in Summary */
+            class="text-left rounded-2xl p-3.5 ${acc.bgClass} border ${acc.borderClass} hover:brightness-95 transition-all cursor-pointer flex items-center justify-between flex-grow basis-[calc(50%-0.5rem)]"
+          >
+            <div class="flex items-center gap-2.5">
+              <span class="text-lg">${acc.icon}</span>
+              <div>
+                <p class="text-xs font-bold ${acc.textClass}">${acc.label}</p>
+                <p class="text-[11px] font-medium text-taupe">${pct}% of positive funds</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-extrabold text-charcoal">${formatPHP(val)}</p>
+              <p class="text-[10px] font-semibold ${acc.textClass}">Edit ✎</p>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      const incomeByAccount = { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 };
+      const expenseByAccount = { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 };
+      let totalNetIncome = 0;
+      let totalNetExpenses = 0;
+
+      const monthlyIncome = new Array(12).fill(0);
+      const monthlyExpenses = new Array(12).fill(0);
+      let yearIncome = 0;
+      let yearExpenses = 0;
+
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const dailyIncome = new Array(daysInMonth).fill(0);
+      const dailyExpenses = new Array(daysInMonth).fill(0);
+      let monthIncome = 0;
+      let monthExpenses = 0;
+
+      state.transactions.forEach(tx => {
+        const amt = Number(tx.amount) || 0;
+        const [yStr, mStr, dStr] = (tx.date || '').split('-');
+        const y = Number(yStr);
+        const m = Number(mStr) - 1;
+        const d = Number(dStr) - 1;
+
+        if (tx.type === 'income') {
+          totalNetIncome += amt;
+          if (incomeByAccount[tx.account] !== undefined) incomeByAccount[tx.account] += amt;
+          if (y === currentYear && m >= 0 && m < 12) {
+            monthlyIncome[m] += amt;
+            yearIncome += amt;
+          }
+          if (tx.date && tx.date.startsWith(currentMonthPrefix) && d >= 0 && d < daysInMonth) {
+            dailyIncome[d] += amt;
+            monthIncome += amt;
+          }
+        } else if (tx.type === 'expense') {
+          totalNetExpenses += amt;
+          if (expenseByAccount[tx.account] !== undefined) expenseByAccount[tx.account] += amt;
+          if (y === currentYear && m >= 0 && m < 12) {
+            monthlyExpenses[m] += amt;
+            yearExpenses += amt;
+          }
+          if (tx.date && tx.date.startsWith(currentMonthPrefix) && d >= 0 && d < daysInMonth) {
+            dailyExpenses[d] += amt;
+            monthExpenses += amt;
+          }
+        }
+      });
+
+      document.getElementById('stat-net-income').textContent = formatPHP(totalNetIncome);
+      document.getElementById('stat-net-expenses').textContent = formatPHP(totalNetExpenses);
+
+      const yearNet = yearIncome - yearExpenses;
+      document.getElementById('title-this-year').textContent = `This Year (${currentYear})`;
+      document.getElementById('stat-this-year').textContent = `Net ${formatPHP(yearNet)}`;
+
+      const monthName = now.toLocaleDateString('en-US', { month: 'long' });
+      const monthNet = monthIncome - monthExpenses;
+      document.getElementById('title-this-month').textContent = `This Month (${monthName})`;
+      document.getElementById('stat-this-month').textContent = `Net ${formatPHP(monthNet)}`;
+
+      if (typeof Chart === 'undefined') return;
+
+      const commonDoughnutOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '64%',
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              boxWidth: 10,
+              boxHeight: 10,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              font: { family: 'Inter', size: 11, weight: '600' },
+              color: '#262522'
+            }
+          }
+        }
+      };
+
+      destroyChartIfExists('chart-net-income');
+      const incValues = ACCOUNTS.map(a => incomeByAccount[a.id]);
+      const hasInc = incValues.some(v => v > 0);
+      chartInstances['chart-net-income'] = new Chart(document.getElementById('chart-net-income'), {
+        type: 'doughnut',
+        data: {
+          labels: hasInc ? ACCOUNTS.map(a => a.label) : ['No Income Yet'],
+          datasets: [{
+            data: hasInc ? incValues : [1],
+            backgroundColor: hasInc ? ACCOUNTS.map(a => a.chartColor) : ['#F3EFEA'],
+            borderWidth: 2,
+            borderColor: '#FFFFFF'
+          }]
+        },
+        options: commonDoughnutOptions
+      });
+
+      destroyChartIfExists('chart-net-expenses');
+      const expValues = ACCOUNTS.map(a => expenseByAccount[a.id]);
+      const hasExp = expValues.some(v => v > 0);
+      chartInstances['chart-net-expenses'] = new Chart(document.getElementById('chart-net-expenses'), {
+        type: 'doughnut',
+        data: {
+          labels: hasExp ? ACCOUNTS.map(a => a.label) : ['No Expenses Yet'],
+          datasets: [{
+            data: hasExp ? expValues : [1],
+            backgroundColor: hasExp ? ACCOUNTS.map(a => a.chartColor) : ['#F3EFEA'],
+            borderWidth: 2,
+            borderColor: '#FFFFFF'
+          }]
+        },
+        options: commonDoughnutOptions
+      });
+
+      destroyChartIfExists('chart-this-year');
+      chartInstances['chart-this-year'] = new Chart(document.getElementById('chart-this-year'), {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          datasets: [
+            {
+              label: 'Income',
+              data: monthlyIncome,
+              backgroundColor: 'rgba(143, 185, 150, 0.85)',
+              borderRadius: 6
+            },
+            {
+              label: 'Expenses',
+              data: monthlyExpenses,
+              backgroundColor: 'rgba(229, 152, 155, 0.85)',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                usePointStyle: true,
+                pointStyle: 'circle',
+                font: { family: 'Inter', size: 11, weight: '600' },
+                color: '#262522'
+              }
+            }
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+            y: { beginAtZero: true, grid: { color: '#F3EFEA' }, ticks: { font: { size: 11 } } }
+          }
+        }
+      });
+
+      destroyChartIfExists('chart-this-month');
+      const dayLabels = Array.from({ length: daysInMonth }, (_, i) => String(i + 1));
+      chartInstances['chart-this-month'] = new Chart(document.getElementById('chart-this-month'), {
+        type: 'line',
+        data: {
+          labels: dayLabels,
+          datasets: [
+            {
+              label: 'Income',
+              data: dailyIncome,
+              borderColor: '#4A7C59',
+              backgroundColor: 'rgba(143, 185, 150, 0.25)',
+              fill: true,
+              tension: 0.35,
+              pointRadius: 2.5
+            },
+            {
+              label: 'Expenses',
+              data: dailyExpenses,
+              borderColor: '#B55D61',
+              backgroundColor: 'rgba(229, 152, 155, 0.25)',
+              fill: true,
+              tension: 0.35,
+              pointRadius: 2.5
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                usePointStyle: true,
+                pointStyle: 'circle',
+                font: { family: 'Inter', size: 11, weight: '600' },
+                color: '#262522'
+              }
+            }
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 15 } },
+            y: { beginAtZero: true, grid: { color: '#F3EFEA' }, ticks: { font: { size: 11 } } }
+          }
+        }
+      });
+    }
+
+    document.getElementById('btn-recalc-balances').addEventListener('click', () => {
+      state.balances = computeBalancesFromTransactions(state.transactions);
+      saveState();
+      renderFloatingBalances();
+      if (currentView === 'summary') renderSummaryView();
+      showToast('Balances recalculated from transaction log!', '🔄');
+    });
+
+    document.getElementById('btn-seed-demo').addEventListener('click', () => {
+      const loadDemo = () => {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const prevM = String(now.getMonth() === 0 ? 12 : now.getMonth()).padStart(2, '0');
+        const prevY = now.getMonth() === 0 ? y - 1 : y;
+
+        const demoTxs = [
+          { id: 'demo_1', date: `${prevY}-${prevM}-15`, type: 'income', account: 'UnionBank', amount: 35000, detail: 'Monthly Salary Payout', createdAt: 1 },
+          { id: 'demo_2', date: `${prevY}-${prevM}-18`, type: 'transfer', fromAccount: 'UnionBank', toAccount: 'GCash', amount: 6500, detail: 'Weekly e-wallet top-up', createdAt: 2 },
+          { id: 'demo_3', date: `${prevY}-${prevM}-22`, type: 'expense', account: 'GCash', amount: 1850, detail: 'Grocery & pantry restock', createdAt: 3 },
+          { id: 'demo_4', date: `${y}-${m}-01`, type: 'income', account: 'MariBank', amount: 12400, detail: 'Design freelance milestone', createdAt: 4 },
+          { id: 'demo_5', date: `${y}-${m}-03`, type: 'transfer', fromAccount: 'MariBank', toAccount: 'Cash', amount: 3000, detail: 'ATM pocket cash withdrawal', createdAt: 5 },
+          { id: 'demo_6', date: `${y}-${m}-05`, type: 'expense', account: 'Cash', amount: 245, detail: 'Iced oat latte & croissant', createdAt: 6 },
+          { id: 'demo_7', date: `${y}-${m}-08`, type: 'transfer', fromAccount: 'UnionBank', toAccount: 'Maya', amount: 5000, detail: 'Maya Savings goal transfer', createdAt: 7 },
+          { id: 'demo_8', date: `${y}-${m}-10`, type: 'expense', account: 'Maya', amount: 1290, detail: 'Internet & mobile bill', createdAt: 8 }
+        ];
+
+        state.transactions = demoTxs;
+        state.balances = computeBalancesFromTransactions(demoTxs);
+        saveState();
+        renderFloatingBalances();
+        if (currentView === 'record-log') renderRecordLog();
+        if (currentView === 'summary') renderSummaryView();
+        showToast('Sample transactions loaded!', '🌿');
+      };
+
+      if (state.transactions.length > 0 || getTotalBalance() !== 0) {
+        openConfirmModal(
+          'Load Sample Data?',
+          'This will replace your current balances and transactions with sample entries.',
+          loadDemo
+        );
+      } else {
+        loadDemo();
+      }
+    });
+
+    document.getElementById('btn-reset-all').addEventListener('click', () => {
+      openConfirmModal(
+        'Reset All Wallet Data?',
+        'This will clear all saved account balances and transaction logs from this browser.',
+        () => {
+          state = {
+            balances: { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 },
+            transactions: []
+          };
+          saveState();
+          renderFloatingBalances();
+          if (currentView === 'record-log') renderRecordLog();
+          if (currentView === 'summary') renderSummaryView();
+          showToast('Wallet reset to ₱0.00', '🧹');
+        }
+      );
+    });
+
+    function triggerDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    document.getElementById('btn-export-json').addEventListener('click', () => {
+      const payload = {
+        app: 'omywallet',
+        exportedAt: new Date().toISOString(),
+        balances: state.balances,
+        transactions: state.transactions
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      triggerDownload(blob, `omywallet-backup-${getTodayISO()}.json`);
+      showToast('Exported JSON backup', '📦');
+    });
+
+    document.getElementById('btn-export-xlsx').addEventListener('click', () => {
+      if (typeof XLSX === 'undefined') {
+        showToast('Excel library is still loading, try again', '⚠️');
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+
+      const balanceRows = ACCOUNTS.map(acc => ({
+        Account: acc.id,
+        Balance: Number(state.balances[acc.id]) || 0
+      }));
+      const wsBalances = XLSX.utils.json_to_sheet(balanceRows);
+      XLSX.utils.book_append_sheet(wb, wsBalances, 'Account Balances');
+
+      const txRows = state.transactions.map(tx => ({
+        ID: tx.id,
+        Date: tx.date,
+        Type: tx.type,
+        Account: tx.account || '',
+        FromAccount: tx.fromAccount || '',
+        ToAccount: tx.toAccount || '',
+        Amount: Number(tx.amount) || 0,
+        Detail: tx.detail || ''
+      }));
+      const wsTransactions = XLSX.utils.json_to_sheet(txRows);
+      XLSX.utils.book_append_sheet(wb, wsTransactions, 'Transactions');
+
+      const wbOut = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([wbOut], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      triggerDownload(blob, `omywallet-backup-${getTodayISO()}.xlsx`);
+      showToast('Exported Excel (.xlsx) workbook', '📊');
+    });
+
+    document.getElementById('btn-import-trigger').addEventListener('click', () => {
+      document.getElementById('file-import-input').click();
+    });
+
+    document.getElementById('file-import-input').addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (!file) return;
+
+      const fileName = file.name.toLowerCase();
+
+      const applyImportedState = (imported) => {
+        openConfirmModal(
+          'Import Wallet Data?',
+          `Replace current wallet with ${imported.transactions.length} transactions and Total Balance of ${formatPHP(getTotalBalance(imported.balances))}?`,
+          () => {
+            state = imported;
+            saveState();
+            renderFloatingBalances();
+            if (currentView === 'record-log') renderRecordLog();
+            if (currentView === 'summary') renderSummaryView();
+            showToast('Wallet data imported successfully!', '✅');
+          }
+        );
+      };
+
+      if (fileName.endsWith('.json')) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const parsed = JSON.parse(ev.target.result);
+            const imported = sanitizeImportedData(
+              parsed.balances || null,
+              parsed.transactions || (Array.isArray(parsed) ? parsed : [])
+            );
+            applyImportedState(imported);
+          } catch (err) {
+            console.error('JSON import error:', err);
+            showToast('Invalid JSON backup file', '⚠️');
+          }
+        };
+        reader.readAsText(file);
+      } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+        if (typeof XLSX === 'undefined') {
+          showToast('Excel library unavailable', '⚠️');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const data = new Uint8Array(ev.target.result);
+            const wb = XLSX.read(data, { type: 'array' });
+
+            const balSheet = wb.Sheets['Account Balances'] || wb.Sheets['Balances'];
+            const txSheet = wb.Sheets['Transactions'] || wb.Sheets[wb.SheetNames[0]];
+
+            const rawBalances = balSheet ? XLSX.utils.sheet_to_json(balSheet) : null;
+            const rawTransactions = txSheet ? XLSX.utils.sheet_to_json(txSheet) : [];
+
+            const imported = sanitizeImportedData(rawBalances, rawTransactions);
+            applyImportedState(imported);
+          } catch (err) {
+            console.error('XLSX import error:', err);
+            showToast('Could not read Excel (.xlsx) file', '⚠️');
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        showToast('Please select a .json or .xlsx file', '⚠️');
+      }
+    });
+
+    function runSelfTests() {
+      const reportBox = document.getElementById('selftest-report');
+      const resultsList = document.getElementById('selftest-results-list');
+      const overallBadge = document.getElementById('selftest-overall-badge');
+      const summaryText = document.getElementById('selftest-summary-text');
+
+      reportBox.classList.remove('hidden');
+
+      const snapshotState = JSON.parse(JSON.stringify(state));
+      const snapshotView = currentView;
+      const snapshotTxType = currentTxType;
+
+      const checks = [];
+      const record = (name, passed, detail = '') => {
+        checks.push({ name, passed: Boolean(passed), detail });
+      };
+
+      try {
+        const probeKey = '__omywallet_selftest_probe__';
+        localStorage.setItem(probeKey, JSON.stringify({ ok: true }));
+        const probeVal = JSON.parse(localStorage.getItem(probeKey));
+        localStorage.removeItem(probeKey);
+        record(
+          'LocalStorage Read/Write',
+          Boolean(probeVal && probeVal.ok === true),
+          'Verified using isolated probe key'
+        );
+
+        const today = getTodayISO();
+        state = {
+          balances: { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 },
+          transactions: []
+        };
+
+        state.balances.GCash += 1000;
+        state.transactions.push({
+          id: 'test_inc', date: today, type: 'income', account: 'GCash', amount: 1000, detail: 'Test Income', createdAt: 1
+        });
+        state.balances.GCash -= 250;
+        state.transactions.push({
+          id: 'test_exp', date: today, type: 'expense', account: 'GCash', amount: 250, detail: 'Test Expense', createdAt: 2
+        });
+        state.balances.GCash -= 300;
+        state.balances.Maya += 300;
+        state.transactions.push({
+          id: 'test_trn', date: today, type: 'transfer', fromAccount: 'GCash', toAccount: 'Maya', amount: 300, detail: 'Test Transfer', createdAt: 3
+        });
+
+        const mathValid = state.balances.GCash === 450 && state.balances.Maya === 300 && getTotalBalance() === 750;
+        record(
+          'Transaction Math (+, −, &)',
+          mathValid,
+          'GCash ₱450, Maya ₱300, Total ₱750'
+        );
+
+        setTransactionType('transfer');
+        const transferVisible = !document.getElementById('transfer-account-wrapper').classList.contains('hidden');
+        const fromEl = document.getElementById('tx-from-account');
+        const toEl = document.getElementById('tx-to-account');
+        fromEl.value = 'UnionBank';
+        toEl.value = 'MariBank';
+        document.getElementById('btn-swap-accounts').click();
+        const swapWorked = transferVisible && fromEl.value === 'MariBank' && toEl.value === 'UnionBank';
+        record(
+          'Transfer Mode & -> Swap',
+          swapWorked,
+          'Dual selectors & swap button active'
+        );
+
+        switchView('record-log');
+        const logHtml = document.getElementById('record-log-container').innerHTML;
+        const [y, m, d] = today.split('-').map(Number);
+        const expectedHeader = new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        record(
+          'Record Log Grouping',
+          logHtml.includes(expectedHeader) && logHtml.includes('Test Transfer'),
+          `Grouped under "${expectedHeader}"`
+        );
+
+        switchView('summary');
+        const topCardHidden = document.getElementById('floating-balances-card').classList.contains('hidden');
+        const allChartsCreated =
+          typeof Chart !== 'undefined' &&
+          Boolean(chartInstances['chart-net-income']) &&
+          Boolean(chartInstances['chart-net-expenses']) &&
+          Boolean(chartInstances['chart-this-year']) &&
+          Boolean(chartInstances['chart-this-month']);
+        record(
+          'Summary View & 4 Charts',
+          topCardHidden && allChartsCreated,
+          'Top card hidden; 4 Chart.js canvases active'
+        );
+
+        const jsonCleaned = sanitizeImportedData(null, state.transactions);
+        record(
+          'JSON Import & Balance Sync',
+          jsonCleaned.transactions.length === 3 && jsonCleaned.balances.GCash === 450 && jsonCleaned.balances.Maya === 300,
+          'Reconstructs balances from transactions'
+        );
+
+        let xlsxPassed = false;
+        let xlsxDetail = 'SheetJS library unavailable';
+        if (typeof XLSX !== 'undefined') {
+          const wb = XLSX.utils.book_new();
+          const wsBal = XLSX.utils.json_to_sheet(ACCOUNTS.map(a => ({ Account: a.id, Balance: state.balances[a.id] })));
+          const wsTx = XLSX.utils.json_to_sheet(state.transactions.map(t => ({
+            ID: t.id, Date: t.date, Type: t.type, Account: t.account || '',
+            FromAccount: t.fromAccount || '', ToAccount: t.toAccount || '', Amount: t.amount, Detail: t.detail
+          })));
+          XLSX.utils.book_append_sheet(wb, wsBal, 'Account Balances');
+          XLSX.utils.book_append_sheet(wb, wsTx, 'Transactions');
+          const arrayBuf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+          const readWb = XLSX.read(new Uint8Array(arrayBuf), { type: 'array' });
+          const parsedTx = XLSX.utils.sheet_to_json(readWb.Sheets['Transactions']);
+          const xlsxCleaned = sanitizeImportedData(state.balances, parsedTx);
+          xlsxPassed = xlsxCleaned.transactions.length === 3 && xlsxCleaned.balances.Maya === 300;
+          xlsxDetail = '2-sheet workbook round-trip verified';
+        }
+        record('XLSX Export/Import Round-Trip', xlsxPassed, xlsxDetail);
+
+      } catch (err) {
+        record('Unexpected Runtime Error', false, err.message || String(err));
+      } finally {
+        state = snapshotState;
+        setTransactionType(snapshotTxType);
+        renderFloatingBalances();
+        switchView(snapshotView);
+      }
+
+      const passedCount = checks.filter(c => c.passed).length;
+      const allPassed = passedCount === checks.length;
+
+      overallBadge.textContent = allPassed ? `ALL ${passedCount}/${checks.length} PASSED` : `${passedCount}/${checks.length} PASSED`;
+      overallBadge.className = allPassed
+        ? 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-sage-light text-sage-dark'
+        : 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-blush-light text-blush-dark';
+
+      summaryText.textContent = allPassed
+        ? 'Every module verified cleanly (your saved balances were untouched).'
+        : 'One or more checks reported an issue.';
+
+      resultsList.innerHTML = checks.map(c => `
+        <li class="rounded-2xl px-3 py-2 border ${c.passed ? 'bg-sage-light/50 border-sage/30' : 'bg-blush-light/60 border-blush/30'} flex items-start gap-2">
+          <span class="font-bold mt-0.5">${c.passed ? '✅' : '❌'}</span>
+          <div class="min-w-0">
+            <p class="font-bold text-charcoal truncate">${escapeHTML(c.name)}</p>
+            <p class="text-[11px] text-taupe truncate">${escapeHTML(c.detail)}</p>
+          </div>
+        </li>
+      `).join('');
+
+      showToast(allPassed ? `All ${passedCount} self-tests passed!` : 'Self-test finished with warnings', allPassed ? '✅' : '⚠️');
+    }
+
+    document.getElementById('btn-run-selftest').addEventListener('click', runSelfTests);
+    document.getElementById('btn-close-selftest').addEventListener('click', () => {
+      document.getElementById('selftest-report').classList.add('hidden');
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      document.getElementById('tx-date').value = getTodayISO();
+      setTransactionType('expense');
+      renderFloatingBalances();
+      switchView('home');
+    });
+  </script>
+</body>
+</html>
