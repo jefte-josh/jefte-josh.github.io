@@ -71,7 +71,7 @@
     };
   </script>
 </head>
-<body class="bg-[#fbf6ee] text-[#2e241d] min-h-screen antialiased selection:bg-[#f4d7b8] selection:text-[#6b3610] pb-20 flex flex-col">
+<body class="bg-cream text-charcoal min-h-screen antialiased selection:bg-sage-light selection:text-sage-dark pb-20 flex flex-col">
 
   <!-- Preloader -->
   <div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-cream transition-opacity duration-500">
@@ -586,6 +586,15 @@
             </svg>
             <span>Import File</span>
           </button>
+          <!-- Copy Transfer Link -->
+          <button
+            id="btn-copy-transfer-link"
+            type="button"
+            class="px-3.5 py-2 rounded-full text-xs font-bold bg-peach-light hover:bg-peach/25 text-peach-dark border border-peach/30 transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Copy Transfer Link</span>
+          </button>
+
           <input
             id="file-import-input"
             type="file"
@@ -2167,6 +2176,91 @@
       window.addEventListener('beforeunload', flush);
       document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
       try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+    })();
+  </script>
+  <script>
+    // Transfer link: whole wallet packed into the URL hash (#t=...)
+    (function () {
+      const toB64u = (bytes) => { let b = ''; bytes.forEach(x => b += String.fromCharCode(x)); return btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+      const fromB64u = (str) => { str = str.replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) str += '='; const b = atob(str); return Uint8Array.from(b, c => c.charCodeAt(0)); };
+      async function pipe(bytes, stream) {
+        const out = new Blob([bytes]).stream().pipeThrough(stream);
+        return new Uint8Array(await new Response(out).arrayBuffer());
+      }
+      const getName = () => { try { return (localStorage.getItem('omywallet_username') || '').trim(); } catch (e) { return ''; } };
+
+      async function buildLink() {
+        const payload = JSON.stringify({ v: 1, n: getName(), b: state.balances, t: state.transactions });
+        const bytes = new TextEncoder().encode(payload);
+        const packed = (typeof CompressionStream !== 'undefined')
+          ? 'z' + toB64u(await pipe(bytes, new CompressionStream('deflate-raw')))
+          : 'r' + toB64u(bytes);
+        return location.href.split('#')[0] + '#t=' + packed;
+      }
+      async function readLink(hash) {
+        const raw = hash.slice(3);
+        const bytes = fromB64u(raw.slice(1));
+        const plain = raw[0] === 'z' ? await pipe(bytes, new DecompressionStream('deflate-raw')) : bytes;
+        return JSON.parse(new TextDecoder().decode(plain));
+      }
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+        return new Promise((res, rej) => {
+          const ta = document.createElement('textarea');
+          ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy') ? res() : rej(); } catch (e) { rej(e); } finally { ta.remove(); }
+        });
+      }
+
+      document.getElementById('btn-copy-transfer-link').addEventListener('click', async () => {
+        try {
+          const link = await buildLink();
+          await copyText(link);
+          showToast(location.protocol === 'file:'
+            ? 'Link copied (works only on this device — host the file online to use elsewhere)'
+            : 'Transfer link copied — it contains your data, share privately', '🔗');
+          if (link.length > 8000) showToast('Link is very long; some apps may cut it. Use Export JSON if it fails', '⚠️');
+        } catch (err) {
+          showToast('Could not copy link', '⚠️');
+        }
+      });
+
+      window.addEventListener('load', async () => {
+        if (!location.hash.startsWith('#t=')) return;
+        try {
+          const data = await readLink(location.hash);
+          const imported = sanitizeImportedData(data.b || null, data.t || []);
+          const name = String(data.n || '').trim().slice(0, 30);
+          const clearHash = () => history.replaceState(null, '', location.pathname + location.search);
+          const applyName = () => {
+            if (!name) return;
+            try { localStorage.setItem('omywallet_username', name); } catch (e) {}
+            document.title = 'omywallet, ' + name;
+            const h = document.getElementById('brand-title');
+            if (h) h.textContent = 'omywallet, ' + name;
+            const m = document.getElementById('welcome-modal');
+            if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+          };
+          if (!getName()) applyName();
+          clearHash();
+          openConfirmModal(
+            'Import Transferred Wallet?',
+            `Replace current wallet with ${imported.transactions.length} transactions and Total Balance of ${formatPHP(getTotalBalance(imported.balances))}?`,
+            () => {
+              state = imported;
+              saveState();
+              applyName();
+              renderFloatingBalances();
+              if (currentView === 'record-log') renderRecordLog();
+              if (currentView === 'summary') renderSummaryView();
+              showToast('Wallet transferred successfully!', '✅');
+            }
+          );
+        } catch (err) {
+          showToast('Transfer link is invalid or incomplete', '⚠️');
+        }
+      });
     })();
   </script>
 </body>
