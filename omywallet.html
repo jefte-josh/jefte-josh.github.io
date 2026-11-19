@@ -71,8 +71,7 @@
     };
   </script>
 </head>
-<body class="class="bg-[#fbf6ee] text-[#2e241d] min-h-screen antialiased selection:bg-[#f4d7b8] selection:text-[#6b3610] pb-20 flex flex-col"
-">
+<body class="bg-cream text-charcoal min-h-screen antialiased selection:bg-sage-light selection:text-sage-dark pb-20 flex flex-col">
 
   <!-- Preloader -->
   <div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-cream transition-opacity duration-500">
@@ -1068,7 +1067,6 @@
             type="button"
             onclick="openEditBalanceModal('${acc.id}')"
             title="Click to edit ${acc.label} balance"
-            /* 4. Added flex-grow to fill container */
             class="group text-left rounded-2xl p-3 ${acc.bgClass} border ${acc.borderClass} hover:brightness-95 active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between flex-grow basis-[calc(33.333%-0.666rem)]"
           >
             <div class="flex items-center justify-between gap-1 mb-1">
@@ -2085,8 +2083,10 @@
       clearBtn.addEventListener('click', () => { input.value = ''; sync(); input.focus(); });
     })();
 
-    document.getElementById('btn-run-selftest').addEventListener('click', runSelfTests);
-    document.getElementById('btn-close-selftest').addEventListener('click', () => {
+    const _runSelfTestBtn = document.getElementById('btn-run-selftest');
+    if (_runSelfTestBtn) _runSelfTestBtn.addEventListener('click', runSelfTests);
+    const _closeSelfTestBtn = document.getElementById('btn-close-selftest');
+    if (_closeSelfTestBtn) _closeSelfTestBtn.addEventListener('click', () => {
       document.getElementById('selftest-report').classList.add('hidden');
     });
 
@@ -2157,6 +2157,16 @@
       });
       Promise.all([minDelay, loaded]).then(hidePreloader);
       setTimeout(hidePreloader, 5000);
+    })();
+  </script>
+  <script>
+    // Persistence hardening (no UI changes): flush on close/hide + ask browser not to evict storage
+    (function () {
+      const flush = () => { try { if (typeof saveState === 'function') saveState(); } catch (e) {} };
+      window.addEventListener('pagehide', flush);
+      window.addEventListener('beforeunload', flush);
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+      try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
     })();
   </script>
 </body>
