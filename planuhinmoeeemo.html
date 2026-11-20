@@ -1179,7 +1179,7 @@ button.vb.on {
 .fcm input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .fcm input[type=number]::-webkit-outer-spin-button,.fcm input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .best{display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap}.best .bg{padding:3px 10px;font:700 12px var(--mono)}.best .bg.on{background:var(--co);color:var(--sf);border-color:var(--co)}
-.cs{display:inline-flex}.cs button{border:0;background:transparent;padding:0 1px;font-size:16px;line-height:1;color:var(--am)}
+.fcb .cs{display:inline-flex}.fcb .cs button{border:0;background:transparent;padding:0 1px;font-size:16px;line-height:1;color:var(--am)}
 @media(max-width:520px){.tile b{font-size:16px}.fch .pri{flex:1 0 100%;order:3}}
 </style>
 
@@ -1740,7 +1740,7 @@ const GRADES = [
     '', '1.0', '1.25', '1.5', '1.75', '2.0', '2.25', '2.5', '2.75', '3.0', '4.0', '5.0', 'INC', 'DRP'
 ];
 const FAIL = g => g === '5.0' || g === 'INC' || g === 'DRP';
-const gradeH = c => `<div class="gr"><span>Grade</span><select data-g="${c.id}" aria-label="Grade for ${esc(c.code)}">${GRADES.map(g => `<option value="${g}"${(c.grade || '') === g ? ' selected' : ''}>${g || '—'}</option>`).join('')}<option value="__fc">📈 Link to course forecaster</option></select><select data-m="${c.id}" aria-label="Move ${esc(c.code)} to">${opts(c)}</select></div>`;
+const gradeH = c => `<div class="gr"><span>Grade</span><select data-g="${c.id}" aria-label="Grade for ${esc(c.code)}">${GRADES.map(g => `<option value="${g}"${(c.grade || '') === g ? ' selected' : ''}>${g || '—'}</option>`).join('')}${c.loc === -2 ? '' : '<option value="__fc">📈 Link to course forecaster</option>'}</select><select data-m="${c.id}" aria-label="Move ${esc(c.code)} to">${opts(c)}</select></div>`;
 // Passing grade -> Taken. 5.0 / INC / DRP -> original stays (counts in GWA if 5.0) and a retake copy is added to the next semester
 // Status change. Going to Planned parks the grade (c.pg); going to Taken/Credited restores it, so a grade is never lost by switching status
 // setSt(): change status. Going to 'plan' parks the grade in c.pg; going back restores it, so a grade is never lost.
@@ -2065,13 +2065,13 @@ function cardH(c, cm) {
         const rq = [c.pre.length ? 'Pre: ' + c.pre.join(', ') : '', cx.length ? 'Co: ' + cx.join(', ') : ''].filter(Boolean).join(' · ');
         return `<div class="card mini ${c.st}${stc(c)}" data-cat="${cat(c)}" draggable="true" tabindex="0" data-id="${c.id}" title="${esc(tip || 'No prereq/coreq')}">
 <div class="top"><b>${esc(c.code)}${c.note ? '*' : ''}</b>${unmet(c).length ? '<span title="Locked: prereq not met">🔒</span>' : ''}${w ? `<span class="w" title="${esc(w)}">⚠</span>` : ''}<span class="pill">${c.credit ? c.units + ' units' : 'non-credit'}</span></div>
-<div class="seg">${SEG.map(([k, n], i) => `<button data-s="${k}" data-id="${c.id}" class="${c.st === k ? 'on' : ''}" title="${n}" aria-label="${n}">${['○', '▶', '✓', '★'][i]}</button>`).join('')}${c.dup ? `<button data-del="${c.id}" class="dl" title="Delete this retake copy" aria-label="Delete this retake copy">🗑</button>` : ''}</div>${rq ? `<div class="rq">${esc(rq)}</div>` : ''}</div>`;
+<div class="seg">${SEG.filter(([k]) => !(c.loc === -2 && k === 'taking')).map(([k, n], i) => `<button data-s="${k}" data-id="${c.id}" class="${c.st === k ? 'on' : ''}" title="${n}" aria-label="${n}">${{plan:'○',taking:'▶',taken:'✓',credited:'★'}[k]}</button>`).join('')}${c.dup ? `<button data-del="${c.id}" class="dl" title="Delete this retake copy" aria-label="Delete this retake copy">🗑</button>` : ''}</div>${rq ? `<div class="rq">${esc(rq)}</div>` : ''}</div>`;
     }
     return `<div class="card ${c.st}${stc(c)}" data-cat="${cat(c)}" draggable="true" tabindex="0" data-id="${c.id}" title="${esc(tip || 'No prereq/coreq')}">
 <div class="top"><b>${esc(c.code)}${c.note ? '*' : ''}</b>${w ? `<span class="w" title="${esc(w)}">⚠</span>` : ''}<span class="pill">${c.credit ? c.units + ' units' : 'non-credit'}</span></div>
 <div class="t">${esc(c.title)}${isPh(c) ? ` <a data-r="${c.id}" role="button" tabindex="0">${c.title ? 'edit' : '✎ set course'}</a>` : ''}</div>
-${rel(c)}<div class="seg">${SEG.map(([k, n]) => `<button data-s="${k}" data-id="${c.id}" class="${c.st === k ? 'on' : ''}">${n}</button>`).join('')}${c.dup ? `<button data-del="${c.id}" class="dl" title="Delete this retake copy" aria-label="Delete this retake copy">🗑 Delete</button>` : ''}</div>
-${gradeH(c)}${fcBar(c)}</div>`;
+${rel(c)}<div class="seg">${SEG.filter(([k]) => !(c.loc === -2 && k === 'taking')).map(([k, n]) => `<button data-s="${k}" data-id="${c.id}" class="${c.st === k ? 'on' : ''}">${n}</button>`).join('')}${c.dup ? `<button data-del="${c.id}" class="dl" title="Delete this retake copy" aria-label="Delete this retake copy">🗑 Delete</button>` : ''}</div>
+${gradeH(c)}${c.loc === -2 ? '' : fcBar(c)}</div>`;
 }
 // midH(l): midyear container (6 units, up to 8 with approval)
 const midH = l => {
