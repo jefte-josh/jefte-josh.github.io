@@ -135,18 +135,52 @@
 
   <!-- Direct Account Balance Edit Modal -->
   <div id="edit-balance-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-charcoal/25 backdrop-blur-xs p-4">
-    <div class="bg-white rounded-[28px] max-w-sm w-full p-6 shadow-float border border-sand">
+    <div class="bg-white rounded-[28px] max-w-sm w-full p-6 shadow-float border border-sand max-h-[92vh] overflow-y-auto">
       <div class="flex items-center gap-2.5 mb-2">
         <span id="edit-bal-icon" class="text-2xl">💵</span>
         <div>
           <h3 id="edit-bal-title" class="text-lg font-bold text-charcoal leading-tight">Edit Cash Balance</h3>
-          <p class="text-xs text-taupe font-body">Set or update this account's current balance</p>
+          <p id="edit-bal-sub" class="text-xs text-taupe font-body">Set or update this account's current balance</p>
         </div>
       </div>
 
       <form id="edit-balance-form" class="mt-4 space-y-4">
         <div>
-          <label for="edit-bal-input" class="block text-xs font-semibold text-taupe mb-1.5 ml-1">Current Balance (PHP)</label>
+          <label for="acc-name-input" class="block text-xs font-semibold text-taupe mb-1.5 ml-1">Account Name</label>
+          <input
+            id="acc-name-input"
+            type="text"
+            maxlength="20"
+            autocomplete="off"
+            placeholder="e.g., BDO Savings"
+            class="w-full px-4 py-3 rounded-2xl bg-cream border border-sand focus:border-sage focus:bg-white focus:outline-none text-sm font-semibold text-charcoal transition-colors"
+          />
+        </div>
+
+        <div>
+          <label for="acc-emoji-input" class="block text-xs font-semibold text-taupe mb-1.5 ml-1">Logo / Emoji</label>
+          <div class="flex items-center gap-2">
+            <input
+              id="acc-emoji-input"
+              type="text"
+              maxlength="8"
+              autocomplete="off"
+              placeholder="😀"
+              class="w-16 text-center px-2 py-2.5 rounded-2xl bg-cream border border-sand focus:border-sage focus:bg-white focus:outline-none text-xl transition-colors"
+            />
+            <label for="acc-logo-file" class="px-3.5 py-2 rounded-full text-xs font-bold bg-lavender-light hover:bg-lavender/25 text-lavender-dark border border-lavender/30 transition-all cursor-pointer">
+              Upload logo
+            </label>
+            <input id="acc-logo-file" type="file" accept="image/*" class="hidden" />
+            <button id="acc-logo-clear" type="button" class="hidden px-3 py-2 rounded-full text-xs font-semibold text-taupe hover:bg-sand transition-colors cursor-pointer">
+              Clear logo
+            </button>
+          </div>
+          <div id="acc-emoji-picks" class="flex flex-wrap gap-1.5 mt-2.5"></div>
+        </div>
+
+        <div>
+          <label id="edit-bal-label" for="edit-bal-input" class="block text-xs font-semibold text-taupe mb-1.5 ml-1">Current Balance (PHP)</label>
           <div class="relative flex items-center">
             <span class="absolute left-4 text-lg font-bold text-taupe pointer-events-none">₱</span>
             <input
@@ -161,10 +195,13 @@
         </div>
 
         <div class="flex items-center justify-end gap-2.5 pt-1">
+          <button id="edit-bal-remove" type="button" class="hidden mr-auto px-4 py-2.5 rounded-full text-sm font-semibold text-blush-dark hover:bg-blush-light transition-colors cursor-pointer">
+            Remove
+          </button>
           <button id="edit-bal-cancel" type="button" class="px-4 py-2.5 rounded-full text-sm font-semibold text-taupe hover:bg-sand transition-colors cursor-pointer">
             Cancel
           </button>
-          <button type="submit" class="px-5 py-2.5 rounded-full text-sm font-bold bg-charcoal text-cream hover:bg-charcoal/90 transition-opacity cursor-pointer">
+          <button id="edit-bal-submit" type="submit" class="px-5 py-2.5 rounded-full text-sm font-bold bg-charcoal text-cream hover:bg-charcoal/90 transition-opacity cursor-pointer">
             Update Balance
           </button>
         </div>
@@ -713,6 +750,90 @@
     ];
 
     // =========================================================================
+    // CUSTOM ACCOUNTS (add / edit / remove) — definitions persist in localStorage
+    // =========================================================================
+    const ACCOUNTS_KEY = 'omywallet_accounts';
+    const PALETTES = ACCOUNTS.map(a => ({ bgClass: a.bgClass, borderClass: a.borderClass, textClass: a.textClass, barColor: a.barColor, chartColor: a.chartColor }));
+    ACCOUNTS.forEach((a, i) => { a.p = i; });
+    const DEFAULT_ACCOUNTS = ACCOUNTS.map(a => ({ ...a }));
+
+    const isLogo = v => typeof v === 'string' && /^data:image\/(png|jpeg|webp|gif);base64,/.test(v);
+    function cleanIcon(v) {
+      if (isLogo(v)) return v.length <= 60000 ? v : '💳';
+      const t = Array.from(String(v || '').trim()).slice(0, 8).join('');
+      return t || '💳';
+    }
+    function buildAccount(def) {
+      const p = Number.isInteger(def.p) && def.p >= 0 ? def.p % PALETTES.length : 0;
+      return { id: String(def.id), label: String(def.label || def.id).slice(0, 20), icon: cleanIcon(def.icon), p, ...PALETTES[p] };
+    }
+    function parseAccountDefs(raw) {
+      if (!Array.isArray(raw)) return null;
+      const seen = new Set();
+      const out = [];
+      raw.forEach(d => {
+        if (!d || typeof d !== 'object') return;
+        const id = String(d.id ?? '').replace(/[^A-Za-z0-9 _-]/g, '').trim().slice(0, 40);
+        if (!id || seen.has(id.toLowerCase())) return;
+        seen.add(id.toLowerCase());
+        out.push(buildAccount({ ...d, id }));
+      });
+      return out.length ? out : null;
+    }
+    const accountDefs = () => ACCOUNTS.map(a => ({ id: a.id, label: a.label, icon: a.icon, p: a.p }));
+    function setAccounts(list) { ACCOUNTS.splice(0, ACCOUNTS.length, ...list); }
+    function saveAccounts() { try { localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accountDefs())); } catch (e) {} }
+    function loadAccounts() {
+      try {
+        const defs = parseAccountDefs(JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || 'null'));
+        if (defs) setAccounts(defs);
+      } catch (e) {}
+    }
+    function resetAccounts() {
+      setAccounts(DEFAULT_ACCOUNTS.map(a => ({ ...a })));
+      try { localStorage.removeItem(ACCOUNTS_KEY); } catch (e) {}
+    }
+    function zeroBalances() { const o = {}; ACCOUNTS.forEach(a => { o[a.id] = 0; }); return o; }
+    function sumBalances(b) { return Object.values(b || {}).reduce((t, v) => t + (Number(v) || 0), 0); }
+    function accLabel(id) { const a = ACCOUNTS.find(x => x.id === id); return a ? a.label : String(id); }
+    function iconHTML(icon, cls = 'w-4 h-4') {
+      return isLogo(icon)
+        ? `<img src="${icon}" alt="" class="${cls} rounded-md object-cover inline-block align-middle">`
+        : escapeHTML(icon);
+    }
+    // Sanitize imported data against the imported account list without touching the live one
+    function sanitizeWithAccounts(rawB, rawT, defs) {
+      if (!defs) return sanitizeImportedData(rawB, rawT);
+      const backup = ACCOUNTS.slice();
+      try {
+        setAccounts(defs);
+        const out = sanitizeImportedData(rawB, rawT);
+        out._accounts = defs;
+        return out;
+      } finally {
+        setAccounts(backup);
+      }
+    }
+    function commitImported(imported) {
+      const defs = imported._accounts;
+      delete imported._accounts;
+      if (defs) { setAccounts(defs); saveAccounts(); populateAccountSelects(); }
+      return imported;
+    }
+    function populateAccountSelects() {
+      const html = ACCOUNTS.map(a =>
+        `<option value="${escapeHTML(a.id)}">${isLogo(a.icon) ? '' : escapeHTML(a.icon) + ' '}${escapeHTML(a.label)}</option>`
+      ).join('');
+      [['tx-account', 0], ['tx-from-account', 1], ['tx-to-account', 0]].forEach(([id, fb]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const prev = el.value;
+        el.innerHTML = html;
+        el.value = ACCOUNTS.some(a => a.id === prev) ? prev : (ACCOUNTS[fb] || ACCOUNTS[0]).id;
+      });
+    }
+
+    // =========================================================================
     // APPLICATION STATE
     // =========================================================================
     let state = {
@@ -847,7 +968,7 @@
     // PERSISTENCE, LEGACY RECOVERY & SANITIZATION
     // =========================================================================
     function computeBalancesFromTransactions(transactions) {
-      const computed = { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 };
+      const computed = zeroBalances();
       for (const tx of transactions) {
         const amt = Number(tx.amount) || 0;
         if (tx.type === 'income' && computed[tx.account] !== undefined) {
@@ -913,7 +1034,7 @@
         });
       }
 
-      const cleanBalances = { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 };
+      const cleanBalances = zeroBalances();
       let hasExplicitBalances = false;
 
       if (Array.isArray(rawBalances)) {
@@ -1015,21 +1136,49 @@
     // =========================================================================
     // DIRECT ACCOUNT BALANCE EDITING MODAL
     // =========================================================================
-    function openEditBalanceModal(accountId) {
-      const meta = getAccountMeta(accountId);
-      editingAccountId = accountId;
+    let accountModalMode = 'edit'; // 'edit' | 'add'
+    let pendingIcon = '💳';
+    const QUICK_ICONS = ['🏦', '💳', '💰', '🪙', '🐷', '🏠', '🚗', '🛒', '📱', '💼', '🎯', '✈️'];
 
-      document.getElementById('edit-bal-icon').textContent = meta.icon;
-      document.getElementById('edit-bal-title').textContent = `Edit ${meta.label} Balance`;
+    function renderIconPreview() {
+      document.getElementById('edit-bal-icon').innerHTML = iconHTML(pendingIcon, 'w-8 h-8');
+      document.getElementById('acc-logo-clear').classList.toggle('hidden', !isLogo(pendingIcon));
+    }
+
+    function setPendingIcon(value, syncField) {
+      pendingIcon = cleanIcon(value);
+      if (syncField) document.getElementById('acc-emoji-input').value = isLogo(pendingIcon) ? '' : pendingIcon;
+      renderIconPreview();
+    }
+
+    function openEditBalanceModal(accountId) {
+      const isAdd = accountId === null || accountId === undefined;
+      accountModalMode = isAdd ? 'add' : 'edit';
+      editingAccountId = isAdd ? null : accountId;
+      const meta = isAdd ? null : getAccountMeta(accountId);
+
+      document.getElementById('edit-bal-title').textContent = isAdd ? 'Add Account' : `Edit ${meta.label} Balance`;
+      document.getElementById('edit-bal-sub').textContent = isAdd
+        ? 'Name it, pick a logo or emoji, and set its balance'
+        : "Set or update this account's current balance";
+      document.getElementById('edit-bal-label').textContent = isAdd ? 'Starting Balance (PHP)' : 'Current Balance (PHP)';
+      document.getElementById('edit-bal-submit').textContent = isAdd ? 'Add Account' : 'Update Balance';
+      document.getElementById('edit-bal-remove').classList.toggle('hidden', isAdd);
+      document.getElementById('acc-name-input').value = isAdd ? '' : meta.label;
+
       const inputEl = document.getElementById('edit-bal-input');
-      inputEl.value = (Number(state.balances[accountId]) || 0).toFixed(2);
+      inputEl.required = !isAdd;
+      inputEl.value = isAdd ? '' : (Number(state.balances[accountId]) || 0).toFixed(2);
+
+      setPendingIcon(isAdd ? '💳' : meta.icon, true);
 
       const modal = document.getElementById('edit-balance-modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       setTimeout(() => {
-        inputEl.focus();
-        inputEl.select();
+        const target = isAdd ? document.getElementById('acc-name-input') : inputEl;
+        target.focus();
+        if (!isAdd) target.select();
       }, 40);
     }
 
@@ -1040,22 +1189,136 @@
       editingAccountId = null;
     }
 
+    function refreshAfterAccountChange() {
+      renderFloatingBalances();
+      if (currentView === 'record-log') renderRecordLog();
+      if (currentView === 'summary') renderSummaryView();
+    }
+
+    function fileToLogo(file) {
+      return new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onerror = reject;
+        fr.onload = () => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            const size = 64;
+            const c = document.createElement('canvas');
+            c.width = c.height = size;
+            const ctx = c.getContext('2d');
+            const ratio = Math.max(size / img.width, size / img.height);
+            const w = img.width * ratio;
+            const h = img.height * ratio;
+            ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+            let url = c.toDataURL('image/webp', 0.85);
+            if (!url.startsWith('data:image/webp')) url = c.toDataURL('image/png');
+            resolve(url);
+          };
+          img.src = fr.result;
+        };
+        fr.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById('acc-emoji-picks').innerHTML = QUICK_ICONS.map(em =>
+      `<button type="button" data-emoji="${em}" class="w-8 h-8 rounded-xl bg-cream hover:bg-sand border border-sand text-base flex items-center justify-center transition-colors cursor-pointer">${em}</button>`
+    ).join('');
+    document.getElementById('acc-emoji-picks').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-emoji]');
+      if (b) setPendingIcon(b.getAttribute('data-emoji'), true);
+    });
+    document.getElementById('acc-emoji-input').addEventListener('input', (e) => {
+      setPendingIcon(e.target.value, false);
+    });
+    document.getElementById('acc-logo-clear').addEventListener('click', () => setPendingIcon('💳', true));
+    document.getElementById('acc-logo-file').addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (!file) return;
+      try {
+        setPendingIcon(await fileToLogo(file), true);
+      } catch (err) {
+        showToast('Could not read that image', '⚠️');
+      }
+    });
+
     document.getElementById('edit-bal-cancel').addEventListener('click', closeEditBalanceModal);
+
+    document.getElementById('edit-bal-remove').addEventListener('click', () => {
+      const id = editingAccountId;
+      if (!id) return;
+      if (ACCOUNTS.length <= 1) {
+        showToast('Keep at least one account', '⚠️');
+        return;
+      }
+      const acc = getAccountMeta(id);
+      const related = state.transactions.filter(tx => tx.account === id || tx.fromAccount === id || tx.toAccount === id).length;
+      closeEditBalanceModal();
+      openConfirmModal(
+        `Remove ${acc.label}?`,
+        `${acc.label} (${formatPHP(Number(state.balances[id]) || 0)}) will be taken out of your total` +
+          (related ? `, along with its ${related} logged transaction${related === 1 ? '' : 's'}` : '') +
+          ". This can't be undone.",
+        () => {
+          const idx = ACCOUNTS.findIndex(a => a.id === id);
+          if (idx >= 0) ACCOUNTS.splice(idx, 1);
+          delete state.balances[id];
+          state.transactions = state.transactions.filter(tx => !(tx.account === id || tx.fromAccount === id || tx.toAccount === id));
+          saveAccounts();
+          saveState();
+          populateAccountSelects();
+          refreshAfterAccountChange();
+          showToast(`${acc.label} removed`, '🗑️');
+        }
+      );
+    });
 
     document.getElementById('edit-balance-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      if (!editingAccountId) return;
+      const name = document.getElementById('acc-name-input').value.trim().slice(0, 20);
+      if (!name) {
+        showToast('Please enter an account name', '⚠️');
+        document.getElementById('acc-name-input').focus();
+        return;
+      }
+      if (ACCOUNTS.some(a => a.id !== editingAccountId && a.label.toLowerCase() === name.toLowerCase())) {
+        showToast('An account with that name already exists', '⚠️');
+        return;
+      }
       const rawVal = parseFloat(document.getElementById('edit-bal-input').value);
-      if (isNaN(rawVal)) {
+      if (isNaN(rawVal) && accountModalMode === 'edit') {
         showToast('Please enter a valid number', '⚠️');
         return;
       }
+      const bal = isNaN(rawVal) ? 0 : Math.round(rawVal * 100) / 100;
+      const icon = cleanIcon(pendingIcon);
 
-      state.balances[editingAccountId] = Math.round(rawVal * 100) / 100;
+      if (accountModalMode === 'add') {
+        if (ACCOUNTS.length >= 24) {
+          showToast('Account limit reached (24)', '⚠️');
+          return;
+        }
+        const base = name.replace(/[^A-Za-z0-9 _-]/g, '').trim() || 'Account';
+        let id = base;
+        let n = 2;
+        while (ACCOUNTS.some(a => a.id.toLowerCase() === id.toLowerCase())) id = `${base} ${n++}`;
+        ACCOUNTS.push(buildAccount({ id, label: name, icon, p: ACCOUNTS.length % PALETTES.length }));
+        state.balances[id] = bal;
+        showToast(`${name} added with ${formatPHP(bal)}`, '✨');
+      } else {
+        const acc = ACCOUNTS.find(a => a.id === editingAccountId);
+        if (!acc) { closeEditBalanceModal(); return; }
+        acc.label = name;
+        acc.icon = icon;
+        state.balances[acc.id] = bal;
+        showToast(`${name} updated to ${formatPHP(bal)}`, '💳');
+      }
+
+      saveAccounts();
       saveState();
-      renderFloatingBalances();
-      if (currentView === 'summary') renderSummaryView();
-      showToast(`${editingAccountId} updated to ${formatPHP(state.balances[editingAccountId])}`, '💳');
+      populateAccountSelects();
+      refreshAfterAccountChange();
       closeEditBalanceModal();
     });
 
@@ -1075,13 +1338,13 @@
           <button
             type="button"
             onclick="openEditBalanceModal('${acc.id}')"
-            title="Click to edit ${acc.label} balance"
+            title="Click to edit ${escapeHTML(acc.label)} balance"
             class="group text-left rounded-2xl p-3 ${acc.bgClass} border ${acc.borderClass} hover:brightness-95 active:scale-[0.98] transition-all cursor-pointer flex flex-col justify-between flex-grow basis-[calc(33.333%-0.666rem)]"
           >
             <div class="flex items-center justify-between gap-1 mb-1">
               <span class="text-xs font-bold ${acc.textClass} flex items-center gap-1.5">
-                <span>${acc.icon}</span>
-                <span>${acc.label}</span>
+                <span class="inline-flex items-center">${iconHTML(acc.icon, 'w-4 h-4')}</span>
+                <span>${escapeHTML(acc.label)}</span>
               </span>
               <span class="text-[10px] font-semibold ${acc.textClass} opacity-60 group-hover:opacity-100 transition-opacity">
                 ✎
@@ -1092,7 +1355,17 @@
             </div>
           </button>
         `;
-      }).join('');
+      }).join('') + `
+        <button
+          type="button"
+          onclick="openEditBalanceModal(null)"
+          title="Add a new account"
+          class="group rounded-2xl p-3 border border-dashed border-sand hover:border-taupe/50 hover:bg-cream/70 active:scale-[0.98] transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 text-taupe hover:text-charcoal flex-grow basis-[calc(33.333%-0.666rem)] min-h-[3.75rem]"
+        >
+          <span class="text-lg font-extrabold leading-none">+</span>
+          <span class="text-[11px] font-bold">Add account</span>
+        </button>
+      `;
     }
 
     // =========================================================================
@@ -1196,11 +1469,11 @@
           fromAccount,
           toAccount,
           amount,
-          detail: rawDetail || `${fromAccount} -> ${toAccount}`,
+          detail: rawDetail || `${accLabel(fromAccount)} -> ${accLabel(toAccount)}`,
           createdAt: Date.now()
         });
 
-        showToast(`Transferred ${formatPHP(amount)} (${fromAccount} -> ${toAccount})`, '🔁');
+        showToast(`Transferred ${formatPHP(amount)} (${accLabel(fromAccount)} -> ${accLabel(toAccount)})`, '🔁');
       } else {
         const account = document.getElementById('tx-account').value;
         if (currentTxType === 'income') {
@@ -1221,8 +1494,8 @@
 
         showToast(
           currentTxType === 'income'
-            ? `Added +${formatPHP(amount)} to ${account}`
-            : `Logged −${formatPHP(amount)} from ${account}`,
+            ? `Added +${formatPHP(amount)} to ${accLabel(account)}`
+            : `Logged −${formatPHP(amount)} from ${accLabel(account)}`,
           currentTxType === 'income' ? '🌿' : '🧾'
         );
       }
@@ -1402,17 +1675,17 @@
 
           if (tx.type === 'income') {
             const meta = getAccountMeta(tx.account);
-            iconEmoji = meta.icon;
-            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${meta.bgClass} ${meta.textClass}">${escapeHTML(tx.account)}</span>`;
+            iconEmoji = iconHTML(meta.icon, 'w-6 h-6');
+            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${meta.bgClass} ${meta.textClass}">${escapeHTML(accLabel(tx.account))}</span>`;
             amountHTML = `<span class="text-sm font-extrabold text-sage-dark">+${formatPHP(tx.amount)}</span>`;
           } else if (tx.type === 'expense') {
             const meta = getAccountMeta(tx.account);
-            iconEmoji = meta.icon;
-            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${meta.bgClass} ${meta.textClass}">${escapeHTML(tx.account)}</span>`;
+            iconEmoji = iconHTML(meta.icon, 'w-6 h-6');
+            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${meta.bgClass} ${meta.textClass}">${escapeHTML(accLabel(tx.account))}</span>`;
             amountHTML = `<span class="text-sm font-extrabold text-blush-dark">−${formatPHP(tx.amount)}</span>`;
           } else {
             iconEmoji = '🔁';
-            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-lavender-light text-lavender-dark">${escapeHTML(tx.fromAccount)} -&gt; ${escapeHTML(tx.toAccount)}</span>`;
+            badgeHTML = `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-lavender-light text-lavender-dark">${escapeHTML(accLabel(tx.fromAccount))} -&gt; ${escapeHTML(accLabel(tx.toAccount))}</span>`;
             amountHTML = `<span class="text-sm font-extrabold text-lavender-dark">${formatPHP(tx.amount)}</span>`;
           }
 
@@ -1495,7 +1768,7 @@
           const val = Math.max(0, Number(state.balances[acc.id]) || 0);
           const pct = (val / positiveTotal) * 100;
           if (pct <= 0) return '';
-          return `<div style="width: ${pct}%; background-color: ${acc.barColor};" class="h-full rounded-full transition-all duration-500" title="${acc.label}: ${pct.toFixed(1)}%"></div>`;
+          return `<div style="width: ${pct}%; background-color: ${acc.barColor};" class="h-full rounded-full transition-all duration-500" title="${escapeHTML(acc.label)}: ${pct.toFixed(1)}%"></div>`;
         }).join('');
       } else {
         barContainer.innerHTML = `<div class="w-full h-full rounded-full bg-taupe/20"></div>`;
@@ -1512,9 +1785,9 @@
             class="text-left rounded-2xl p-3.5 ${acc.bgClass} border ${acc.borderClass} hover:brightness-95 transition-all cursor-pointer flex items-center justify-between flex-grow basis-[calc(50%-0.5rem)]"
           >
             <div class="flex items-center gap-2.5">
-              <span class="text-lg">${acc.icon}</span>
+              <span class="text-lg">${iconHTML(acc.icon, 'w-6 h-6')}</span>
               <div>
-                <p class="text-xs font-bold ${acc.textClass}">${acc.label}</p>
+                <p class="text-xs font-bold ${acc.textClass}">${escapeHTML(acc.label)}</p>
                 <p class="text-[11px] font-medium text-taupe">${pct}% of positive funds</p>
               </div>
             </div>
@@ -1526,8 +1799,8 @@
         `;
       }).join('');
 
-      const incomeByAccount = { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 };
-      const expenseByAccount = { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 };
+      const incomeByAccount = zeroBalances();
+      const expenseByAccount = zeroBalances();
       let totalNetIncome = 0;
       let totalNetExpenses = 0;
 
@@ -1739,6 +2012,8 @@
 
     document.getElementById('btn-seed-demo').addEventListener('click', () => {
       const loadDemo = () => {
+        resetAccounts();
+        populateAccountSelects();
         const now = new Date();
         const y = now.getFullYear();
         const m = String(now.getMonth() + 1).padStart(2, '0');
@@ -1779,10 +2054,12 @@
     document.getElementById('btn-reset-all').addEventListener('click', () => {
       openConfirmModal(
         'Reset All Wallet Data?',
-        'This will clear all saved account balances and transaction logs from this browser.',
+        'This will clear all saved account balances, transaction logs, and custom accounts from this browser.',
         () => {
+          resetAccounts();
+          populateAccountSelects();
           state = {
-            balances: { Cash: 0, GCash: 0, UnionBank: 0, MariBank: 0, Maya: 0 },
+            balances: zeroBalances(),
             transactions: []
           };
           saveState();
@@ -1809,6 +2086,7 @@
       const payload = {
         app: 'omywallet',
         exportedAt: new Date().toISOString(),
+        accounts: accountDefs(),
         balances: state.balances,
         transactions: state.transactions
       };
@@ -1845,6 +2123,9 @@
       const wsTransactions = XLSX.utils.json_to_sheet(txRows);
       XLSX.utils.book_append_sheet(wb, wsTransactions, 'Transactions');
 
+      const wsAccounts = XLSX.utils.json_to_sheet(ACCOUNTS.map(a => ({ Id: a.id, Label: a.label, Icon: a.icon, Palette: a.p })));
+      XLSX.utils.book_append_sheet(wb, wsAccounts, 'Accounts');
+
       const wbOut = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([wbOut], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -1867,9 +2148,9 @@
       const applyImportedState = (imported) => {
         openConfirmModal(
           'Import Wallet Data?',
-          `Replace current wallet with ${imported.transactions.length} transactions and Total Balance of ${formatPHP(getTotalBalance(imported.balances))}?`,
+          `Replace current wallet with ${imported.transactions.length} transactions and Total Balance of ${formatPHP(sumBalances(imported.balances))}?`,
           () => {
-            state = imported;
+            state = commitImported(imported);
             saveState();
             renderFloatingBalances();
             if (currentView === 'record-log') renderRecordLog();
@@ -1884,9 +2165,10 @@
         reader.onload = (ev) => {
           try {
             const parsed = JSON.parse(ev.target.result);
-            const imported = sanitizeImportedData(
+            const imported = sanitizeWithAccounts(
               parsed.balances || null,
-              parsed.transactions || (Array.isArray(parsed) ? parsed : [])
+              parsed.transactions || (Array.isArray(parsed) ? parsed : []),
+              parseAccountDefs(parsed.accounts)
             );
             applyImportedState(imported);
           } catch (err) {
@@ -1912,7 +2194,11 @@
             const rawBalances = balSheet ? XLSX.utils.sheet_to_json(balSheet) : null;
             const rawTransactions = txSheet ? XLSX.utils.sheet_to_json(txSheet) : [];
 
-            const imported = sanitizeImportedData(rawBalances, rawTransactions);
+            const accSheet = wb.Sheets['Accounts'];
+            const accRows = accSheet ? XLSX.utils.sheet_to_json(accSheet) : null;
+            const defs = accRows ? parseAccountDefs(accRows.map(r => ({ id: r.Id, label: r.Label, icon: r.Icon, p: Number(r.Palette) }))) : null;
+
+            const imported = sanitizeWithAccounts(rawBalances, rawTransactions, defs);
             applyImportedState(imported);
           } catch (err) {
             console.error('XLSX import error:', err);
@@ -2100,6 +2386,8 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
+      loadAccounts();
+      populateAccountSelects();
       loadState();
       document.getElementById('tx-date').value = getTodayISO();
       setTransactionType('expense');
@@ -2190,7 +2478,7 @@
       const getName = () => { try { return (localStorage.getItem('omywallet_username') || '').trim(); } catch (e) { return ''; } };
 
       async function buildLink() {
-        const payload = JSON.stringify({ v: 1, n: getName(), b: state.balances, t: state.transactions });
+        const payload = JSON.stringify({ v: 1, n: getName(), a: accountDefs(), b: state.balances, t: state.transactions });
         const bytes = new TextEncoder().encode(payload);
         const packed = (typeof CompressionStream !== 'undefined')
           ? 'z' + toB64u(await pipe(bytes, new CompressionStream('deflate-raw')))
@@ -2230,7 +2518,7 @@
         if (!location.hash.startsWith('#t=')) return;
         try {
           const data = await readLink(location.hash);
-          const imported = sanitizeImportedData(data.b || null, data.t || []);
+          const imported = sanitizeWithAccounts(data.b || null, data.t || [], parseAccountDefs(data.a));
           const name = String(data.n || '').trim().slice(0, 30);
           const clearHash = () => history.replaceState(null, '', location.pathname + location.search);
           const applyName = () => {
@@ -2246,9 +2534,9 @@
           clearHash();
           openConfirmModal(
             'Import Transferred Wallet?',
-            `Replace current wallet with ${imported.transactions.length} transactions and Total Balance of ${formatPHP(getTotalBalance(imported.balances))}?`,
+            `Replace current wallet with ${imported.transactions.length} transactions and Total Balance of ${formatPHP(sumBalances(imported.balances))}?`,
             () => {
-              state = imported;
+              state = commitImported(imported);
               saveState();
               applyName();
               renderFloatingBalances();
