@@ -1162,7 +1162,7 @@ button.vb.on {
 .fch .ttl{flex:1;min-width:160px}.fch h2{margin:0;font:700 18px var(--mono)}.fch small{color:var(--mut)}
 .fcm button.pri{background:var(--mar);color:#fff;border-color:var(--mar)}.fcm .tag{background:#ffffff33;border-radius:999px;padding:0 8px;font-size:11px;margin-left:4px}
 .fcm .ic{padding:4px 10px}.fcb2{padding:14px 16px 18px;display:grid;gap:14px}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tile{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}@media(max-width:600px){.tiles{grid-template-columns:repeat(2,1fr)}}.tile{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px}
 .tile b{font:700 20px var(--mono);color:var(--mar2)}.tile i{font:400 12px system-ui;color:var(--mut)}.tile small{color:var(--mut);font-size:11px}
 .fcs{background:var(--bg);border-radius:12px;padding:12px}.fch2{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .tplr{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}.tplr select{max-width:230px}.tplr button:disabled{opacity:.45;cursor:not-allowed}
@@ -1935,8 +1935,8 @@ function fcForecast(c, mode) {
 }
 const fcBar = c => `<div class="fcb"><button type="button" data-star="${c.id}" aria-label="Rate difficulty" aria-expanded="${starOpen === c.id}" title="Rate difficulty">⭐</button>${c.diff ? `<span class="chip" title="Difficulty">★${c.diff}</span>` : ''}${starOpen === c.id ? `<span class="pop" role="group" aria-label="Difficulty">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-rate="${c.id}:${n}" aria-label="${n} star${n > 1 ? 's' : ''}">${n <= (c.diff || 0) ? '★' : '☆'}</button>`).join('')}</span>` : ''}<button type="button" data-fc="${c.id}" title="Open Course 4caster">📈 4caster</button></div>`;
 const fcTiles = f => {
-    const d = fcDone(f), p = fcPct(f), g = fcGradeOf(f, p);
-    return `<div class="tile"><small>Current grade</small><b>${g || '—'}</b><small>${p === null ? 'no scores yet' : p.toFixed(1) + '% avg of scored work'}</small></div><div class="tile"><small>Points earned</small><b>${fcEarned(f).toFixed(2)}<i> / 100</i></b><small>from filled records</small></div><div class="tile"><small>Coursework scored</small><b>${+d.toFixed(2)}%</b><small>${+Math.max(0, fcTot(f) - d).toFixed(2)}% left</small></div>`;
+    const d = fcDone(f), p = fcPct(f), g = fcGradeOf(f, p), mxp = fcEarned(f) + f.comps.reduce((a, k) => a + k.entries.reduce((b, e) => b + (fcBlank(e) ? k.w / k.entries.length : 0), 0), 0), mg = fcManErr(f) ? null : fcGradeOf(f, mxp); // mxp: points earned + every blank record scored perfectly
+    return `<div class="tile"><small>Current grade</small><b>${g || '—'}</b><small>${p === null ? 'no scores yet' : p.toFixed(1) + '% avg of scored work'}</small></div><div class="tile"><small>Points earned</small><b>${fcEarned(f).toFixed(2)}<i> / 100</i></b><small>from filled records</small></div><div class="tile"><small>Coursework scored</small><b>${+d.toFixed(2)}%</b><small>${+Math.max(0, fcTot(f) - d).toFixed(2)}% left</small></div><div class="tile"><small>Maximum grade</small><b>${mg || '—'}</b><small>${+mxp.toFixed(2)}% max attainable</small></div>`;
 };
 const fcTargetOpts = f => '<option value="">— choose —</option>' + fcScale(f).map(([m, g]) => `<option value="${g}"${f.target === g ? ' selected' : ''}>${g} (≥${m}%)</option>`).join('');
 function fcResHtml(c, res) {
@@ -2566,7 +2566,7 @@ const dl = (name, text, type) => {
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };
-$('#exp').onclick = () => dl(`degree-planner-${P}.json`, JSON.stringify(S, null, 1), 'application/json');
+$('#exp').onclick = () => dl(`degree-planner-${P}.json`, JSON.stringify(Object.assign({}, S, { fcTemplates: tplRaw() }), null, 1), 'application/json'); // plan + the user's own 4caster templates
 $('#rst').onclick = () => {
     if (confirm(`Reset ${PROGS[P].name} to its default curriculum? Statuses and changes will be lost.`)) {
         S = seed(P);
@@ -2582,6 +2582,13 @@ async function ingest(f) {
             throw Error('not a saved plan');
         }
         if (confirm(`Import this saved plan into ${PROGS[P].name}? It replaces the current plan.`)) {
+            // user templates ride along in the file: merge them into this browser's templates (same name = imported one wins), keep them out of the plan state
+            const tp = j.fcTemplates; delete j.fcTemplates;
+            if (tp && typeof tp === 'object') {
+                const T = tplRaw();
+                ['grading', 'comps'].forEach(k => { (Array.isArray(tp[k]) ? tp[k] : []).forEach(t => { if (t && typeof t.name === 'string' && t.name) { const i = T[k].findIndex(x => x.name === t.name); if (i >= 0) { T[k][i] = t; } else { T[k].push(t); } } }); });
+                tplStore(T);
+            }
             mig(j);
             S = Object.assign(seed(P), j);
             ensureSk(S);
