@@ -670,6 +670,7 @@ h3 {
   .stat.tk,
   .stat.cd,
   .stat.gw,
+  .stat.pj,
   .lgd,
   .ph {
     display: none;
@@ -871,6 +872,10 @@ button.vb.on {
 
 .stat.gw {
   border-left: 4px solid var(--am);
+}
+
+.stat.pj {
+  border-left: 4px solid var(--cr);
 }
 
 #pt+.prog {
@@ -1697,6 +1702,17 @@ const gEnt = () => {
     });
     return a;
 };
+// gProj(): entries for the PROJECTED GWA = gEnt() + every 'taking' subject that already has a 4caster current grade (from its scored work); n = how many taking subjects were included
+const gProj = () => {
+    const a = gEnt();
+    let n = 0;
+    S.cards.forEach(c => {
+        if (c.st !== 'taking' || !c.credit || !c.units || /^(PE|NSTP)\b/i.test(c.code) || !c.fc) { return; }
+        const f = c.fc, g = fcManErr(f) ? null : fcGradeOf(f, fcPct(f));
+        if (g && !isNaN(+g)) { a.push({ l: c.loc, g: +g, u: c.units }); n++; }
+    });
+    return { a, n };
+};
 // fmtG(): weighted average = sum(grade*units)/sum(units), 3 decimals, or an em dash when empty
 const fmtG = a => {
     const u = a.reduce((t, x) => t + x.u, 0);
@@ -2193,7 +2209,8 @@ function render() {
     const sm = s => cr.filter(c => c.st === s).reduce((a, c) => a + c.units, 0);
     const tk = sm('taken');
     const cd = sm('credited');
-    $('#pt').innerHTML = `<div class="ph">${esc(PROGS[P].name)}</div><div class="stats"><div class="stat main"><span class="k">Progress</span><b>${pct(tk + cd, tot)}%</b><small>${tk + cd} / ${tot} units done</small></div><div class="stat tk"><span class="k">Taken</span><b>${tk}</b><small>units · ${pct(tk, tot)}%</small></div><div class="stat cd"><span class="k">Credited</span><b>${cd}</b><small>units · ${pct(cd, tot)}%</small></div><div class="stat togo"><span class="k">To go</span><b>${tot - tk - cd}</b><small>units left</small></div><div class="stat gw" title="Overall GWA (excludes PE and NSTP)"><span class="k">Overall GWA</span><b>${fmtG(gEnt())}</b><small>excl. PE &amp; NSTP</small></div></div>`;
+    const PJ = gProj();
+    $('#pt').innerHTML = `<div class="ph">${esc(PROGS[P].name)}</div><div class="stats"><div class="stat main"><span class="k">Progress</span><b>${pct(tk + cd, tot)}%</b><small>${tk + cd} / ${tot} units done</small></div><div class="stat tk"><span class="k">Taken</span><b>${tk}</b><small>units · ${pct(tk, tot)}%</small></div><div class="stat cd"><span class="k">Credited</span><b>${cd}</b><small>units · ${pct(cd, tot)}%</small></div><div class="stat togo"><span class="k">To go</span><b>${tot - tk - cd}</b><small>units left</small></div><div class="stat gw" title="Overall GWA (excludes PE and NSTP)"><span class="k">Overall GWA</span><b>${fmtG(gEnt())}</b><small>excl. PE &amp; NSTP</small></div><div class="stat pj" title="Overall GWA plus the current 4caster grade of every subject you are taking"><span class="k">Projected GWA</span><b>${fmtG(PJ.a)}</b><small>${PJ.n ? 'incl. ' + PJ.n + ' taking subject' + (PJ.n === 1 ? '' : 's') : 'no taking grades yet'}</small></div></div>`;
     const dp = pct(tk + cd, tot);
     $('#gs').textContent = 'Standing: ' + (dp >= 75 ? '4th' : dp >= 50 ? '3rd' : dp >= 25 ? '2nd' : '1st') + ' Year';
     $('#pc').style.width = (tot ? cd / tot * 100 : 0) + '%';
