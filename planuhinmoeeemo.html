@@ -411,6 +411,11 @@ h3 {
   background: var(--okb);
 }
 
+.card.taking {
+  background: color-mix(in srgb, var(--mar2) 13%, var(--sf));
+  box-shadow: inset 0 0 0 1px var(--mar2);
+}
+
 .card.credited {
   background: var(--crb);
   opacity: .85;
@@ -477,6 +482,11 @@ h3 {
 
 .seg button.on[data-s=taken] {
   background: var(--ok);
+  color: #fff;
+}
+
+.seg button.on[data-s=taking] {
+  background: var(--mar2);
   color: #fff;
 }
 
@@ -1138,6 +1148,38 @@ button.vb.on {
     animation-delay: 0s!important;
   }
 }
+.fcb{display:flex;gap:6px;margin-top:6px;position:relative;align-items:center;flex-wrap:wrap}.fcb button{font-size:11px;padding:3px 10px}
+.fcb .chip{font:600 11px var(--mono);color:var(--am);background:var(--amb);border-radius:999px;padding:1px 7px}
+.pop{position:absolute;left:0;bottom:100%;margin-bottom:4px;background:var(--sf);border:1px solid var(--bd);border-radius:999px;box-shadow:var(--sh);padding:2px 6px;display:flex;z-index:5}
+.pop button{border:0;background:transparent;font-size:18px;padding:0 2px;color:var(--am)}
+.fcov{position:fixed;inset:0;background:#000a;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:12px}
+.fcm{background:var(--sf);color:var(--fg);border-radius:14px;box-shadow:var(--sh);width:min(720px,100%);border-top:4px solid var(--mar);margin:auto;font-size:13px}
+.fch{position:sticky;top:0;z-index:3;background:var(--sf);border-radius:12px 12px 0 0;padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fch .ttl{flex:1;min-width:160px}.fch h2{margin:0;font:700 18px var(--mono)}.fch small{color:var(--mut)}
+.fcm button.pri{background:var(--mar);color:#fff;border-color:var(--mar)}.fcm .tag{background:#ffffff33;border-radius:999px;padding:0 8px;font-size:11px;margin-left:4px}
+.fcm .ic{padding:4px 10px}.fcb2{padding:14px 16px 18px;display:grid;gap:14px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tile{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px}
+.tile b{font:700 20px var(--mono);color:var(--mar2)}.tile i{font:400 12px system-ui;color:var(--mut)}.tile small{color:var(--mut);font-size:11px}
+.fcs{background:var(--bg);border-radius:12px;padding:12px}.fch2{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.fch2 h3{margin:0;font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.6px;color:var(--mut)}.fch2 .r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fcm input,.fcm select{font:inherit;color:inherit;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:4px 8px}.fcm input[type=number]{width:84px}
+.fcm .bad{color:var(--rd);font-weight:600}.fcm .wok{color:var(--ok);font-weight:600}
+.wbar{height:6px;border-radius:3px;background:var(--bd);overflow:hidden;margin-bottom:8px}.wbar i{display:block;height:100%;background:var(--am);transition:width .2s}.wbar i.ok{background:var(--ok)}.wbar i.over{background:var(--rd)}
+.mang{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px;margin-top:8px}.mang input{width:60px!important}
+.scl{margin-top:6px}.scl summary{cursor:pointer;color:var(--mar2)}
+.cmp{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:8px 10px;margin-bottom:8px}.chd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.ctype{background:var(--mar);color:#fff;border-radius:999px;padding:2px 10px;font:600 12px var(--mono)}.chd .ic{margin-left:auto}
+.rec{display:grid;grid-template-columns:30px minmax(56px,1fr) auto minmax(56px,1fr) 32px;gap:6px;align-items:center;margin:4px 0}.rec input{width:100%!important}
+.fcm input.ph{border-color:var(--co);background:var(--cob)}.fcm input.ph::placeholder{color:var(--co);font-weight:700;opacity:1}.tealtxt{color:var(--co)}
+.addc{display:flex;gap:6px;flex-wrap:wrap;align-items:center;border:1px dashed var(--bd);border-radius:10px;padding:8px}
+.sg{display:inline-flex;border:1px solid var(--bd);border-radius:999px;overflow:hidden;background:var(--sf)}.sg button{border:0;border-radius:0;padding:6px 20px;font:700 14px var(--mono)}.sg button.on{background:var(--co);color:var(--sf)}
+.fcm table{width:100%;border-collapse:collapse;margin-top:8px;background:var(--sf);border-radius:8px}.fcm td,.fcm th{border-bottom:1px solid var(--bd);padding:5px 8px;text-align:left}.fcm th{color:var(--mut);font-weight:600;font-size:12px}
+.fcm .err{background:var(--amb);color:var(--rd);border:1px solid var(--rd);border-radius:8px;padding:6px 10px;margin:8px 0}.fcm .okm{background:var(--okb);color:var(--ok);border-radius:8px;padding:6px 10px;margin:8px 0}
+.fcm button:disabled{opacity:.4;cursor:not-allowed}.fcm [hidden]{display:none}.fcm .sub{color:var(--mut);font-size:12px}
+.fcm input[type=number]{-moz-appearance:textfield;appearance:textfield}
+.fcm input[type=number]::-webkit-outer-spin-button,.fcm input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.best{display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap}.best .bg{padding:3px 10px;font:700 12px var(--mono)}.best .bg.on{background:var(--co);color:var(--sf);border-color:var(--co)}
+@media(max-width:520px){.tile b{font-size:16px}.fch .pri{flex:1 0 100%;order:3}}
 </style>
 
 
@@ -1656,7 +1698,7 @@ const fmtG = a => {
 };
 const gw = l => fmtG(gEnt().filter(x => x.l === l));
 // failed(): graded 5.0 / INC / DRP
-const failed = c => c.st !== 'plan' && FAIL(c.grade || ''); // graded 5.0 / INC / DRP
+const failed = c => (c.st === 'taken' || c.st === 'credited') && FAIL(c.grade || ''); // graded 5.0 / INC / DRP
 // byCode(): find the 'active' card for a course code. A failed attempt never satisfies a prereq, so prefer a non-failed copy.
 const byCode = code => {
     const a = S.cards.filter(c => c.code === code);
@@ -1670,13 +1712,13 @@ function warns(c) {
     const w = [];
     c.pre.forEach(p => {
         const x = byCode(p);
-        if (x && x.st === 'plan' && x.loc >= 0 && ord(x.loc) >= ord(c.loc)) {
+        if (x && (x.st === 'plan' || x.st === 'taking') && x.loc >= 0 && ord(x.loc) >= ord(c.loc)) {
             w.push(`Prereq ${p} is not in an earlier semester`);
         }
     });
     c.co.forEach(p => {
         const x = byCode(p);
-        if (x && x.st === 'plan' && x.loc >= 0 && ord(x.loc) > ord(c.loc)) {
+        if (x && (x.st === 'plan' || x.st === 'taking') && x.loc >= 0 && ord(x.loc) > ord(c.loc)) {
             w.push(`Coreq ${p} is in a later semester`);
         }
     });
@@ -1692,12 +1734,12 @@ const cat = c => /^EEE/.test(c.code) ? 'eee' : /^(CoE|ECE|EE) /.test(c.code) ? '
 // ======================================================================
 // 7. GRADES, STATUS & RETAKES
 // ======================================================================
-const SEG = [['plan', 'Planned'], ['taken', '✓ Taken'], ['credited', '★ Credited']];
+const SEG = [['plan', 'Planned'], ['taking', '▶ Taking'], ['taken', '✓ Taken'], ['credited', '★ Credited']]; // taking = enrolled now; it does NOT unlock courses that need it as a prereq
 const GRADES = [
     '', '1.0', '1.25', '1.5', '1.75', '2.0', '2.25', '2.5', '2.75', '3.0', '4.0', '5.0', 'INC', 'DRP'
 ];
 const FAIL = g => g === '5.0' || g === 'INC' || g === 'DRP';
-const gradeH = c => `<div class="gr"><span>Grade</span><select data-g="${c.id}" aria-label="Grade for ${esc(c.code)}">${GRADES.map(g => `<option value="${g}"${(c.grade || '') === g ? ' selected' : ''}>${g || '—'}</option>`).join('')}</select><select data-m="${c.id}" aria-label="Move ${esc(c.code)} to">${opts(c)}</select></div>`;
+const gradeH = c => `<div class="gr"><span>Grade</span><select data-g="${c.id}" aria-label="Grade for ${esc(c.code)}">${GRADES.map(g => `<option value="${g}"${(c.grade || '') === g ? ' selected' : ''}>${g || '—'}</option>`).join('')}<option value="__fc">📈 Link to course forecaster</option></select><select data-m="${c.id}" aria-label="Move ${esc(c.code)} to">${opts(c)}</select></div>`;
 // Passing grade -> Taken. 5.0 / INC / DRP -> original stays (counts in GWA if 5.0) and a retake copy is added to the next semester
 // Status change. Going to Planned parks the grade (c.pg); going to Taken/Credited restores it, so a grade is never lost by switching status
 // setSt(): change status. Going to 'plan' parks the grade in c.pg; going back restores it, so a grade is never lost.
@@ -1762,7 +1804,7 @@ function delCard(id) {
     dropCard(c);
     render();
 }
-// setGrade(): a failing grade forces status 'taken'. Clearing a grade on a taken card returns it to 'plan'.
+// setGrade(): a failing grade forces 'taken'. A passing grade on a planned card makes it 'taking'. Clearing the grade returns taken/taking to 'plan'.
 function setGrade(id, g) {
     const c = S.cards.find(c => c.id === id);
     if (!c) {
@@ -1778,11 +1820,11 @@ function setGrade(id, g) {
         c.grade = g;
         c.pg = '';
         if (g) {
-            if (c.st !== 'credited') {
-                c.st = 'taken';
+            if (c.st === 'plan') {
+                c.st = 'taking'; // picking a grade on a planned subject means it is being taken, not yet finished
             }
         }
-        else if (had && c.st === 'taken') {
+        else if (had && (c.st === 'taken' || c.st === 'taking')) {
             c.st = 'plan';
         }
     }
@@ -1797,7 +1839,7 @@ function setGrade(id, g) {
 // coOf(): codes of cards that list THIS card as their coreq.  [...new Set(arr)] = remove duplicates.
 const unmet = c => c.st !== 'plan' ? [] : c.pre.filter(p => {
     const x = byCode(p);
-    return x && (x.st === 'plan' || failed(x));
+    return x && (x.st === 'plan' || x.st === 'taking' || failed(x)); // a prereq still being taken does not unlock
 });
 const coOf = c => [...new Set(S.cards.filter(x => x.co.includes(c.code)).map(x => x.code))];
 // stc(): extra CSS classes for a card: retake / locked / cor(eq)
@@ -1810,6 +1852,204 @@ const rel = c => {
     const r = c.hist || [];
     return (c.alt ? `<div class="lbl lk">ℹ Alt. to prereq: ${esc(c.alt)}</div>` : '') + (r.length && c.st === 'plan' ? `<div class="lbl rt">↻ Retake · previous: ${r.map(esc).join(', ')}</div>` : '') + (u.length ? `<div class="lbl lk">🔒 Locked · needs ${u.map(esc).join(', ')}</div>` : '') + (a.length ? `<div class="lbl cr2">🔗 Coreq: take with ${a.map(esc).join(', ')}</div>` : '') + (b.length ? `<div class="lbl cr2">🔗 Coreq of ${b.map(esc).join(', ')}</div>` : '');
 };
+// ======================================================================
+// COURSE 4CASTER: difficulty stars + grade forecaster (data: card.diff, card.fc, saved with the plan)
+// ======================================================================
+const FC_TYPES = ['LEs', 'Acts', 'Quizzes', 'Attendance/Lecture', 'Finals', 'SimEx', 'Software Projects'];
+const EEE_SCALE = [[92, '1.00'], [88, '1.25'], [84, '1.50'], [80, '1.75'], [76, '2.00'], [72, '2.25'], [68, '2.50'], [64, '2.75'], [60, '3.00']];
+const MAN_G = ['1.00', '1.25', '1.50', '1.75', '2.00', '2.25', '2.50', '2.75', '3.00', '4.00'];
+const FC_MODES = { ez: ['ez', 'Easy: heavy components get the lowest needed scores'], mid: ['mid', 'Medium: balanced across all records'], tf: ['tf', 'Hard: heavy components get the highest needed scores'] };
+let fcId = null, starOpen = null, fcOut = null; // open card id / card whose star popover is open / active forecast {mode}
+const fcGet = c => c.fc || (c.fc = { scale: 'eee', manual: {}, target: '', comps: [] });
+const fcScale = f => f.scale === 'manual' ? MAN_G.filter(g => f.manual[g] !== undefined && f.manual[g] !== '').map(g => [+f.manual[g], g]) : EEE_SCALE;
+const toG = g => { const n = parseFloat(g); return Number.isInteger(n) ? n.toFixed(1) : String(n); }; // '1.50' -> '1.5' (matches the grade dropdown values)
+const fcManErr = f => {
+    if (f.scale !== 'manual') { return ''; }
+    let p = null;
+    for (const g of MAN_G) {
+        const v = f.manual[g];
+        if (v === undefined || v === '') { continue; }
+        const n = +v;
+        if (isNaN(n) || n < 0 || n > 100) { return `${g}: cut-off must be between 0 and 100`; }
+        if (p && n >= p[1]) { return `${g}: must be lower than ${p[0]} (${p[1]}%)`; }
+        p = [g, n];
+    }
+    return '';
+};
+const fcTot = f => f.comps.reduce((a, k) => a + (+k.w || 0), 0);
+const fcBlank = e => e.s === null || e.s === '' || isNaN(e.s);
+const fcMax = e => e.max > 0 ? e.max : 100;
+const fcEarned = f => f.comps.reduce((a, k) => a + k.entries.reduce((b, e) => b + (fcBlank(e) ? 0 : (k.w / k.entries.length) * Math.max(0, e.s) / fcMax(e)), 0), 0);
+const fcDone = f => f.comps.reduce((a, k) => a + k.entries.reduce((b, e) => b + (fcBlank(e) ? 0 : k.w / k.entries.length), 0), 0);
+const fcPct = f => { const d = fcDone(f); return d > 0 ? fcEarned(f) / d * 100 : null; }; // running average over the work already scored
+const fcGradeOf = (f, pct) => { const sc = fcScale(f); if (pct === null || !sc.length) { return null; } const x = sc.find(s => pct >= s[0] - 1e-9); return x ? x[1] : '5.00'; };
+// fcSpread(): fraction x_i (0..1) of each blank record's max needed, with sum(w_i * x_i) = need.
+//   mid: same fraction everywhere. ez: tilts the load toward LOW-weight records (heavy ones stay below the average).
+//   tf: tilts it toward HIGH-weight records, but low-weight ones never drop below 60% of the average.
+function fcSpread(bl, need, mode) {
+    const sum = bl.reduce((a, b) => a + b.w, 0), r = need / sum, ws = bl.map(b => b.w), mx = Math.max(...ws), mn = Math.min(...ws);
+    if (mode === 'mid' || mx - mn < 1e-9) { return bl.map(() => r); }
+    const p = bl.map(b => (b.w - mn) / (mx - mn)), dir = mode === 'ez' ? -1 : 1, lo = mode === 'tf' ? 0.6 * r : 0;
+    const xs = a => p.map(pi => Math.min(1, Math.max(lo, a + dir * (pi - 0.5))));
+    let L = -2, H = 2;
+    for (let i = 0; i < 60; i++) { const a = (L + H) / 2; (xs(a).reduce((s, x, j) => s + x * bl[j].w, 0) < need ? (L = a) : (H = a)); }
+    return xs((L + H) / 2);
+}
+function fcForecast(c, mode) {
+    const f = fcGet(c), sc = fcScale(f);
+    if (fcManErr(f)) { return { err: fcManErr(f) }; }
+    if (Math.abs(fcTot(f) - 100) > 0.005) { return { err: 'Component weights must total 100%.' }; }
+    const t = sc.find(x => x[1] === f.target);
+    if (!t) { return { err: 'Pick a target grade first.' }; }
+    const earned = fcEarned(f), need = t[0] - earned, bl = [];
+    f.comps.forEach(k => k.entries.forEach((e, i) => { if (fcBlank(e)) { bl.push({ k, i, w: k.w / k.entries.length, max: fcMax(e) }); } }));
+    if (need <= 1e-9) { return { secured: true, earned, t }; }
+    const sum = bl.reduce((a, b) => a + b.w, 0);
+    if (need > sum + 1e-9) { return { err: `Target not feasible: even perfect scores on every remaining record only reach ${(earned + sum).toFixed(2)}% (need ${t[0]}%).` }; }
+    const x = fcSpread(bl, need, mode);
+    return { earned, need, t, rows: bl.map((b, i) => ({ ci: b.k.id, ei: b.i, type: b.k.type, n: b.k.entries.length > 1 ? b.i + 1 : '—', x: x[i], need: Math.ceil(x[i] * b.max * 100 - 1e-9) / 100, max: b.max, pct: x[i] * 100 })) };
+}
+const fcBar = c => `<div class="fcb"><button type="button" data-star="${c.id}" aria-label="Rate difficulty" aria-expanded="${starOpen === c.id}" title="Rate difficulty">⭐</button>${c.diff ? `<span class="chip" title="Difficulty">★${c.diff}</span>` : ''}${starOpen === c.id ? `<span class="pop" role="group" aria-label="Difficulty">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-rate="${c.id}:${n}" aria-label="${n} star${n > 1 ? 's' : ''}">${n <= (c.diff || 0) ? '★' : '☆'}</button>`).join('')}</span>` : ''}<button type="button" data-fc="${c.id}" title="Open Course 4caster">📈 4caster</button></div>`;
+const fcTiles = f => {
+    const d = fcDone(f), p = fcPct(f), g = fcGradeOf(f, p);
+    return `<div class="tile"><small>Current grade</small><b>${g || '—'}</b><small>${p === null ? 'no scores yet' : p.toFixed(1) + '% avg of scored work'}</small></div><div class="tile"><small>Points earned</small><b>${fcEarned(f).toFixed(2)}<i> / 100</i></b><small>from filled records</small></div><div class="tile"><small>Coursework scored</small><b>${+d.toFixed(2)}%</b><small>${+Math.max(0, fcTot(f) - d).toFixed(2)}% left</small></div>`;
+};
+const fcTargetOpts = f => '<option value="">— choose —</option>' + fcScale(f).map(([m, g]) => `<option value="${g}"${f.target === g ? ' selected' : ''}>${g} (≥${m}%)</option>`).join('');
+function fcResHtml(c, res) {
+    if (!res) { return ''; }
+    if (res.err) { return `<div class="err" role="alert">⚠ ${esc(res.err)}</div>`; }
+    if (res.secured) { return `<div class="okm">Target already secured (${res.earned.toFixed(2)}% earned, need ${res.t[0]}% for ${res.t[1]}).</div>`; }
+    return `<div class="sub">${fcOut.mode} · need ${res.need.toFixed(2)} more points for ${res.t[1]} (${res.t[0]}%). Needed scores are also shown in <b class="tealtxt">teal</b> inside the score boxes. Suggestions only; your inputs are unchanged.</div><table><tr><th>Component</th><th>Record</th><th>Needed</th><th>%</th></tr>${res.rows.map(w => `<tr><td>${esc(w.type)}</td><td>${w.n}</td><td>${w.need} / ${w.max}</td><td>${w.pct.toFixed(1)}%</td></tr>`).join('')}</table>`;
+}
+// fcBest(): the 3 highest grades (best first) still reachable: cut-off <= points earned + weight of every blank record
+const fcBest = f => {
+    if (fcManErr(f)) { return []; }
+    const room = f.comps.reduce((a, k) => a + k.entries.reduce((b, e) => b + (fcBlank(e) ? k.w / k.entries.length : 0), 0), 0), mx = fcEarned(f) + room;
+    return fcScale(f).filter(x => x[0] <= mx + 1e-9).slice(0, 3);
+};
+const fcBestH = f => { const b = fcBest(f); return b.length ? '<span class="sub">Reachable:</span>' + b.map(([m, g]) => `<button type="button" class="bg${f.target === g ? ' on' : ''}" data-fx="pick" data-grade="${g}" title="Set target ${g} (≥${m}%)">${g}</button>`).join('') : '<span class="sub">No grade above 5.00 is reachable</span>'; };
+// fcSaveInfo(): which grade and status "Save to planuhinmoeeemo" would write. Taken only when every record is scored and weights total 100%.
+const fcSaveInfo = f => ({ g: fcGradeOf(f, fcPct(f)), st: Math.abs(fcTot(f) - 100) < .005 && fcDone(f) >= fcTot(f) - 1e-6 ? 'taken' : 'taking' });
+function fcSave(id, g, st) {
+    const c = S.cards.find(x => x.id === id); if (!c) { return; }
+    g = toG(g);
+    if (c.st === 'credited' || c.st === 'taken') { setGrade(id, g); return; }
+    if (st === 'taken') { setGrade(id, g); if (c.st === 'taking') { c.st = 'taken'; syncKid(c); render(); } return; } // all scores in: finished
+    c.grade = g; c.pg = ''; c.st = 'taking'; syncKid(c); render(); // scores incomplete: only "taking" (never taken)
+}
+function fcHtml(c) {
+    const f = fcGet(c), er = fcManErr(f), tw = fcTot(f), tok = Math.abs(tw - 100) < .005, res = fcOut ? fcForecast(c, fcOut.mode) : null, pm = {}, ok = tok && !er, sv = fcSaveInfo(f);
+    if (res && res.rows) { res.rows.forEach(w => { pm[w.ci + ':' + w.ei] = w.need; }); }
+    const stars = [1, 2, 3, 4, 5].map(n => n <= (c.diff || 0) ? '★' : '☆').join('');
+    const scale = f.scale === 'manual'
+        ? `<div class="mang">${MAN_G.map(x => `<label>${x} ≥ <input type="number" min="0" max="100" step="any" data-fx="man" data-gr="${x}" value="${f.manual[x] ?? ''}" aria-label="Cut-off for ${x}">%</label>`).join('')}</div><div id="fcManE" class="${er ? 'err' : 'sub'}">${er ? esc(er) : 'Cut-off % per grade. Anything below the lowest is 5.00.'}</div>`
+        : `<details class="scl"><summary>Show scale</summary><div class="sub">${EEE_SCALE.map(([m, x], i) => `${i ? m + '–&lt;' + EEE_SCALE[i - 1][0] : m + '–100'}: ${x}`).join(' | ')} | &lt;60: 5.00</div></details>`;
+    const comps = f.comps.map(k => `<div class="cmp"><div class="chd"><b class="ctype">${esc(k.type)}</b><label>weight <input type="number" min="0" max="100" step="any" data-fx="cw" data-ci="${k.id}" value="${k.w}" aria-label="Weight of ${esc(k.type)}">%</label><span class="sub">${k.multi ? 'multiple' : 'single'} · <span data-pw="${k.id}">${(k.w / k.entries.length).toFixed(2)}</span>% each</span><button type="button" class="ic" data-fx="delc" data-ci="${k.id}" aria-label="Delete component">🗑</button></div>${k.entries.map((e, i) => { const n = pm[k.id + ':' + i]; return `<div class="rec"><span class="sub">${k.multi ? '#' + (i + 1) : ''}</span><input type="number" step="any" data-fx="s" data-ci="${k.id}" data-ei="${i}" placeholder="${n !== undefined ? n : 'score'}" class="${n !== undefined ? 'ph' : ''}" value="${e.s ?? ''}" aria-label="Score"><span class="sub">over</span><input type="number" min="0" step="any" data-fx="mx" data-ci="${k.id}" data-ei="${i}" value="${e.max}" aria-label="Highest score">${k.multi && k.entries.length > 1 ? `<button type="button" class="ic" data-fx="delr" data-ci="${k.id}" data-ei="${i}" aria-label="Remove record">✕</button>` : '<span></span>'}</div>`; }).join('')}${k.multi ? `<button type="button" data-fx="addr" data-ci="${k.id}">+ Add record</button>` : ''}</div>`).join('') || '<div class="sub" style="margin-bottom:8px">No components yet. Add one below.</div>';
+    const modes = Object.keys(FC_MODES).map(m => `<button type="button" data-fx="run" data-mode="${m}" title="${FC_MODES[m][1]}" class="${fcOut && fcOut.mode === m ? 'on' : ''}"${ok ? '' : ' disabled'}>${FC_MODES[m][0]}</button>`).join('');
+    return `<div class="fch"><div class="ttl"><h2 id="fch">${esc(c.code)}</h2><small>${esc(c.title || '—')} · ${c.credit ? c.units + ' units' : 'non-credit'} · <span style="color:var(--am)" title="Difficulty">${stars}</span></small></div><button type="button" data-fx="save" class="pri"${sv.g ? '' : ' disabled'} title="Saves the current grade to this subject. Taken only when every score is in; otherwise Taking.">💾 Save to planuhinmoeeemo <span class="tag" id="fcTag">${sv.st === 'taken' ? 'Taken' : 'Taking'}</span></button><button type="button" class="ic" data-fx="close" aria-label="Close">✕</button></div>
+<div class="fcb2"><div class="tiles" id="fcSum">${fcTiles(f)}</div>
+<section class="fcs"><div class="fch2"><h3>Grading</h3><select data-fx="scale" aria-label="Course grading"><option value="eee"${f.scale === 'eee' ? ' selected' : ''}>EEE Grading</option><option value="manual"${f.scale === 'manual' ? ' selected' : ''}>Manual</option></select></div>${scale}</section>
+<section class="fcs"><div class="fch2"><h3>Components</h3><span id="fcTot" class="${tok ? 'wok' : 'bad'}">${+tw.toFixed(2)}% / 100%</span></div><div class="wbar"><i id="fcWb" class="${tok ? 'ok' : tw > 100 ? 'over' : ''}" style="width:${Math.min(100, tw)}%"></i></div>${comps}
+<div class="addc"><select id="fcAddT" aria-label="Component type">${FC_TYPES.map(t => `<option>${t}</option>`).join('')}</select><input id="fcAddW" type="number" min="0" max="100" step="any" placeholder="weight %" aria-label="Weight percent"><select id="fcAddM" aria-label="Entries"><option value="0">Single entry</option><option value="1">Multiple entries</option></select><button type="button" data-fx="addc">+ Add component</button><span id="fcAddE" class="bad"></span></div></section>
+<section class="fcs"><div class="fch2"><h3>Forecaster</h3><div class="r"><label>Target <select data-fx="target" aria-label="Target grade">${fcTargetOpts(f)}</select></label><span class="best" id="fcBest">${fcBestH(f)}</span><button type="button" data-fx="closefc" id="fcCl"${fcOut ? '' : ' hidden'}>✕ Close 4cast</button></div></div>
+<div class="sg" role="group" aria-label="Forecast mode">${modes}</div><div class="sub" style="margin-top:6px">ez: heavy components lighter · mid: balanced · tf: heavy components harder</div><div id="fcRes">${fcResHtml(c, res)}</div></section></div>`;
+}
+const fcCard = () => S.cards.find(x => x.id === fcId);
+function fcDraw() {
+    const c = fcCard(), m = document.querySelector('#fcov .fcm');
+    if (!c || !m) { closeFc(); return; }
+    m.innerHTML = fcHtml(c);
+}
+// fcRefresh(): light update after typing (keeps focus): tiles, weight counter, buttons; clears any forecast placeholders
+function fcRefresh(o) {
+    const c = fcCard(), f = fcGet(c), tw = fcTot(f), tok = Math.abs(tw - 100) < .005, ok = tok && !fcManErr(f), sv = fcSaveInfo(f);
+    o.querySelector('#fcSum').innerHTML = fcTiles(f);
+    const t = o.querySelector('#fcTot'); t.textContent = `${+tw.toFixed(2)}% / 100%`; t.className = tok ? 'wok' : 'bad';
+    const wb = o.querySelector('#fcWb'); wb.style.width = Math.min(100, tw) + '%'; wb.className = tok ? 'ok' : tw > 100 ? 'over' : '';
+    o.querySelectorAll('[data-fx=run]').forEach(b => { b.disabled = !ok; b.classList.remove('on'); });
+    o.querySelectorAll('input.ph').forEach(i => { i.classList.remove('ph'); i.placeholder = 'score'; });
+    o.querySelector('#fcRes').innerHTML = ''; o.querySelector('#fcCl').hidden = true;
+    o.querySelector('[data-fx=save]').disabled = !sv.g; o.querySelector('#fcTag').textContent = sv.st === 'taken' ? 'Taken' : 'Taking';
+    f.comps.forEach(k => { const s = o.querySelector(`[data-pw="${k.id}"]`); if (s) { s.textContent = (k.w / k.entries.length).toFixed(2); } });
+    const sel = o.querySelector('[data-fx=target]'); if (sel) { sel.innerHTML = fcTargetOpts(f); }
+    const bs = o.querySelector('#fcBest'); if (bs) { bs.innerHTML = fcBestH(f); }
+    const me = o.querySelector('#fcManE'), er = fcManErr(f); if (me) { me.className = er ? 'err' : 'sub'; me.textContent = er || 'Cut-off % per grade. Anything below the lowest is 5.00.'; }
+}
+function closeFc() {
+    const o = document.getElementById('fcov');
+    if (o) { o.remove(); }
+    fcId = null; fcOut = null;
+    save();
+    render();
+}
+// fcApply(): write one input/select value into card.fc (no redraw). Returns false for non-model elements.
+function fcApply(el) {
+    const c = fcCard(); if (!c) { return false; }
+    const f = fcGet(c), k = f.comps.find(x => x.id === el.dataset.ci), e = k && k.entries[+el.dataset.ei];
+    switch (el.dataset.fx) {
+        case 'scale': f.scale = el.value; f.target = ''; break;
+        case 'man': if (el.value === '') { delete f.manual[el.dataset.gr]; } else { f.manual[el.dataset.gr] = el.value; } if (!fcScale(f).some(x => x[1] === f.target)) { f.target = ''; } break;
+        case 'target': f.target = el.value; break;
+        case 'cw': if (k) { k.w = el.value === '' ? 0 : +el.value; } break;
+        case 's': if (e) { e.s = el.value === '' ? null : +el.value; } break;
+        case 'mx': if (e) { e.max = +el.value || 0; } break;
+        default: return false;
+    }
+    fcOut = null; save();
+    return true;
+}
+function openFc(id) {
+    const c0 = S.cards.find(x => x.id === id); if (!c0) { return; }
+    const old = document.getElementById('fcov'); if (old) { old.remove(); }
+    fcId = id; fcOut = null; fcGet(c0);
+    const o = document.createElement('div');
+    o.id = 'fcov'; o.className = 'fcov';
+    o.innerHTML = '<div class="fcm" role="dialog" aria-modal="true" aria-labelledby="fch"></div>';
+    o.addEventListener('click', e => {
+        if (e.target === o) { closeFc(); return; }
+        const b = e.target.closest('[data-fx]'); if (!b || b.tagName !== 'BUTTON') { return; }
+        const c = fcCard(), f = fcGet(c), k = f.comps.find(x => x.id === b.dataset.ci), a = b.dataset.fx;
+        if (a === 'close') { closeFc(); return; }
+        if (a === 'save') { // send the current grade back to the subject's grade dropdown
+            const sv = fcSaveInfo(f); if (!sv.g) { return; }
+            const id = c.id; closeFc(); fcSave(id, sv.g, sv.st); return;
+        }
+        if (a === 'closefc') { fcOut = null; fcDraw(); return; }
+        if (a === 'pick') { f.target = b.dataset.grade; const m = fcOut && fcOut.mode; fcOut = m ? { mode: m } : null; save(); fcDraw(); return; } // keep the active mode so it re-forecasts for the new target
+        if (a === 'run') { fcOut = { mode: b.dataset.mode }; fcDraw(); const nb = o.querySelector(`[data-mode=${fcOut.mode}]`); if (nb) { nb.focus(); } return; }
+        if (a === 'addc') {
+            const w = +o.querySelector('#fcAddW').value;
+            if (!(w > 0)) { o.querySelector('#fcAddE').textContent = 'Enter a weight above 0'; return; }
+            f.comps.push({ id: 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), type: o.querySelector('#fcAddT').value, w, multi: o.querySelector('#fcAddM').value === '1', entries: [{ s: null, max: 100 }] });
+        }
+        else if (a === 'delc') { f.comps = f.comps.filter(x => x !== k); }
+        else if (a === 'addr' && k) { k.entries.push({ s: null, max: 100 }); }
+        else if (a === 'delr' && k && k.entries.length > 1) { k.entries.splice(+b.dataset.ei, 1); }
+        else { return; }
+        fcOut = null; save(); fcDraw();
+    });
+    const upd = e => { if (e.target.dataset.fx && fcApply(e.target)) { if (e.target.dataset.fx === 'scale') { if (e.type === 'change') { fcDraw(); } } else { fcRefresh(o); } } };
+    o.addEventListener('input', upd);
+    o.addEventListener('change', upd);
+    document.body.appendChild(o);
+    fcDraw();
+    const x = o.querySelector('[data-fx=close]'); if (x) { x.focus(); }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && fcId) { closeFc(); } });
+document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('[data-star],[data-rate],[data-fc]');
+    if (b) {
+        if (b.dataset.star) { starOpen = starOpen === b.dataset.star ? null : b.dataset.star; render(); }
+        else if (b.dataset.rate) {
+            const v = b.dataset.rate, i = v.lastIndexOf(':'), c = S.cards.find(x => x.id === v.slice(0, i));
+            if (c) { c.diff = c.diff === +v.slice(i + 1) ? 0 : +v.slice(i + 1); }
+            starOpen = null; render();
+        }
+        else { openFc(b.dataset.fc); }
+        return;
+    }
+    if (starOpen) { starOpen = null; render(); }
+});
 // cardH(c, cm): HTML for one card. cm=true -> condensed single-row version. Clicking a condensed card (S.ex) expands just that card.
 function cardH(c, cm) {
     if (cm && S.ex && S.ex[c.id]) {
@@ -1822,13 +2062,13 @@ function cardH(c, cm) {
         const rq = [c.pre.length ? 'Pre: ' + c.pre.join(', ') : '', cx.length ? 'Co: ' + cx.join(', ') : ''].filter(Boolean).join(' · ');
         return `<div class="card mini ${c.st}${stc(c)}" data-cat="${cat(c)}" draggable="true" tabindex="0" data-id="${c.id}" title="${esc(tip || 'No prereq/coreq')}">
 <div class="top"><b>${esc(c.code)}${c.note ? '*' : ''}</b>${unmet(c).length ? '<span title="Locked: prereq not met">🔒</span>' : ''}${w ? `<span class="w" title="${esc(w)}">⚠</span>` : ''}<span class="pill">${c.credit ? c.units + ' units' : 'non-credit'}</span></div>
-<div class="seg">${SEG.map(([k, n], i) => `<button data-s="${k}" data-id="${c.id}" class="${c.st === k ? 'on' : ''}" title="${n}" aria-label="${n}">${['○', '✓', '★'][i]}</button>`).join('')}${c.dup ? `<button data-del="${c.id}" class="dl" title="Delete this retake copy" aria-label="Delete this retake copy">🗑</button>` : ''}</div>${rq ? `<div class="rq">${esc(rq)}</div>` : ''}</div>`;
+<div class="seg">${SEG.map(([k, n], i) => `<button data-s="${k}" data-id="${c.id}" class="${c.st === k ? 'on' : ''}" title="${n}" aria-label="${n}">${['○', '▶', '✓', '★'][i]}</button>`).join('')}${c.dup ? `<button data-del="${c.id}" class="dl" title="Delete this retake copy" aria-label="Delete this retake copy">🗑</button>` : ''}</div>${rq ? `<div class="rq">${esc(rq)}</div>` : ''}</div>`;
     }
     return `<div class="card ${c.st}${stc(c)}" data-cat="${cat(c)}" draggable="true" tabindex="0" data-id="${c.id}" title="${esc(tip || 'No prereq/coreq')}">
 <div class="top"><b>${esc(c.code)}${c.note ? '*' : ''}</b>${w ? `<span class="w" title="${esc(w)}">⚠</span>` : ''}<span class="pill">${c.credit ? c.units + ' units' : 'non-credit'}</span></div>
 <div class="t">${esc(c.title)}${isPh(c) ? ` <a data-r="${c.id}" role="button" tabindex="0">${c.title ? 'edit' : '✎ set course'}</a>` : ''}</div>
 ${rel(c)}<div class="seg">${SEG.map(([k, n]) => `<button data-s="${k}" data-id="${c.id}" class="${c.st === k ? 'on' : ''}">${n}</button>`).join('')}${c.dup ? `<button data-del="${c.id}" class="dl" title="Delete this retake copy" aria-label="Delete this retake copy">🗑 Delete</button>` : ''}</div>
-${gradeH(c)}</div>`;
+${gradeH(c)}${fcBar(c)}</div>`;
 }
 // midH(l): midyear container (6 units, up to 8 with approval)
 const midH = l => {
@@ -1838,7 +2078,7 @@ const midH = l => {
     const cm = cmp(l);
     const t = u > 8 ? `${u}/8 · over the 8-unit limit` : u > 6 ? `${u}/6 · needs approval (max 8)` : u ? `${u}/6 units` : req ? 'Required · 0 units' : 'Optional · 0/6';
     return `<section class="col mid${fd(l)}" data-loc="${l}"><h3 data-fold="${l}" role="button" tabindex="0" aria-expanded="${!(S.fold && S.fold[l])}"><span>${caret(l)} ☀ ${semName(l)}</span><span class="hb"><button type="button" class="addb vb${cm ? ' on' : ''}" data-view="${l}" aria-pressed="${cm}" title="${cm ? 'Switch to detailed cards' : 'Switch to simple list view'}" aria-label="Toggle simple list view">☰</button><button type="button" class="addb" data-sub="${l}" title="Add a subject to ${semName(l)}" aria-label="Add a subject to ${semName(l)}">+ Add Sub</button><span class="b nu" title="Semester GWA (excludes PE and NSTP)">Sem GWA ${gw(l)}</span><span class="b${u > 8 ? ' bad' : u > 6 || (req && !u) ? '' : u ? ' ok' : ' nu'}">${t}</span></span></h3>
-<div class="bulk"><button data-bulk="${l}:taken">✓ All taken</button><button data-bulk="${l}:credited">★ All credited</button><button data-bulk="${l}:plan">Clear</button></div>
+<div class="bulk"><button data-bulk="${l}:taking">▶ All taking</button><button data-bulk="${l}:taken">✓ All taken</button><button data-bulk="${l}:credited">★ All credited</button><button data-bulk="${l}:plan">Clear</button></div>
 <div class="drop${cm ? ' mini' : ''}" data-loc="${l}">${cs.map(c => cardH(c, cm)).join('') || '<i class="sub">Drop lab or lecture subjects here (6 units, up to 8 with approval)</i>'}</div><div class="fsum sub">${cs.length} subject${cs.length == 1 ? '' : 's'} · drop a card here</div></section>`;
 };
 // semH(l): regular semester container. 'calm' = no underload warning from year 4 or when <15 unfinished units remain.
@@ -1852,12 +2092,12 @@ const semH = l => {
     const pr = S.printed[l] || 18;
     const all = cr.length && cr.every(c => c.st === 'credited');
     // no underload warning for 4th year onward, or when fewer than 15 unfinished units remain in the whole plan
-    const rem = u + S.cards.filter(c => c.loc !== l && c.credit && c.st === 'plan').reduce((a, c) => a + c.units, 0);
+    const rem = u + S.cards.filter(c => c.loc !== l && c.credit && (c.st === 'plan' || c.st === 'taking')).reduce((a, c) => a + c.units, 0);
     const calm = (l >> 1) >= 3 || rem < 15;
     const cm = cmp(l);
     const t = all ? '★ Credited' : u < 15 ? (calm ? `${u} units` : `${u}/15 · needs ${15 - u} more`) : `${u}/15 ✓` + (u > pr ? ` · overload >${pr}` : '');
     return `<section class="col${fd(l)}" data-loc="${l}"><h3 data-fold="${l}" role="button" tabindex="0" aria-expanded="${!(S.fold && S.fold[l])}"><span>${caret(l)} ${semName(l)}</span><span class="hb"><button type="button" class="addb vb${cm ? ' on' : ''}" data-view="${l}" aria-pressed="${cm}" title="${cm ? 'Switch to detailed cards' : 'Switch to simple list view'}" aria-label="Toggle simple list view">☰</button><button type="button" class="addb" data-sub="${l}" title="Add a subject to ${semName(l)}" aria-label="Add a subject to ${semName(l)}">+ Add Sub</button><span class="b nu" title="Semester GWA (excludes PE and NSTP)">Sem GWA ${gw(l)}</span><span class="b${all ? ' cr' : u >= 15 ? ' ok' : calm ? ' nu' : ''}">${t}</span></span></h3>
-<div class="bulk"><button data-bulk="${l}:taken">✓ All taken</button><button data-bulk="${l}:credited">★ All credited</button><button data-bulk="${l}:plan">Clear</button></div>
+<div class="bulk"><button data-bulk="${l}:taking">▶ All taking</button><button data-bulk="${l}:taken">✓ All taken</button><button data-bulk="${l}:credited">★ All credited</button><button data-bulk="${l}:plan">Clear</button></div>
 <div class="drop${cm ? ' mini' : ''}" data-loc="${l}">${cs.map(c => cardH(c, cm)).join('')}</div><div class="fsum sub">${cs.length} subject${cs.length == 1 ? '' : 's'} · drop a card here</div></section>`;
 };
 
@@ -2114,7 +2354,14 @@ document.addEventListener('change', e => {
         move(t.dataset.m, t.value);
     }
     else if (t.dataset.g) {
-        setGrade(t.dataset.g, t.value);
+        if (t.value === '__fc') {
+            const fc = S.cards.find(c => c.id === t.dataset.g);
+            t.value = fc && fc.grade || '';
+            openFc(t.dataset.g);
+        }
+        else {
+            setGrade(t.dataset.g, t.value);
+        }
     }
     else if (t.id === 'cnt') {
         S.cnt = t.checked;
