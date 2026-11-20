@@ -1165,6 +1165,7 @@ button.vb.on {
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tile{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px}
 .tile b{font:700 20px var(--mono);color:var(--mar2)}.tile i{font:400 12px system-ui;color:var(--mut)}.tile small{color:var(--mut);font-size:11px}
 .fcs{background:var(--bg);border-radius:12px;padding:12px}.fch2{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tplr{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}.tplr select{max-width:230px}.tplr button:disabled{opacity:.45;cursor:not-allowed}
 .fch2 h3{margin:0;font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.6px;color:var(--mut)}.fch2 .r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .fcm input,.fcm select{font:inherit;color:inherit;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:4px 8px}.fcm input[type=number]{width:84px}
 .fcm .bad{color:var(--rd);font-weight:600}.fcm .wok{color:var(--ok);font-weight:600}
@@ -1860,11 +1861,28 @@ const rel = c => {
 // ======================================================================
 // COURSE 4CASTER: difficulty stars + grade forecaster (data: card.diff, card.fc, saved with the plan)
 // ======================================================================
-const FC_TYPES = ['LEs', 'Acts', 'Quizzes', 'Attendance/Lecture', 'Finals', 'SimEx', 'Software Projects'];
+const FC_TYPES = ['LEs', 'Acts', 'Quizzes', 'Attendance/Lecture', 'Finals', 'SimEx', 'Software Projects', 'Practicals', 'Lab/Mod'];
 const EEE_SCALE = [[92, '1.00'], [88, '1.25'], [84, '1.50'], [80, '1.75'], [76, '2.00'], [72, '2.25'], [68, '2.50'], [64, '2.75'], [60, '3.00']];
 const MAN_G = ['1.00', '1.25', '1.50', '1.75', '2.00', '2.25', '2.50', '2.75', '3.00', '4.00'];
 const FC_MODES = { ez: ['ez', 'Easy: leans on the easiest components (by difficulty stars)'], mid: ['mid', 'Medium: balanced across all records'], tf: ['tf', 'Hard: leans on the hardest components (by difficulty stars)'] };
 let fcId = null, starOpen = null, fcOut = null; // open card id / card whose star popover is open / active forecast {mode}
+// Templates (saved on this browser, shared by all subjects): grading manuals (manual cut-offs) and component/record structures
+const TPLK = 'planu_fc_templates_v1';
+const mkE = (n, max) => Array.from({ length: n }, () => ({ max }));
+const TPL_BUILTIN = { // pre-saved templates (always available; saving under the same name overrides them)
+    grading: [{ name: 'Math 2X', manual: { '1.00': '93', '1.25': '90', '1.50': '87', '1.75': '84', '2.00': '80', '2.25': '75', '2.50': '70', '2.75': '65', '3.00': '60', '4.00': '55' } }],
+    comps: [
+        { name: 'EEE 111', comps: [{ type: 'LEs', w: 30, multi: true, diff: 0, entries: mkE(2, 100) }, { type: 'Acts', w: 40, multi: true, diff: 0, entries: mkE(2, 100) }, { type: 'Software Projects', w: 30, multi: true, diff: 0, entries: mkE(2, 100) }] },
+        { name: 'Math 2X', comps: [{ type: 'LEs', w: 60, multi: true, diff: 4, entries: mkE(4, 30) }, { type: 'Finals', w: 30, multi: false, diff: 5, entries: mkE(1, 60) }, { type: 'Attendance/Lecture', w: 10, multi: false, diff: 2, entries: mkE(1, 10) }] }
+    ]
+};
+const tplRaw = () => { try { const t = JSON.parse(localStorage.getItem(TPLK)); return { grading: (t && t.grading) || [], comps: (t && t.comps) || [] }; } catch (e) { return { grading: [], comps: [] }; } };
+const tplLoad = () => { const u = tplRaw(), m = {}; ['grading', 'comps'].forEach(k => { m[k] = [...TPL_BUILTIN[k].filter(b => !u[k].some(x => x.name === b.name)), ...u[k]]; }); return m; };
+const tplStore = t => { try { localStorage.setItem(TPLK, JSON.stringify(t)); } catch (e) { alert('Could not save the template (browser storage unavailable).'); } };
+let tplSel = { grading: '', comps: '' }; // currently chosen template per kind (kept across redraws)
+const tplOpts = (kind, ph) => `<option value="">${ph}</option>` + tplLoad()[kind].map(x => `<option value="${esc(x.name)}"${x.name === tplSel[kind] ? ' selected' : ''}>${esc(x.name)}</option>`).join('');
+const tplCanG = f => f.scale === 'manual' && !fcManErr(f) && MAN_G.some(g => f.manual[g] !== undefined && f.manual[g] !== '');
+const fcNewId = () => 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
 const fcGet = c => c.fc || (c.fc = { scale: 'eee', manual: {}, target: '', comps: [] });
 const fcScale = f => f.scale === 'manual' ? MAN_G.filter(g => f.manual[g] !== undefined && f.manual[g] !== '').map(g => [+f.manual[g], g]) : EEE_SCALE;
 const toG = g => { const n = parseFloat(g); return Number.isInteger(n) ? n.toFixed(1) : String(n); }; // '1.50' -> '1.5' (matches the grade dropdown values)
@@ -1954,9 +1972,9 @@ function fcHtml(c) {
     const modes = Object.keys(FC_MODES).map(m => `<button type="button" data-fx="run" data-mode="${m}" title="${FC_MODES[m][1]}" class="${fcOut && fcOut.mode === m ? 'on' : ''}"${ok ? '' : ' disabled'}>${FC_MODES[m][0]}</button>`).join('');
     return `<div class="fch"><div class="ttl"><h2 id="fch">${esc(c.code)}</h2><small>${esc(c.title || '—')} · ${c.credit ? c.units + ' units' : 'non-credit'} · <span style="color:var(--am)" title="Difficulty">${stars}</span></small></div><button type="button" data-fx="save" class="pri"${sv.g ? '' : ' disabled'} title="Saves the current grade to this subject. Taken only when every score is in; otherwise Taking.">💾 Save to planuhinmoeeemo <span class="tag" id="fcTag">${sv.st === 'taken' ? 'Taken' : 'Taking'}</span></button><button type="button" class="ic" data-fx="close" aria-label="Close">✕</button></div>
 <div class="fcb2"><div class="tiles" id="fcSum">${fcTiles(f)}</div>
-<section class="fcs"><div class="fch2"><h3>Grading</h3><select data-fx="scale" aria-label="Course grading"><option value="eee"${f.scale === 'eee' ? ' selected' : ''}>EEE Grading</option><option value="manual"${f.scale === 'manual' ? ' selected' : ''}>Manual</option></select></div>${scale}</section>
+<section class="fcs"><div class="fch2"><h3>Grading</h3><select data-fx="scale" aria-label="Course grading"><option value="eee"${f.scale === 'eee' ? ' selected' : ''}>EEE Grading</option><option value="manual"${f.scale === 'manual' ? ' selected' : ''}>Manual</option></select></div>${scale}<div class="tplr"><button type="button" data-tpl="save-g"${tplCanG(f) ? '' : ' disabled'} title="Save the manual cut-offs above as a reusable grading template (Manual grading only)">💾 Save as template</button><select data-tpl="load-g" aria-label="Load grading template">${tplOpts('grading', 'Load grading template…')}</select><button type="button" class="ic" data-tpl="del-g" title="Delete the selected grading template" aria-label="Delete selected grading template">🗑</button></div></section>
 <section class="fcs"><div class="fch2"><h3>Components</h3><span id="fcTot" class="${tok ? 'wok' : 'bad'}">${+tw.toFixed(2)}% / 100%</span></div><div class="wbar"><i id="fcWb" class="${tok ? 'ok' : tw > 100 ? 'over' : ''}" style="width:${Math.min(100, tw)}%"></i></div>${comps}
-<div class="addc"><select id="fcAddT" aria-label="Component type">${FC_TYPES.map(t => `<option>${t}</option>`).join('')}</select><input id="fcAddW" type="number" min="0" max="100" step="any" placeholder="weight %" aria-label="Weight percent"><select id="fcAddM" aria-label="Entries"><option value="0">Single entry</option><option value="1">Multiple entries</option></select><button type="button" data-fx="addc">+ Add component</button><span id="fcAddE" class="bad"></span></div></section>
+<div class="addc"><select id="fcAddT" aria-label="Component type">${FC_TYPES.map(t => `<option>${t}</option>`).join('')}</select><input id="fcAddW" type="number" min="0" max="100" step="any" placeholder="weight %" aria-label="Weight percent"><select id="fcAddM" aria-label="Entries"><option value="0">Single entry</option><option value="1">Multiple entries</option></select><button type="button" data-fx="addc">+ Add component</button><span id="fcAddE" class="bad"></span></div><div class="tplr"><button type="button" data-tpl="save-c"${f.comps.length ? '' : ' disabled'} title="Save these components and their records (scores are not saved) as a reusable template">💾 Save as template</button><select data-tpl="load-c" aria-label="Load components template">${tplOpts('comps', 'Load components template…')}</select><button type="button" class="ic" data-tpl="del-c" title="Delete the selected components template" aria-label="Delete selected components template">🗑</button></div></section>
 <section class="fcs"><div class="fch2"><h3>Forecaster</h3><div class="r"><label>Target <select data-fx="target" aria-label="Target grade">${fcTargetOpts(f)}</select></label><span class="best" id="fcBest">${fcBestH(f)}</span><button type="button" data-fx="closefc" id="fcCl"${fcOut ? '' : ' hidden'}>✕ Close 4cast</button></div></div>
 <div class="sg" role="group" aria-label="Forecast mode">${modes}</div><div class="sub" style="margin-top:6px">ez: leans on easier components · mid: balanced · tf: leans on harder components · difficulty ★ overrides weight</div><div id="fcRes">${fcResHtml(c, res)}</div></section></div>`;
 }
@@ -1977,6 +1995,8 @@ function fcRefresh(o) {
     o.querySelector('#fcRes').innerHTML = ''; o.querySelector('#fcCl').hidden = true;
     o.querySelector('[data-fx=save]').disabled = !sv.g; o.querySelector('#fcTag').textContent = sv.st === 'taken' ? 'Taken' : 'Taking';
     f.comps.forEach(k => { const s = o.querySelector(`[data-pw="${k.id}"]`); if (s) { s.textContent = (k.w / k.entries.length).toFixed(2); } });
+    const tg = o.querySelector('[data-tpl=save-g]'); if (tg) { tg.disabled = !tplCanG(f); }
+    const tc = o.querySelector('[data-tpl=save-c]'); if (tc) { tc.disabled = !f.comps.length; }
     const sel = o.querySelector('[data-fx=target]'); if (sel) { sel.innerHTML = fcTargetOpts(f); }
     const bs = o.querySelector('#fcBest'); if (bs) { bs.innerHTML = fcBestH(f); }
     const me = o.querySelector('#fcManE'), er = fcManErr(f); if (me) { me.className = er ? 'err' : 'sub'; me.textContent = er || 'Cut-off % per grade. Anything below the lowest is 5.00.'; }
@@ -2007,7 +2027,7 @@ function fcApply(el) {
 function openFc(id) {
     const c0 = S.cards.find(x => x.id === id); if (!c0) { return; }
     const old = document.getElementById('fcov'); if (old) { old.remove(); }
-    fcId = id; fcOut = null; fcGet(c0);
+    fcId = id; fcOut = null; fcGet(c0); tplSel = { grading: '', comps: '' };
     const o = document.createElement('div');
     o.id = 'fcov'; o.className = 'fcov';
     o.innerHTML = '<div class="fcm" role="dialog" aria-modal="true" aria-labelledby="fch"></div>';
@@ -2035,6 +2055,32 @@ function openFc(id) {
         else { return; }
         fcOut = null; save(); fcDraw();
     });
+    const tplDo = (a, sel) => {
+        const c = fcCard(), f = fcGet(c), T = tplRaw(), M = tplLoad(), g = a.endsWith('-g'), kind = g ? 'grading' : 'comps';
+        const pick = o.querySelector(`[data-tpl=load-${a.slice(-1)}]`), nm = sel || (pick && pick.value) || tplSel[kind];
+        if (a.startsWith('save')) {
+            const n = (prompt(g ? 'Name this grading template:' : 'Name this components template:', c.code) || '').trim(); if (!n) { return; }
+            const i = T[kind].findIndex(x => x.name === n);
+            if (i >= 0 && !confirm(`A template named "${n}" already exists. Replace it?`)) { return; }
+            const item = g ? { name: n, manual: JSON.parse(JSON.stringify(f.manual)) }
+                : { name: n, comps: f.comps.map(k => ({ type: k.type, w: k.w, multi: !!k.multi, diff: k.diff || 0, entries: k.entries.map(e => ({ max: e.max || 100 })) })) };
+            if (i >= 0) { T[kind][i] = item; } else { T[kind].push(item); }
+            tplStore(T); tplSel[kind] = n; fcDraw(); return;
+        }
+        if (!nm) { if (a.startsWith('del')) { alert('Pick a template from the list first.'); } return; }
+        const t = (a.startsWith('del') ? T : M)[kind].find(x => x.name === nm);
+        if (!t) { if (a.startsWith('del') && M[kind].some(x => x.name === nm)) { alert('"' + nm + '" is a built-in template and cannot be deleted.'); } return; }
+        if (a.startsWith('del')) { if (confirm(`Delete template "${nm}"?`)) { T[kind] = T[kind].filter(x => x !== t); tplStore(T); tplSel[kind] = ''; fcDraw(); } return; }
+        tplSel[kind] = nm;
+        if (g) { f.scale = 'manual'; f.manual = JSON.parse(JSON.stringify(t.manual)); f.target = ''; }
+        else {
+            if (f.comps.some(k => k.entries.some(e => !fcBlank(e))) && !confirm('Loading replaces the current components and their entered scores. Continue?')) { tplSel[kind] = ''; fcDraw(); return; }
+            f.comps = t.comps.map(k => ({ id: fcNewId(), type: k.type, w: k.w, multi: !!k.multi, diff: k.diff || 0, entries: k.entries.map(e => ({ s: null, max: e.max || 100 })) }));
+        }
+        fcOut = null; save(); fcDraw();
+    };
+    o.addEventListener('click', e => { const b = e.target.closest('button[data-tpl]'); if (b && !b.disabled) { tplDo(b.dataset.tpl); } });
+    o.addEventListener('change', e => { const t = e.target; if (t.tagName === 'SELECT' && t.dataset.tpl && t.dataset.tpl.startsWith('load') && t.value) { tplDo(t.dataset.tpl, t.value); } });
     const upd = e => { if (e.target.dataset.fx && fcApply(e.target)) { if (e.target.dataset.fx === 'scale') { if (e.type === 'change') { fcDraw(); } } else { fcRefresh(o); } } };
     o.addEventListener('input', upd);
     o.addEventListener('change', upd);
