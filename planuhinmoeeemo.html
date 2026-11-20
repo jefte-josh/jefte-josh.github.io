@@ -357,6 +357,10 @@ h3 {
   color: var(--mar2);
 }
 
+.col h3 .fc {
+  font-style: normal;
+}
+
 .fsum {
   display: none;
   margin-top: 2px;
@@ -1244,10 +1248,10 @@ button.vb.on {
 <main>
 <div class="board" id="board"></div>
 <div class="side">
-<aside class="col"><h3><span>Unassigned-s</span><span class="hb"><button type="button" class="addb vb" id="pv" data-view="-1" aria-pressed="false" title="Switch to simple list view" aria-label="Toggle simple list view">☰</button><span class="sub">drag into any semester</span></span></h3>
-<div class="drop" data-loc="-1" id="pool"></div></aside>
-<aside class="col cs"><h3><span>Credited-s</span><span class="hb"><button type="button" class="addb vb" id="cv" data-view="-2" aria-pressed="false" title="Switch to simple list view" aria-label="Toggle simple list view">☰</button><span class="sub">already earned (transfer / shift)</span></span></h3>
-<div class="drop" data-loc="-2" id="cpool"></div></aside></div></main>
+<aside class="col" id="poolc" data-loc="-1"><h3 data-fold="-1" role="button" tabindex="0" aria-expanded="true"><span><i class="fc">▾</i> Unassigned-s</span><span class="hb"><button type="button" class="addb vb" id="pv" data-view="-1" aria-pressed="false" title="Switch to simple list view" aria-label="Toggle simple list view">☰</button><span class="sub">drag into any semester</span></span></h3>
+<div class="drop" data-loc="-1" id="pool"></div><div class="fsum sub" id="pools"></div></aside>
+<aside class="col cs" id="cpoolc" data-loc="-2"><h3 data-fold="-2" role="button" tabindex="0" aria-expanded="true"><span><i class="fc">▾</i> Credited-s</span><span class="hb"><button type="button" class="addb vb" id="cv" data-view="-2" aria-pressed="false" title="Switch to simple list view" aria-label="Toggle simple list view">☰</button><span class="sub">already earned (transfer / shift)</span></span></h3>
+<div class="drop" data-loc="-2" id="cpool"></div><div class="fsum sub" id="cpools"></div></aside></div></main>
 
 <!-- ===== FOOTER ===== -->
 <footer class="ft">#jipiti @2026</footer>
@@ -2119,6 +2123,13 @@ function render() {
     $('#pv').classList.toggle('on', pcm);
     $('#pv').setAttribute('aria-pressed', pcm);
     $('#pv').title = pcm ? 'Switch to detailed cards' : 'Switch to simple list view';
+    [[-1, 'pool'], [-2, 'cpool']].forEach(([l, id]) => {
+        const fo = !!(S.fold && S.fold[l]), n = S.cards.filter(c => c.loc === l).length;
+        $('#' + id + 'c').classList.toggle('folded', fo);
+        $('#' + id + 'c').querySelector('h3').setAttribute('aria-expanded', !fo);
+        $('#' + id + 'c').querySelector('.fc').textContent = fo ? '▸' : '▾';
+        $('#' + id + 's').textContent = `${n} subject${n === 1 ? '' : 's'} · drop a card here`;
+    });
     const ccm = cmp(-2);
     $('#cpool').classList.toggle('mini', ccm);
     $('#cpool').innerHTML = S.cards.filter(c => c.loc === -2).map(c => cardH(c, ccm)).join('') || '<i class="sub">Empty</i>';
